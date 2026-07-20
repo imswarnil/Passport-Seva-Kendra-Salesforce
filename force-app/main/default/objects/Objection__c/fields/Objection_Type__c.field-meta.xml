@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Objection_Type__c</fullName>
+    <label>Objection Type</label>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Document Discrepancy</fullName>
+                <default>false</default>
+                <label>Document Discrepancy</label>
+            </value>
+            <value>
+                <fullName>Address Mismatch</fullName>
+                <default>false</default>
+                <label>Address Mismatch</label>
+            </value>
+            <value>
+                <fullName>Name Mismatch</fullName>
+                <default>false</default>
+                <label>Name Mismatch</label>
+            </value>
+            <value>
+                <fullName>Police Verification Adverse</fullName>
+                <default>false</default>
+                <label>Police Verification Adverse</label>
+            </value>
+            <value>
+                <fullName>Court Order</fullName>
+                <default>false</default>
+                <label>Court Order</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Previous_Passport_No__c</fullName>
+    <externalId>false</externalId>
     <label>Previous Passport No</label>
-    <type>Text</type>
     <length>15</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>
