@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- To ForecastCategory --></label>
+    <name>ForecastCategory__c</name>
+    <picklistValues>
+        <masterLabel>BestCase</masterLabel>
+        <translation><!-- BestCase --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Closed</masterLabel>
+        <translation><!-- Closed --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Forecast</masterLabel>
+        <translation><!-- Forecast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Omitted</masterLabel>
+        <translation><!-- Omitted --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pipeline</masterLabel>
+        <translation><!-- Pipeline --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

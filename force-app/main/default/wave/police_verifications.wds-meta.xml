@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WaveDataset xmlns="http://soap.sforce.com/2006/04/metadata">
+    <application>Passport_Office_Analytics</application>
+    <masterLabel>police_verifications</masterLabel>
+    <type>default</type>
+</WaveDataset>
