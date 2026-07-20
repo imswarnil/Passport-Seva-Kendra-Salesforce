@@ -1615,4 +1615,34 @@
         <enabled>true</enabled>
         <name>WorkCalibrationUser</name>
     </userPermissions>
+    <recordTypeVisibilities>
+        <recordType>Passport_Application__c.Fresh</recordType>
+        <default>true</default>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Passport_Application__c.Re_Issue</recordType>
+        <default>false</default>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Passport_Application__c.Tatkal</recordType>
+        <default>false</default>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Passport_Application__c.Lost_Damaged</recordType>
+        <default>false</default>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Passport_Application__c.Minor</recordType>
+        <default>false</default>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Passport_Application__c.Diplomatic_Official</recordType>
+        <default>false</default>
+        <visible>true</visible>
+    </recordTypeVisibilities>
 </Profile>
