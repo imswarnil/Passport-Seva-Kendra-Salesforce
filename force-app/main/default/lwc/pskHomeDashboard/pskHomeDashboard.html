@@ -1,0 +1,186 @@
+<template>
+    <div class="psk-home">
+        <header class="psk-banner">
+            <div class="psk-banner__text">
+                <p class="psk-banner__eyebrow">Passport Seva Kendra</p>
+                <h1 class="psk-banner__title">Application Management</h1>
+                <p class="psk-banner__subtitle">Track every application from draft to delivery</p>
+            </div>
+            <div class="psk-banner__actions">
+                <lightning-button
+                    label="New Application"
+                    variant="brand"
+                    class="psk-button-gold"
+                    onclick={handleNewApplication}
+                ></lightning-button>
+                <lightning-button-icon
+                    icon-name="utility:refresh"
+                    variant="border-filled"
+                    alternative-text="Refresh"
+                    title="Refresh"
+                    onclick={handleRefresh}
+                ></lightning-button-icon>
+            </div>
+        </header>
+
+        <template if:true={hasError}>
+            <div class="slds-p-around_medium">
+                <lightning-formatted-text value={error}></lightning-formatted-text>
+            </div>
+        </template>
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <section class="psk-filter-row">
+                <lightning-combobox
+                    label="Record Type"
+                    variant="label-hidden"
+                    placeholder="Filter by record type"
+                    options={recordTypeOptions}
+                    value={selectedRecordTypeId}
+                    onchange={handleRecordTypeChange}
+                    class="psk-filter-row__combobox"
+                ></lightning-combobox>
+                <span class="psk-filter-row__count">{filterCountLabel}</span>
+            </section>
+
+            <section class="psk-kpi-row">
+                <div class="psk-kpi-tile">
+                    <p class="psk-kpi-tile__value">{stats.totalApplications}</p>
+                    <p class="psk-kpi-tile__label">Total Applications</p>
+                </div>
+                <div class="psk-kpi-tile">
+                    <p class="psk-kpi-tile__value">{stats.draftCount}</p>
+                    <p class="psk-kpi-tile__label">Drafts</p>
+                </div>
+                <div class="psk-kpi-tile">
+                    <p class="psk-kpi-tile__value">{stats.submittedTodayCount}</p>
+                    <p class="psk-kpi-tile__label">Submitted Today</p>
+                </div>
+                <div class="psk-kpi-tile">
+                    <p class="psk-kpi-tile__value">{stats.paymentPendingCount}</p>
+                    <p class="psk-kpi-tile__label">Payment Pending</p>
+                </div>
+                <div class="psk-kpi-tile">
+                    <p class="psk-kpi-tile__value">{stats.grantedThisMonthCount}</p>
+                    <p class="psk-kpi-tile__label">Granted This Month</p>
+                </div>
+                <div class="psk-kpi-tile psk-kpi-tile--gold">
+                    <p class="psk-kpi-tile__value">{stats.tatkalCount}</p>
+                    <p class="psk-kpi-tile__label">Tatkal</p>
+                </div>
+            </section>
+
+            <section class="psk-kpi-row psk-kpi-row--ops">
+                <div class="psk-kpi-tile psk-kpi-tile--ops">
+                    <p class="psk-kpi-tile__value">{stats.documentsAwaitingVerification}</p>
+                    <p class="psk-kpi-tile__label">Documents Awaiting Verification</p>
+                </div>
+                <div class="psk-kpi-tile psk-kpi-tile--ops">
+                    <p class="psk-kpi-tile__value">{stats.pendingPoliceVerifications}</p>
+                    <p class="psk-kpi-tile__label">Pending Police Verifications</p>
+                </div>
+                <div class="psk-kpi-tile psk-kpi-tile--ops">
+                    <p class="psk-kpi-tile__value">{stats.upcomingAppointments}</p>
+                    <p class="psk-kpi-tile__label">Upcoming Appointments</p>
+                </div>
+                <div class="psk-kpi-tile psk-kpi-tile--ops">
+                    <p class="psk-kpi-tile__value">{stats.openRiskFlags}</p>
+                    <p class="psk-kpi-tile__label">Open Risk Flags</p>
+                </div>
+            </section>
+
+            <section class="psk-new-app-section">
+                <lightning-card title="Start a New Application" icon-name="standard:add_relationship" class="psk-new-app-card">
+                    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                        <template if:false={showQuickCreate}>
+                            <p class="psk-sidebar__caption">
+                                Capture just the essentials now &mdash; the applicant can finish the rest of the form later
+                                while it stays in Draft.
+                            </p>
+                            <lightning-button
+                                label="Quick Create"
+                                variant="brand"
+                                class="psk-button-gold slds-m-top_small"
+                                onclick={handleToggleQuickCreate}
+                            ></lightning-button>
+                        </template>
+                        <template if:true={showQuickCreate}>
+                            <lightning-record-edit-form
+                                object-api-name={objectApiName}
+                                onsuccess={handleQuickCreateSuccess}
+                            >
+                                <lightning-messages></lightning-messages>
+                                <div class="psk-quick-create-grid">
+                                    <lightning-input-field field-name={firstNameField}></lightning-input-field>
+                                    <lightning-input-field field-name={lastNameField}></lightning-input-field>
+                                    <lightning-input-field field-name={mobileField}></lightning-input-field>
+                                    <lightning-input-field field-name={passportCategoryField}></lightning-input-field>
+                                    <lightning-input-field field-name={tatkalField}></lightning-input-field>
+                                </div>
+                                <div class="slds-m-top_small psk-quick-create-actions">
+                                    <lightning-button label="Cancel" onclick={handleQuickCreateCancel}></lightning-button>
+                                    <lightning-button
+                                        type="submit"
+                                        label="Create Draft"
+                                        variant="brand"
+                                        class="psk-button-gold"
+                                    ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form>
+                        </template>
+                    </div>
+                </lightning-card>
+            </section>
+
+            <section class="psk-content-row">
+                <lightning-card title="Applications by Status" icon-name="standard:report" class="psk-status-card">
+                    <div class="slds-p-horizontal_medium psk-donut-wrap">
+                        <template if:true={hasStatusData}>
+                            <div class="psk-donut" style={donutStyle}>
+                                <div class="psk-donut__hole">
+                                    <span class="psk-donut__total">{stats.totalApplications}</span>
+                                    <span class="psk-donut__total-label">total</span>
+                                </div>
+                            </div>
+                            <ul class="psk-legend">
+                                <template for:each={statusLegend} for:item="item">
+                                    <li key={item.key} class="psk-legend__item">
+                                        <span class="psk-legend__swatch" style={item.swatchStyle}></span>
+                                        <span class="psk-legend__label">{item.status}</span>
+                                        <span class="psk-legend__value">{item.count} ({item.pct}%)</span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                        <template if:false={hasStatusData}>
+                            <p class="slds-p-around_medium slds-text-color_weak">No applications yet.</p>
+                        </template>
+                    </div>
+                </lightning-card>
+
+                <lightning-card title="Recent Applications" icon-name="standard:record" class="psk-recent-card">
+                    <lightning-button
+                        slot="actions"
+                        label="View All"
+                        onclick={handleViewAll}
+                    ></lightning-button>
+                    <template if:true={hasRecent}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={recentRows}
+                            columns={columns}
+                            hide-checkbox-column
+                        ></lightning-datatable>
+                    </template>
+                    <template if:false={hasRecent}>
+                        <p class="slds-p-around_medium slds-text-color_weak">No applications yet.</p>
+                    </template>
+                </lightning-card>
+            </section>
+        </template>
+    </div>
+</template>

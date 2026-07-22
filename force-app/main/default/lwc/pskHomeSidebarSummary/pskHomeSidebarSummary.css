@@ -1,0 +1,27 @@
+:host {
+    --psk-navy: #1a2a5e;
+    --psk-gold: #c9a227;
+    --psk-bg: #eef0f4;
+    display: block;
+}
+
+.psk-summary-card {
+    --slds-c-card-color-border: var(--psk-gold);
+}
+
+.psk-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--psk-bg);
+    font-size: 0.82rem;
+    color: var(--psk-navy);
+}
+
+.psk-summary-row:last-child {
+    border-bottom: none;
+}
+
+.psk-summary-row__value {
+    font-weight: 700;
+}
