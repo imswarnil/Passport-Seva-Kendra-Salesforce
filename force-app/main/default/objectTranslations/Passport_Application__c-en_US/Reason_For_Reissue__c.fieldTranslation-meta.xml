@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Reason For Reissue --></label>
+    <name>Reason_For_Reissue__c</name>
+    <picklistValues>
+        <masterLabel>Change of Details</masterLabel>
+        <translation><!-- Change of Details --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Damaged</masterLabel>
+        <translation><!-- Damaged --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Expiry</masterLabel>
+        <translation><!-- Expiry --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lost</masterLabel>
+        <translation><!-- Lost --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pages Exhausted</masterLabel>
+        <translation><!-- Pages Exhausted --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -96,6 +96,36 @@
             "created_by": "5f0000000000000000000001",
             "updated_by": "5f0000000000000000000001",
             "published_by": "5f0000000000000000000001"
+          },
+          {
+            "id": "645f1a10bbbbbb0000000004",
+            "uuid": "d6bc1272-c610-4608-bca5-46d730adc29f",
+            "title": "Application Management Console: Home Dashboard, Record Page Automation & Quick Actions",
+            "slug": "application-management-console-home-dashboard-quick-actions",
+            "mobiledoc": "{\"version\": \"0.3.1\", \"atoms\": [], \"cards\": [[\"html\", {\"cardName\": \"html\", \"html\": \"\\n<h1>Application Management Console: Home Dashboard, Record Page Automation &amp; Quick Actions</h1>\\n\\n<p><em>Part of the ongoing Passport Seva Kendra build log. This entry covers the first full front-end pass on top of the data model from the previous post: a themed Lightning app, a custom LWC home dashboard, a record page with status-driven automation, and the demo data that makes it all legible.</em></p>\\n\\n<h2>Why build the app layer now</h2>\\n<p>The data model (11 objects, all wired up) proves the schema is sound, but an org full of empty list views doesn't demonstrate anything to a reviewer. The next step was to make the <strong>Application Management Console</strong> app actually usable: a home page that answers \\\"what needs attention today,\\\" and a record page that lets an officer move an application through its lifecycle without hunting for the right field to edit.</p>\\n\\n<h2>The Apex layer</h2>\\n<p>Four small, single-purpose controllers back the UI, each <code>with sharing</code> and enforcing FLS via <code>AccessLevel.USER_MODE</code> / <code>WITH SECURITY_ENFORCED</code>:</p>\\n<ul>\\n<li><strong>PSK_HomeController</strong> \\u2014 aggregate stats for the dashboard (status breakdown, payment-pending, granted-this-month, ops metrics across Documents/Police Verification/Risk Flags/Appointments), plus record-type filtering built with <code>Database.queryWithBinds</code> so the same query paths serve both the filtered and unfiltered case without string-concatenating user input.</li>\\n<li><strong>PSK_ApplicationSidebarController</strong> \\u2014 rolls up an application's related records (documents verified, latest payment, latest police verification, open risk flags) into one wrapper for the record-page sidebar.</li>\\n<li><strong>PSK_ApplicationActionsController</strong> \\u2014 the status-transition engine: a single <code>advance()</code> method walks an application through Draft \\u2192 Submitted \\u2192 Payment Pending \\u2192 Paid \\u2192 Document Verification \\u2192 Police Verification \\u2192 Granting \\u2192 Printing \\u2192 Dispatch \\u2192 Delivered, with side effects at each step (stamping <code>Submitted_Date__c</code>, auto-creating a <code>Police_Verification__c</code> record when verification starts, clearing it when verification passes, forcing <code>Payment_Status__c</code> to Paid before Granting so the existing validation rule never blocks the transition).</li>\\n</ul>\\n<p>All four ship with dedicated test classes \\u2014 14 tests, 93\\u2013100% coverage per class.</p>\\n\\n<h2>The LWC layer, themed to match the org</h2>\\n<p>The org already had a navy-and-gold branding set (<code>LEXTHEMINGSalesforcePassport</code>) from earlier setup work, so the components pull the same palette (<code>#1a2a5e</code> navy, <code>#c9a227</code> gold) rather than inventing a new one:</p>\\n<ul>\\n<li><strong>pskHomeDashboard</strong> \\u2014 the app's Home tab. A navy/gold banner, KPI tiles, a CSS conic-gradient donut chart for status breakdown (no external charting library), a record-type filter with a live matching count, an inline quick-create form for new Draft applications, and a recent-applications table.</li>\\n<li><strong>pskApplicationSidebar</strong> + <strong>pskRiskMeter</strong> \\u2014 the record-page sidebar: a Quick Actions card whose single button relabels itself based on current status (\\\"Validate Documents &amp; Send to Police Verification,\\\" \\\"Clear Verification &amp; Send to Granting,\\\" \\\"Mark Delivered,\\\" \\u2026) plus a Reject action; and an Application Snapshot card with a risk gauge, document-verification progress bar, and payment/PV/risk-flag badges.</li>\\n<li><strong>pskHomeSidebarSummary</strong> \\u2014 a record-type breakdown card for the Home page's sidebar region, with a toggle between showing counts and percentages.</li>\\n</ul>\\n<p>The sidebar's quick actions call <code>notifyRecordUpdateAvailable</code> after each transition, so the standard highlights panel and detail fields refresh in lockstep with the custom card \\u2014 no full page reload needed to see the new status.</p>\\n\\n<h2>Wiring it into the app</h2>\\n<p>The Passport Application record page (highlights panel, detail, related lists, custom sidebar, standard Activity timeline) is now the org default for the object. All 11 PSK objects have tabs and are surfaced in the Application Management Console app nav, instead of just the one object that had a tab before this pass.</p>\\n\\n<h2>Demo data</h2>\\n<p>An anonymous Apex seed script populates 3 PSK offices, appointment slots, 10 applications spread across every lifecycle stage (including a rejected one with a confirmed risk flag and an adverse police verification, to exercise the unhappy path), and the matching documents, payments, police verifications, risk flags, objections, appointments, a renewal, and notification logs \\u2014 so every screen has something real to look at instead of empty states.</p>\\n\\n<h2>What's next</h2>\\n<p>Still in flight: a classic Approval Process gating the Granting stage (approver = record owner's manager), a public Experience Cloud site for guest, no-login application intake, and a new <code>Passport__c</code> object that gets auto-generated on delivery with its own styled record page.</p>\\n\"}]], \"markups\": [], \"sections\": [[10, 0]]}",
+            "html": "\n<h1>Application Management Console: Home Dashboard, Record Page Automation &amp; Quick Actions</h1>\n\n<p><em>Part of the ongoing Passport Seva Kendra build log. This entry covers the first full front-end pass on top of the data model from the previous post: a themed Lightning app, a custom LWC home dashboard, a record page with status-driven automation, and the demo data that makes it all legible.</em></p>\n\n<h2>Why build the app layer now</h2>\n<p>The data model (11 objects, all wired up) proves the schema is sound, but an org full of empty list views doesn't demonstrate anything to a reviewer. The next step was to make the <strong>Application Management Console</strong> app actually usable: a home page that answers \"what needs attention today,\" and a record page that lets an officer move an application through its lifecycle without hunting for the right field to edit.</p>\n\n<h2>The Apex layer</h2>\n<p>Four small, single-purpose controllers back the UI, each <code>with sharing</code> and enforcing FLS via <code>AccessLevel.USER_MODE</code> / <code>WITH SECURITY_ENFORCED</code>:</p>\n<ul>\n<li><strong>PSK_HomeController</strong> — aggregate stats for the dashboard (status breakdown, payment-pending, granted-this-month, ops metrics across Documents/Police Verification/Risk Flags/Appointments), plus record-type filtering built with <code>Database.queryWithBinds</code> so the same query paths serve both the filtered and unfiltered case without string-concatenating user input.</li>\n<li><strong>PSK_ApplicationSidebarController</strong> — rolls up an application's related records (documents verified, latest payment, latest police verification, open risk flags) into one wrapper for the record-page sidebar.</li>\n<li><strong>PSK_ApplicationActionsController</strong> — the status-transition engine: a single <code>advance()</code> method walks an application through Draft → Submitted → Payment Pending → Paid → Document Verification → Police Verification → Granting → Printing → Dispatch → Delivered, with side effects at each step (stamping <code>Submitted_Date__c</code>, auto-creating a <code>Police_Verification__c</code> record when verification starts, clearing it when verification passes, forcing <code>Payment_Status__c</code> to Paid before Granting so the existing validation rule never blocks the transition).</li>\n</ul>\n<p>All four ship with dedicated test classes — 14 tests, 93–100% coverage per class.</p>\n\n<h2>The LWC layer, themed to match the org</h2>\n<p>The org already had a navy-and-gold branding set (<code>LEXTHEMINGSalesforcePassport</code>) from earlier setup work, so the components pull the same palette (<code>#1a2a5e</code> navy, <code>#c9a227</code> gold) rather than inventing a new one:</p>\n<ul>\n<li><strong>pskHomeDashboard</strong> — the app's Home tab. A navy/gold banner, KPI tiles, a CSS conic-gradient donut chart for status breakdown (no external charting library), a record-type filter with a live matching count, an inline quick-create form for new Draft applications, and a recent-applications table.</li>\n<li><strong>pskApplicationSidebar</strong> + <strong>pskRiskMeter</strong> — the record-page sidebar: a Quick Actions card whose single button relabels itself based on current status (\"Validate Documents &amp; Send to Police Verification,\" \"Clear Verification &amp; Send to Granting,\" \"Mark Delivered,\" …) plus a Reject action; and an Application Snapshot card with a risk gauge, document-verification progress bar, and payment/PV/risk-flag badges.</li>\n<li><strong>pskHomeSidebarSummary</strong> — a record-type breakdown card for the Home page's sidebar region, with a toggle between showing counts and percentages.</li>\n</ul>\n<p>The sidebar's quick actions call <code>notifyRecordUpdateAvailable</code> after each transition, so the standard highlights panel and detail fields refresh in lockstep with the custom card — no full page reload needed to see the new status.</p>\n\n<h2>Wiring it into the app</h2>\n<p>The Passport Application record page (highlights panel, detail, related lists, custom sidebar, standard Activity timeline) is now the org default for the object. All 11 PSK objects have tabs and are surfaced in the Application Management Console app nav, instead of just the one object that had a tab before this pass.</p>\n\n<h2>Demo data</h2>\n<p>An anonymous Apex seed script populates 3 PSK offices, appointment slots, 10 applications spread across every lifecycle stage (including a rejected one with a confirmed risk flag and an adverse police verification, to exercise the unhappy path), and the matching documents, payments, police verifications, risk flags, objections, appointments, a renewal, and notification logs — so every screen has something real to look at instead of empty states.</p>\n\n<h2>What's next</h2>\n<p>Still in flight: a classic Approval Process gating the Granting stage (approver = record owner's manager), a public Experience Cloud site for guest, no-login application intake, and a new <code>Passport__c</code> object that gets auto-generated on delivery with its own styled record page.</p>\n",
+            "comment_id": "645f1a10bbbbbb0000000004",
+            "plaintext": "A themed LWC home dashboard, a record page with status-driven quick actions, 11 object tabs, and seeded demo data — the first full front-end pass on the Passport Seva Kendra data model.",
+            "feature_image": null,
+            "featured": 0,
+            "type": "post",
+            "status": "draft",
+            "locale": null,
+            "visibility": "public",
+            "email_recipient_filter": "all",
+            "created_at": "2026-07-22T05:30:00.000Z",
+            "updated_at": "2026-07-22T05:30:00.000Z",
+            "published_at": "2026-07-22T05:30:00.000Z",
+            "custom_excerpt": "A themed LWC home dashboard, a record page with status-driven quick actions, 11 object tabs, and seeded demo data — the first full front-end pass on the Passport Seva Kendra data model.",
+            "codeinjection_head": null,
+            "codeinjection_foot": null,
+            "custom_template": null,
+            "canonical_url": null,
+            "meta_title": "Application Management Console — Passport Seva Kendra Build Log",
+            "meta_description": "A themed LWC home dashboard, a record page with status-driven quick actions, 11 object tabs, and seeded demo data — the first full front-end pass on the Passport Seva Kendra data model.",
+            "created_by": "5f0000000000000000000001",
+            "updated_by": "5f0000000000000000000001",
+            "published_by": "5f0000000000000000000001"
           }
         ],
         "tags": [
@@ -237,6 +267,26 @@
             "post_id": "645f1a10bbbbbb0000000003",
             "tag_id": "645f1a10cccccc0000000007",
             "sort_order": 2
+          },
+          {
+            "post_id": "645f1a10bbbbbb0000000004",
+            "tag_id": "645f1a10cccccc0000000001",
+            "sort_order": 0
+          },
+          {
+            "post_id": "645f1a10bbbbbb0000000004",
+            "tag_id": "645f1a10cccccc0000000002",
+            "sort_order": 1
+          },
+          {
+            "post_id": "645f1a10bbbbbb0000000004",
+            "tag_id": "645f1a10cccccc0000000004",
+            "sort_order": 2
+          },
+          {
+            "post_id": "645f1a10bbbbbb0000000004",
+            "tag_id": "645f1a10cccccc0000000006",
+            "sort_order": 3
           }
         ],
         "users": [
@@ -263,6 +313,11 @@
           },
           {
             "post_id": "645f1a10bbbbbb0000000003",
+            "author_id": "5f0000000000000000000001",
+            "author_order": 0
+          },
+          {
+            "post_id": "645f1a10bbbbbb0000000004",
             "author_id": "5f0000000000000000000001",
             "author_order": 0
           }

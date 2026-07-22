@@ -25,6 +25,17 @@
     </profileActionOverrides>
     <setupExperience>all</setupExperience>
     <tabs>standard-home</tabs>
+    <tabs>Passport_Application__c</tabs>
+    <tabs>PSK__c</tabs>
+    <tabs>Slot__c</tabs>
+    <tabs>Appointment__c</tabs>
+    <tabs>Document_Checklist_Item__c</tabs>
+    <tabs>Police_Verification__c</tabs>
+    <tabs>Payment__c</tabs>
+    <tabs>Objection__c</tabs>
+    <tabs>Risk_Flag__c</tabs>
+    <tabs>Renewal__c</tabs>
+    <tabs>Notification_Log__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Passport_Application_Management_UtilityBar</utilityBar>
 </CustomApplication>

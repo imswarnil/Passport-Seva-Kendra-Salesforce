@@ -2,6 +2,12 @@
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Homepage For App Passport Management App</description>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:pskHomeDashboard</componentName>
+                <identifier>c_pskHomeDashboard</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>top</name>
         <type>Region</type>
     </flexiPageRegions>
@@ -14,6 +20,12 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>c:pskHomeSidebarSummary</componentName>
+                <identifier>c_pskHomeSidebarSummary</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
