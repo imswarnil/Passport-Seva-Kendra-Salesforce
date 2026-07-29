@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Return_Reason__c</fullName>
+    <externalId>false</externalId>
+    <label>Return Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <unique>false</unique>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Address Not Found</fullName>
+                <default>false</default>
+                <label>Address Not Found</label>
+            </value>
+            <value>
+                <fullName>Recipient Unavailable</fullName>
+                <default>false</default>
+                <label>Recipient Unavailable</label>
+            </value>
+            <value>
+                <fullName>Refused</fullName>
+                <default>false</default>
+                <label>Refused</label>
+            </value>
+            <value>
+                <fullName>Incomplete Address</fullName>
+                <default>false</default>
+                <label>Incomplete Address</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
