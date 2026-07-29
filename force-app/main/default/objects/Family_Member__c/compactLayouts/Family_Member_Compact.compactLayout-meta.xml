@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Family_Member_Compact</fullName>
+    <fields>Name</fields>
+    <fields>Relationship__c</fields>
+    <fields>Display_Name__c</fields>
+    <fields>Is_Guardian__c</fields>
+    <label>Family Member Compact</label>
+</CompactLayout>
