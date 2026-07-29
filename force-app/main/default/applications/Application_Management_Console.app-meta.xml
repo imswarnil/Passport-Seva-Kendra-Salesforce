@@ -23,6 +23,22 @@
         <type>Flexipage</type>
         <profile>Admin</profile>
     </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>Tab</actionName>
+        <content>App_Home</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Standard</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>Tab</actionName>
+        <content>App_Home</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>StandardAul</profile>
+    </profileActionOverrides>
     <setupExperience>all</setupExperience>
     <tabs>standard-home</tabs>
     <tabs>Passport_Application__c</tabs>

@@ -4,7 +4,7 @@
     <fields>Name</fields>
     <fields>Status__c</fields>
     <fields>Passport_Category__c</fields>
-    <fields>Applicant__c</fields>
+    <fields>Citizen__c</fields>
     <fields>Risk_Score__c</fields>
     <label>PSK Compact</label>
 </CompactLayout>

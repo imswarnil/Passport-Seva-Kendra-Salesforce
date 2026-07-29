@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Hindi</fullName>
+        <default>false</default>
+        <label>Hindi</label>
+    </customValue>
+    <customValue>
+        <fullName>English</fullName>
+        <default>true</default>
+        <label>English</label>
+    </customValue>
+    <customValue>
+        <fullName>Marathi</fullName>
+        <default>false</default>
+        <label>Marathi</label>
+    </customValue>
+    <customValue>
+        <fullName>Tamil</fullName>
+        <default>false</default>
+        <label>Tamil</label>
+    </customValue>
+    <customValue>
+        <fullName>Telugu</fullName>
+        <default>false</default>
+        <label>Telugu</label>
+    </customValue>
+    <customValue>
+        <fullName>Bengali</fullName>
+        <default>false</default>
+        <label>Bengali</label>
+    </customValue>
+    <customValue>
+        <fullName>Gujarati</fullName>
+        <default>false</default>
+        <label>Gujarati</label>
+    </customValue>
+    <customValue>
+        <fullName>Kannada</fullName>
+        <default>false</default>
+        <label>Kannada</label>
+    </customValue>
+    <customValue>
+        <fullName>Malayalam</fullName>
+        <default>false</default>
+        <label>Malayalam</label>
+    </customValue>
+    <customValue>
+        <fullName>Punjabi</fullName>
+        <default>false</default>
+        <label>Punjabi</label>
+    </customValue>
+    <description>Preferred correspondence language for a citizen.</description>
+    <masterLabel>PSK Language</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
