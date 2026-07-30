@@ -221,7 +221,7 @@
         </platformActionListItems>
     </platformActionList>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Member_Name__c</fields>
         <fields>Relationship__c</fields>
         <fields>Is_Guardian__c</fields>
@@ -229,7 +229,7 @@
         <relatedList>Family_Member__c.Citizen__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Passport_Category__c</fields>
         <fields>PSK_Office__c</fields>
@@ -237,7 +237,7 @@
         <relatedList>Passport_Application__c.Citizen__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Date_of_Issue__c</fields>
         <fields>Date_of_Expiry__c</fields>

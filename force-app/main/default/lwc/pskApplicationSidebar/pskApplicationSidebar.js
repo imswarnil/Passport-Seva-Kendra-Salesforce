@@ -5,6 +5,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getSidebarData from '@salesforce/apex/PSK_ApplicationSidebarController.getSidebarData';
 import advanceApplication from '@salesforce/apex/PSK_ApplicationActionsController.advance';
 import rejectApplication from '@salesforce/apex/PSK_ApplicationActionsController.reject';
+import issuePassport from '@salesforce/apex/PSK_PassportIssuanceController.issue';
 import STATUS_FIELD from '@salesforce/schema/Passport_Application__c.Status__c';
 import RISK_SCORE_FIELD from '@salesforce/schema/Passport_Application__c.Risk_Score__c';
 import PAYMENT_STATUS_FIELD from '@salesforce/schema/Passport_Application__c.Payment_Status__c';
@@ -145,6 +146,23 @@ export default class PskApplicationSidebar extends LightningElement {
 
     get actionsDisabled() {
         return this.isActionRunning;
+    }
+
+    get canIssuePassport() {
+        return this.status === 'Granting';
+    }
+
+    async handleIssuePassport() {
+        this.isActionRunning = true;
+        try {
+            const result = await issuePassport({ applicationId: this.recordId });
+            this.showToast('Passport issued', result?.message || 'The passport booklet was created.', 'success');
+            await this.refreshAll();
+        } catch (error) {
+            this.showToast('Issuance failed', this.reduceError(error), 'error');
+        } finally {
+            this.isActionRunning = false;
+        }
     }
 
     async handleAdvance() {

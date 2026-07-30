@@ -152,9 +152,6 @@ public with sharing class PassportApplicationTriggerHandler {
             if (app.Status__c == priorStatus) {
                 continue;
             }
-            if (PSK_AutomationControl.issuanceProcessed.contains(app.Id)) {
-                continue;
-            }
             if (app.Status__c == PSK_Constants.STATUS_PRINTING) {
                 enteringPrinting.add(app.Id);
             } else if (app.Status__c == PSK_Constants.STATUS_DISPATCH) {
@@ -164,6 +161,11 @@ public with sharing class PassportApplicationTriggerHandler {
                 enteringDispatch.add(app.Id);
             }
         }
+
+        // The issuance guard applies to booklet creation ONLY. A record that was
+        // issued earlier in this same transaction still needs its dispatch when it
+        // moves on to Dispatch, so this must not short-circuit enteringDispatch.
+        enteringPrinting.removeAll(PSK_AutomationControl.issuanceProcessed);
 
         if (!enteringPrinting.isEmpty()) {
             PSK_ApplicationService.issuePassports(enteringPrinting);

@@ -7,6 +7,10 @@
         <label>Lifecycle</label>
         <layoutColumns>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Name</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Required</behavior>
                 <field>Status__c</field>
             </layoutItems>
@@ -387,15 +391,14 @@
         </platformActionListItems>
     </platformActionList>
     <relatedLists>
-        <fields>Name</fields>
-        <fields>Slot__c</fields>
-        <fields>Status__c</fields>
+        <fields>NAME</fields>
         <fields>Counter_Number__c</fields>
+        <fields>Status__c</fields>
         <fields>Check_In_Time__c</fields>
         <relatedList>Appointment__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Document_Type__c</fields>
         <fields>Status__c</fields>
         <fields>Received_Date__c</fields>
@@ -403,7 +406,7 @@
         <relatedList>Document_Checklist_Item__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Amount__c</fields>
         <fields>Status__c</fields>
         <fields>Payment_Mode__c</fields>
@@ -411,7 +414,7 @@
         <relatedList>Payment__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Objection_Type__c</fields>
         <fields>Status__c</fields>
         <fields>Raised_Date__c</fields>
@@ -419,7 +422,7 @@
         <relatedList>Objection__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>PV_Type__c</fields>
         <fields>Status__c</fields>
         <fields>Police_Station__c</fields>
@@ -427,7 +430,7 @@
         <relatedList>Police_Verification__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Flag_Type__c</fields>
         <fields>Severity__c</fields>
         <fields>Status__c</fields>
@@ -435,7 +438,7 @@
         <relatedList>Risk_Flag__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Message_Type__c</fields>
         <fields>Channel__c</fields>
         <fields>Status__c</fields>
@@ -443,14 +446,14 @@
         <relatedList>Notification_Log__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Outreach_Status__c</fields>
         <fields>Expiry_Date__c</fields>
         <fields>Follow_Up_Date__c</fields>
         <relatedList>Renewal__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Batch_Number__c</fields>
         <fields>Printed_Date__c</fields>
@@ -458,7 +461,7 @@
         <relatedList>Print_Job__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Courier_Partner__c</fields>
         <fields>Tracking_Number__c</fields>
@@ -466,7 +469,7 @@
         <relatedList>Dispatch__c.Passport_Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Date_of_Issue__c</fields>
         <fields>Date_of_Expiry__c</fields>
@@ -474,7 +477,7 @@
         <relatedList>Passport__c.Application__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Member_Name__c</fields>
         <fields>Relationship__c</fields>
         <fields>Is_Guardian__c</fields>

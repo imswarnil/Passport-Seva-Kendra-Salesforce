@@ -1253,7 +1253,7 @@
         <layout>Passport_Application__c-Passport Application Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Passport_Application__c-Passport Application Layout</layout>
+        <layout>Passport_Application__c-Passport Application Layout - Diplomatic</layout>
         <recordType>Passport_Application__c.Diplomatic_Official</recordType>
     </layoutAssignments>
     <layoutAssignments>
@@ -1261,15 +1261,15 @@
         <recordType>Passport_Application__c.Fresh</recordType>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Passport_Application__c-Passport Application Layout</layout>
+        <layout>Passport_Application__c-Passport Application Layout - Reissue</layout>
         <recordType>Passport_Application__c.Lost_Damaged</recordType>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Passport_Application__c-Passport Application Layout</layout>
+        <layout>Passport_Application__c-Passport Application Layout - Minor</layout>
         <recordType>Passport_Application__c.Minor</recordType>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Passport_Application__c-Passport Application Layout</layout>
+        <layout>Passport_Application__c-Passport Application Layout - Reissue</layout>
         <recordType>Passport_Application__c.Re_Issue</recordType>
     </layoutAssignments>
     <layoutAssignments>
@@ -1414,6 +1414,21 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>WorkStepTemplate-Work Step Template Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Citizen__c-Citizen Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Family_Member__c-Family Member Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Passport__c-Passport Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Print_Job__c-Print Job Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Dispatch__c-Dispatch Layout</layout>
     </layoutAssignments>
     <objectPermissions>
         <allowCreate>true</allowCreate>
