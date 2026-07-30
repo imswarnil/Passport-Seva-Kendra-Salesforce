@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Citizen_Required_On_Submit</fullName>
+    <active>false</active>
+    <description>Deploy inactive. The 12 pre-existing applications have no Citizen. Activate only after PSK_DemoDataGenerator.backfillCitizens() has run, otherwise every edit to an existing record fails.</description>
+    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), ISBLANK(Citizen__c) )</errorConditionFormula>
+    <errorDisplayField>Citizen__c</errorDisplayField>
+    <errorMessage>Link the applicant’s Citizen record before submitting this application.</errorMessage>
+</ValidationRule>

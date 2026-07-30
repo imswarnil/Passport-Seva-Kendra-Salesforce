@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Amount_Cannot_Exceed_Application_Fee</fullName>
+    <active>true</active>
+    <description>Cross-object check to the parent application (master-detail, so the parent always exists).</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(Amount__c)), NOT(ISBLANK(Passport_Application__r.Fee__c)), Passport_Application__r.Fee__c &gt; 0, Amount__c &gt; Passport_Application__r.Fee__c )</errorConditionFormula>
+    <errorDisplayField>Amount__c</errorDisplayField>
+    <errorMessage>Payment Amount cannot be more than the application Fee. Check the amount, or correct the Fee on the application.</errorMessage>
+</ValidationRule>

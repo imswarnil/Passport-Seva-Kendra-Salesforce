@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Failed_Requires_Reason</fullName>
+    <active>true</active>
+    <description>A failed booklet consumes stock and triggers a reprint; the cause must be captured.</description>
+    <errorConditionFormula>AND( ISPICKVAL(Status__c, &quot;Failed&quot;), ISBLANK(Failure_Reason__c) )</errorConditionFormula>
+    <errorDisplayField>Failure_Reason__c</errorDisplayField>
+    <errorMessage>Enter a Failure Reason when marking the print job as Failed.</errorMessage>
+</ValidationRule>

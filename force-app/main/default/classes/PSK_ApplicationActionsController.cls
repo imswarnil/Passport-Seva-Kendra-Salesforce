@@ -9,6 +9,17 @@ public with sharing class PSK_ApplicationActionsController {
         @AuraEnabled public String message;
     }
 
+    /** What the sidebar needs to render the action buttons in the right state. */
+    public class AvailableActions {
+        @AuraEnabled public String currentStatus;
+        @AuraEnabled public String nextStatus;
+        @AuraEnabled public Boolean canAdvance;
+        @AuraEnabled public Boolean canReject;
+        @AuraEnabled public Boolean isTerminal;
+        @AuraEnabled public String advanceLabel;
+        @AuraEnabled public String blockedReason;
+    }
+
     private static final Map<String, String> NEXT_STATUS = new Map<String, String>{
         'Draft' => 'Submitted',
         'Submitted' => 'Payment Pending',
@@ -33,7 +44,11 @@ public with sharing class PSK_ApplicationActionsController {
 
         String current = app.Status__c;
         if (!NEXT_STATUS.containsKey(current)) {
-            throw new AuraHandledException('No further quick action available from status "' + current + '".');
+            // Delivered / Rejected / Cancelled are the ends of the line: the
+            // application is finished, and No_Backward_Move_Once_Delivered would
+            // reject any attempt to move a Delivered record anyway. Anything else
+            // reaching here is an unrecognised status.
+            throw new AuraHandledException(terminalMessage(current));
         }
         String next = NEXT_STATUS.get(current);
 
@@ -81,8 +96,29 @@ public with sharing class PSK_ApplicationActionsController {
         return result;
     }
 
+    /**
+     * Reject without recording a reason. Original signature, preserved for the
+     * existing pskApplicationSidebar LWC and PSK_ApplicationActionsControllerTest.
+     * Delegates so there is only one implementation.
+     */
     @AuraEnabled
     public static ActionResult reject(Id applicationId) {
+        return rejectWithReason(applicationId, null);
+    }
+
+    /**
+     * Reject an application and record why. The reason is logged as an Objection__c
+     * so it shows up on the application timeline rather than vanishing.
+     *
+     * NOTE ON NAMING: this is deliberately NOT an overload of reject(Id).
+     * Salesforce does not permit overloaded @AuraEnabled methods -- the framework
+     * indexes Apex actions by bare method name, and a class containing
+     * @AuraEnabled reject(Id) plus reject(Id, String) fails to compile. Since
+     * reject(Id) must keep its exact signature, the reason-carrying entry point
+     * needs a distinct name. Call rejectWithReason from LWC.
+     */
+    @AuraEnabled
+    public static ActionResult rejectWithReason(Id applicationId, String reason) {
         Passport_Application__c app = [
             SELECT Id, Status__c
             FROM Passport_Application__c
@@ -97,9 +133,114 @@ public with sharing class PSK_ApplicationActionsController {
         app.Stage_Entered_Date__c = System.now();
         update app;
 
+        String trimmedReason = String.isBlank(reason) ? null : reason.trim();
+        if (trimmedReason != null && Schema.sObjectType.Objection__c.isCreateable()) {
+            // Best effort: a rejection must not fail because the audit trail could not
+            // be written.
+            Database.insert(
+                new Objection__c(
+                    Passport_Application__c = applicationId,
+                    Objection_Type__c = 'Other',
+                    Status__c = 'Escalated',
+                    Raised_Date__c = Date.today(),
+                    Description__c = trimmedReason.left(32000),
+                    Resolution_Notes__c = 'Application rejected by ' + UserInfo.getName() + '.',
+                    External_Id__c = 'REJ-' + applicationId
+                ),
+                false
+            );
+        }
+
         ActionResult result = new ActionResult();
         result.newStatus = 'Rejected';
-        result.message = 'Application rejected.';
+        result.message = trimmedReason == null
+            ? 'Application rejected.'
+            : 'Application rejected: ' + trimmedReason;
         return result;
+    }
+
+    /**
+     * Cancel an application at the applicant's request. Distinct from reject,
+     * which is a departmental decision.
+     */
+    @AuraEnabled
+    public static ActionResult cancel(Id applicationId, String reason) {
+        Passport_Application__c app = [
+            SELECT Id, Status__c
+            FROM Passport_Application__c
+            WHERE Id = :applicationId
+            WITH SECURITY_ENFORCED
+            LIMIT 1
+        ];
+        if (app.Status__c == 'Delivered' || app.Status__c == 'Rejected' || app.Status__c == 'Cancelled') {
+            throw new AuraHandledException('Cannot cancel an application in status "' + app.Status__c + '".');
+        }
+        app.Status__c = 'Cancelled';
+        app.Stage_Entered_Date__c = System.now();
+        update app;
+
+        ActionResult result = new ActionResult();
+        result.newStatus = 'Cancelled';
+        result.message = String.isBlank(reason)
+            ? 'Application cancelled.'
+            : 'Application cancelled: ' + reason.trim();
+        return result;
+    }
+
+    /**
+     * Read-only view of which actions apply right now, so the LWC does not have to
+     * duplicate the lifecycle map.
+     */
+    @AuraEnabled(cacheable=true)
+    public static AvailableActions getAvailableActions(Id applicationId) {
+        AvailableActions a = new AvailableActions();
+        if (applicationId == null) {
+            a.canAdvance = false;
+            a.canReject = false;
+            a.isTerminal = false;
+            a.blockedReason = 'No application selected.';
+            return a;
+        }
+
+        List<Passport_Application__c> apps = [
+            SELECT Id, Status__c, Payment_Status__c
+            FROM Passport_Application__c
+            WHERE Id = :applicationId
+            WITH USER_MODE
+            LIMIT 1
+        ];
+        if (apps.isEmpty()) {
+            a.canAdvance = false;
+            a.canReject = false;
+            a.isTerminal = false;
+            a.blockedReason = 'Application not found.';
+            return a;
+        }
+
+        String current = apps[0].Status__c;
+        a.currentStatus = current;
+        a.isTerminal = PSK_Constants.TERMINAL_STATUSES.contains(current);
+        a.nextStatus = NEXT_STATUS.get(current);
+        a.canAdvance = (a.nextStatus != null);
+        a.canReject = !a.isTerminal;
+        a.advanceLabel = a.nextStatus == null ? null : 'Move to ' + a.nextStatus;
+        if (!a.canAdvance) {
+            a.blockedReason = terminalMessage(current);
+        }
+        return a;
+    }
+
+    private static String terminalMessage(String current) {
+        if (current == PSK_Constants.STATUS_DELIVERED) {
+            return 'This application is complete - the passport has been delivered. '
+                + 'Start a re-issue application to make further changes.';
+        }
+        if (current == PSK_Constants.STATUS_REJECTED) {
+            return 'This application was rejected and cannot be advanced.';
+        }
+        if (current == PSK_Constants.STATUS_CANCELLED) {
+            return 'This application was cancelled and cannot be advanced.';
+        }
+        return 'No further quick action available from status "' + current + '".';
     }
 }

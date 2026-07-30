@@ -1,0 +1,302 @@
+{
+  "$comment": "Narrative content for PSK_Org_Readiness_Report. Every NUMBER in the rendered report is recomputed at generation time by generate-report.mjs scanning force-app/ — nothing countable is hard-coded here. Org-side facts that cannot be derived from the tree (licence ceiling, record counts, Territory2Model availability) were captured by read-only `sf data query` against psk-dev and are recorded in `orgFacts` with the date they were taken.",
+
+  "meta": {
+    "title": "PSK Org Readiness Report",
+    "subtitle": "Passport Seva Kendra on Salesforce — data model, UAT plan and outstanding work",
+    "orgAlias": "psk-dev",
+    "orgEdition": "Developer Edition",
+    "orgId": "00DdM00000BGnjBUAT",
+    "instanceUrl": "https://passport-seva-kendra-dev-ed.develop.my.salesforce.com",
+    "username": "admin@passportoffice.com",
+    "sourceApiVersion": "67.0",
+    "disclaimer": "Independent portfolio project. Not affiliated with the Ministry of External Affairs, Passport Seva, or any government body. All data in the org is synthetic."
+  },
+
+  "orgFacts": {
+    "capturedOn": "2026-07-30",
+    "note": "Read-only `sf data query` against psk-dev. Counts move as the demo-data generator runs; treat as as-of-capture.",
+    "licences": [
+      { "name": "Salesforce", "total": 3, "used": 3 },
+      { "name": "Salesforce Platform", "total": 3, "used": 1 },
+      { "name": "Chatter Free", "total": 5000, "used": 1 },
+      { "name": "Cloud Integration User", "total": 1, "used": 1 }
+    ],
+    "territory2ModelQueryable": false,
+    "territory2ModelError": "sObject type 'Territory2Model' is not supported.",
+    "recordCounts": [
+      { "object": "Account", "count": 1005, "origin": "inherited (Service Analytics / Wave sample data)" },
+      { "object": "Case", "count": 1627, "origin": "inherited" },
+      { "object": "Task", "count": 2081, "origin": "inherited" },
+      { "object": "Opportunity", "count": 711, "origin": "inherited" },
+      { "object": "OpportunityHistory__c", "count": 387, "origin": "inherited" },
+      { "object": "Event", "count": 241, "origin": "inherited" },
+      { "object": "Lead", "count": 23, "origin": "inherited" },
+      { "object": "Reseller_Account_Plan__c", "count": 14, "origin": "inherited" },
+      { "object": "Contact", "count": 3, "origin": "inherited" },
+      { "object": "Passport_Application__c", "count": 12, "origin": "PSK demo data" },
+      { "object": "Document_Checklist_Item__c", "count": 10, "origin": "PSK demo data" },
+      { "object": "Payment__c", "count": 8, "origin": "PSK demo data" },
+      { "object": "Police_Verification__c", "count": 6, "origin": "PSK demo data" },
+      { "object": "Slot__c", "count": 6, "origin": "PSK demo data" },
+      { "object": "Notification_Log__c", "count": 4, "origin": "PSK demo data" },
+      { "object": "Appointment__c", "count": 3, "origin": "PSK demo data" },
+      { "object": "PSK__c", "count": 3, "origin": "PSK demo data" },
+      { "object": "Risk_Flag__c", "count": 3, "origin": "PSK demo data" },
+      { "object": "Objection__c", "count": 1, "origin": "PSK demo data" },
+      { "object": "Renewal__c", "count": 1, "origin": "PSK demo data" },
+      { "object": "Citizen__c", "count": 0, "origin": "PSK demo data — not yet seeded" },
+      { "object": "Passport__c", "count": 0, "origin": "PSK demo data — not yet seeded" },
+      { "object": "Print_Job__c", "count": 0, "origin": "PSK demo data — not yet seeded" },
+      { "object": "Dispatch__c", "count": 0, "origin": "PSK demo data — not yet seeded" },
+      { "object": "Family_Member__c", "count": 0, "origin": "PSK demo data — not yet seeded" }
+    ]
+  },
+
+  "executiveSummary": {
+    "canDo": [
+      "Hold a passport application through its entire declared lifecycle on one object — <code>Passport_Application__c</code> — with twelve <code>Status__c</code> values from Draft to Delivered, six record types (Fresh, Re-issue, Tatkal, Lost/Damaged, Minor, Diplomatic/Official) and a Path that renders the stage bar on the record page.",
+      "Save a half-finished form. Drafts are deliberately saveable with almost nothing filled in; the four validation rules only bite once <code>Status__c</code> leaves Draft, which is the whole point of the \"a draft is the same object in Draft status\" design.",
+      "Carry a golden identity record separate from the application. <code>Citizen__c</code> is the current truth about a person; the application keeps its own as-submitted copy of the applicant's details (see the Data Model section for why that duplication is intentional).",
+      "Model the fulfilment tail end to end in metadata: <code>Passport__c</code> (the issued booklet, with its own Ordinary / Diplomatic / Official record types), <code>Print_Job__c</code> and <code>Dispatch__c</code> — with booklet pages, validity, ECR, category, place of issue and the delivery address all derived by cross-object formula rather than re-keyed.",
+      "Price an application without code. <code>Fee_Matrix__mdt</code> carries a record per record-type × booklet-pages × validity combination, and <code>SLA_Config__mdt</code> carries a normal and a Tatkal target for every processing stage.",
+      "Enforce role- and criteria-based visibility. A role hierarchy, public groups, work queues and criteria-based sharing rules route Tatkal, high-risk, diplomatic, granting-stage and fulfilment-stage records to the right teams without opening the org up.",
+      "Present a purpose-built app. The Application Management Console has a branded navy header, a curated tab set, a custom Lightning home page and four LWCs (home dashboard, application sidebar, sidebar summary, risk meter) backed by Apex controllers with test classes.",
+      "Reuse picklist vocabulary. Shared value sets — Indian states, gender, region, payment mode/status, document status, fulfilment status, courier partner, relationship, severity, language — are Global Value Sets, so a new object inherits the vocabulary instead of re-declaring it."
+    ],
+    "cannotDo": [
+      "No approval anywhere. Granting a Diplomatic or Official passport is currently a picklist change by anyone with edit access — there is no Approval Process in the org at all.",
+      "No citizen self-service. There is no Experience Cloud site for applicants; every step of the journey is staff-mediated. The inherited <em>Internal Zone</em> community and its self-registration controllers are template leftovers, not a PSK applicant portal.",
+      "No reporting. Zero reports, dashboards or custom report types exist for any PSK object, so there is no way to answer \"how many applications are stuck at Police Verification\" other than a list view.",
+      "No region-based sharing. Enterprise Territory Management is not enabled and cannot be enabled by deploy, and criteria-based sharing cannot read <code>PSK_Office__r.Region__c</code> through the lookup — so office/region scoping is unimplemented.",
+      "No field-level encryption. Shield Platform Encryption is unavailable in Developer Edition, so <code>Aadhaar_Token__c</code> is stored as plain text.",
+      "No integrations. n8n, Twilio and the AI enrichment layer are designed for but not built; <code>Notification_Log__c</code> exists and is empty of real sends.",
+      "No visa department. <code>Visa_Application__c</code>, <code>Country__c</code> and <code>Sponsor__c</code> are unbuilt, although a Visa Processing Team role, a PSK Visa Team public group and a <code>PSK_Visa_Type</code> global value set are already in place waiting for them.",
+      "No localisation. Every <code>objectTranslations/</code> bundle is an en_US stub echoing the English label, despite <code>Citizen__c.Preferred_Language__c</code> existing to record a citizen's language preference."
+    ]
+  },
+
+  "erd": {
+    "calloutTitle": "Why the application duplicates the applicant's details",
+    "calloutBody": [
+      "<code>Passport_Application__c</code> carries its own <code>First_Name__c</code>, <code>Last_Name__c</code>, <code>Date_of_Birth__c</code>, <code>Mobile__c</code> and full address even though it also has a <code>Citizen__c</code> lookup to the golden identity record. That is deliberate, not an oversight.",
+      "A passport application is a legal instrument. The details <em>as declared at submission</em> are what get printed into the booklet, what the police verify against, and what an audit or a court would later be asked to examine. They are a snapshot of a declaration made on a date, not a live view of a person.",
+      "If those fields were cross-object formulas reading <code>Citizen__r</code>, then the day a citizen moved house or corrected a spelling, every historical application would silently rewrite itself — including applications already granted and printed. The record of what was declared would be destroyed by the act of keeping the citizen record current. Snapshotting is the only correct answer.",
+      "<code>Citizen__c</code> therefore answers \"who is this person <em>now</em>\"; the application answers \"what did they declare <em>then</em>\". Both are needed, and they are allowed to disagree."
+    ],
+    "avoidedTitle": "Where duplication is avoided",
+    "avoidedBody": [
+      "<strong><code>Passport__c</code></strong> re-keys nothing from the application. <code>Booklet_Pages__c</code>, <code>Validity_Years__c</code>, <code>ECR_Status__c</code> and <code>Passport_Category__c</code> are <code>TEXT(Application__r.…)</code> formulas, <code>Holder_Name__c</code> is assembled by formula from the application's name parts, and <code>Place_of_Issue__c</code> is <code>PSK_Office__r.Name</code>. The booklet's own facts — file number, issue and expiry dates, status — are the only stored fields.",
+      "<strong><code>Dispatch__c</code></strong> builds <code>Delivery_Address__c</code> as a formula over <code>Passport_Application__r</code>'s address lines, so a courier label can never drift from the application it was raised against.",
+      "<strong><code>Family_Member__c</code></strong> reads <code>Member_Date_of_Birth__c</code> and <code>Member_Mobile__c</code> through <code>Related_Citizen__r</code>, and <code>Display_Name__c</code> falls back to a typed <code>Member_Name__c</code> only when there is no linked citizen record to read from.",
+      "<strong><code>Print_Job__c</code></strong> and <strong><code>Dispatch__c</code></strong> both expose <code>ARN__c</code> as <code>Passport_Application__r.Name</code> rather than storing the ARN string.",
+      "The rule of thumb the model follows: <em>snapshot a declaration, derive a fact.</em>"
+    ]
+  },
+
+  "lifecycle": {
+    "intro": "This is the single most important test in the pack. It exercises every validation rule, every stage-entry stamp, and the automation that spawns the fulfilment records. Run it end to end in one sitting and note the ARN so the trail can be re-read afterwards.",
+    "preconditions": [
+      "At least one active <code>PSK__c</code> office record exists (needed for <code>Place_of_Issue__c</code> to resolve on the eventual passport).",
+      "The running user has <code>PSK_App_Access</code> — or, for a persona pass, the relevant <code>PSK_*</code> persona permission set.",
+      "Note the current record counts for <code>Passport__c</code>, <code>Print_Job__c</code> and <code>Dispatch__c</code> before you start, so you can prove the deltas."
+    ],
+    "steps": [
+      { "stage": "Create", "action": "New Passport Application from the tab; pick record type <strong>Fresh</strong>. Save with only First Name filled in.", "expect": "Saves. Status defaults to <code>Draft</code>. <code>Is_Draft__c</code> is true. Path shows Draft as the current step with its guidance text." },
+      { "stage": "Draft → Submitted (negative)", "action": "Set Status = Submitted while Last Name / DOB / Mobile / Address Line 1 are still blank.", "expect": "<strong>Blocked</strong> by <code>Require_Core_Fields_On_Submit</code>: \"First Name, Last Name, Date of Birth, Mobile and Address Line 1 are required before submitting.\"" },
+      { "stage": "Draft → Submitted", "action": "Fill Last Name, Date of Birth, Mobile, Address Line 1, State and Pincode. Link a <code>Citizen__c</code> and a <code>PSK_Office__c</code>. Set Status = Submitted.", "expect": "Saves. <code>Submitted_Date__c</code> and <code>Stage_Entered_Date__c</code> are stamped. Fee is populated from <code>Fee_Matrix__mdt</code> for Fresh × booklet pages × validity." },
+      { "stage": "Submitted → Payment Pending", "action": "Advance the Path one step.", "expect": "Saves. <code>Stage_Entered_Date__c</code> re-stamps. <code>Payment_Status__c</code> is Not Paid or Pending." },
+      { "stage": "Payment Pending → Paid", "action": "Create a <code>Payment__c</code> child for the full <code>Fee__c</code> with Status = Success, then advance.", "expect": "Saves. <code>Payment_Status__c</code> becomes <code>Paid</code> and <code>Payment_Date__c</code> is set. The Payments related list shows the child." },
+      { "stage": "Paid → Document Verification", "action": "Advance. Work the <code>Document_Checklist_Item__c</code> children to Received / Verified.", "expect": "Saves. Checklist items appear in their related list. <code>Documents_Verified__c</code> can be ticked once all items verify." },
+      { "stage": "Document Verification → Police Verification", "action": "Advance. Confirm a <code>Police_Verification__c</code> child exists with <code>PV_Type__c</code> matching the record type's allowed values (Fresh permits Pre-PV / Post-PV only).", "expect": "Saves. PV record reachable from the Police Verifications related list. Setting its Status to <code>Adverse</code> should make the record visible to PSK Managers via the <em>Adverse To Managers</em> sharing rule." },
+      { "stage": "Police Verification → Granting (negative)", "action": "On a <em>separate</em> application whose <code>Payment_Status__c</code> is not Paid, set Status = Granting.", "expect": "<strong>Blocked</strong> by <code>Cannot_Grant_With_Pending_Payment</code>: \"Payment must be Paid before the application can move to Granting.\"" },
+      { "stage": "Police Verification → Granting", "action": "On the main application, advance to Granting.", "expect": "Saves — payment is Paid. <code>Granted_Date__c</code> is stamped. Granting Officers gain Edit via the <em>Granting Stage To Granting Officers</em> sharing rule." },
+      { "stage": "Granting → Printing", "action": "Advance.", "expect": "<strong>A <code>Passport__c</code> record is created</strong> and linked back via <code>Application__c</code>. Its <code>Booklet_Pages__c</code>, <code>Validity_Years__c</code>, <code>ECR_Status__c</code>, <code>Passport_Category__c</code> and <code>Holder_Name__c</code> formulas resolve from the application; <code>Place_of_Issue__c</code> resolves to the PSK office name. <strong>A <code>Print_Job__c</code> is created</strong> with <code>Status__c</code> queued and <code>Queued_Date__c</code> stamped." },
+      { "stage": "Printing → Dispatch", "action": "Mark the print job printed with <code>Quality_Check_Passed__c</code> = true, then advance the application.", "expect": "<code>Print_Job__c.Turnaround_Hours__c</code> computes. <strong>A <code>Dispatch__c</code> is created</strong> with a courier partner, a tracking number, an expected delivery date, and <code>Delivery_Address__c</code> resolved by formula from the application address." },
+      { "stage": "Dispatch → Delivered", "action": "Set the dispatch <code>Delivered_Date__c</code> and <code>Received_By__c</code>, then advance the application to Delivered.", "expect": "Saves. <code>Dispatch__c.Transit_Days__c</code> computes. <code>Passport__c.Status__c</code> is Active and <code>Days_To_Expiry__c</code> is positive." },
+      { "stage": "Delivered → anything earlier (negative)", "action": "Set Status back to Dispatch.", "expect": "<strong>Blocked</strong> by <code>No_Backward_Move_Once_Delivered</code>: \"A Delivered application cannot be moved back to an earlier stage.\"" }
+    ],
+    "finalAssertions": [
+      "Exactly one <code>Passport__c</code>, one <code>Print_Job__c</code> and one <code>Dispatch__c</code> exist for the ARN — no duplicates from re-saving a stage.",
+      "No validation rule fired at a stage where it should have been silent (in particular, nothing blocked the Draft save).",
+      "No validation rule was bypassed: re-run the two negative steps and confirm they still block after the record reached Delivered.",
+      "Field history on the application shows one <code>Status__c</code> transition per advance and no unexplained edits.",
+      "A <code>Notification_Log__c</code> row exists for each stage that is meant to notify, and none exists where <code>Notification_Consent__c</code> is false."
+    ]
+  },
+
+  "personaMatrix": {
+    "intro": "Personas are expressed as permission sets over a Private org-wide default, layered on a role hierarchy for vertical visibility and criteria-based sharing rules for lateral visibility. The persona set list below is enumerated from <code>force-app/main/default/permissionsets/PSK_*</code> at generation time — if a set is missing from the table it has not landed in the tree yet.",
+    "verifyHow": [
+      "Assign one persona set at a time to the spare Salesforce Platform user, then open the Application Management Console as that user (see the licence note in Org Limits for why a single user is reused).",
+      "For each object in the row: attempt Read (open a record from the tab), Create (New from the tab), Edit (change a field), Delete (the Delete action). Record what actually happened, not what the set claims.",
+      "Cross-check with Setup → Users → the test user → <em>View Summary</em> (object and field permissions) and with the record-level <em>Sharing</em> button on a sample record.",
+      "For PII fields — <code>Date_of_Birth__c</code>, <code>Aadhaar_Token__c</code>, <code>Aadhaar_Verified__c</code>, <code>Mobile__c</code> — verify field-level security separately from object access. A persona that can open the record must not automatically be able to read the Aadhaar token.",
+      "Verify queue visibility: each of the work queues should list only the records the persona is meant to work."
+    ],
+    "expectedPersonas": [
+      { "key": "PSK_Front_Office", "label": "Front Office / Data Entry", "role": "Passport_Processing_Team", "shape": "Create and edit applications in Draft/Submitted, manage citizens, appointments and slots. No granting, no fulfilment, no risk." },
+      { "key": "PSK_Document_Verifier", "label": "Document Verification Officer", "role": "Document_Verification", "shape": "Read applications, full control of Document Checklist Items and Objections. Cannot change Status past Document Verification." },
+      { "key": "PSK_Police_Verification", "label": "Police Verification Officer", "role": "Police_Verification_Team", "shape": "Read applications, full control of Police Verification records. Reads high-risk applications via the sharing rule." },
+      { "key": "PSK_Granting_Officer", "label": "Granting Officer", "role": "Granting_Officers", "shape": "Edit applications at Granting/Printing, create Passport records. Cannot edit applicant declaration fields." },
+      { "key": "PSK_Fulfilment", "label": "Print & Dispatch", "role": "Fulfilment_Team", "shape": "Full control of Print Jobs and Dispatches; read-only on the application except its Status." },
+      { "key": "PSK_Manager", "label": "Passport Office Manager / RPO", "role": "Regional_Passport_Officer", "shape": "Read/edit everything in the office, plus Risk Flags and blacklisted citizens via the manager sharing rules." },
+      { "key": "PSK_Auditor", "label": "Audit & Compliance", "role": "Audit_And_Compliance", "shape": "Read-only across every PSK object including Notification Logs and field history. No create, edit or delete anywhere." }
+    ],
+    "personaCaveat": "The seven persona sets and their exact API names were still being written when this report was generated. The table renders whatever <code>PSK_*</code> permission sets are on disk; the row shapes above are the design intent and must be re-checked against the sets that actually shipped."
+  },
+
+  "actionItems": [
+    {
+      "id": "P0-01", "severity": "P0", "area": "Security",
+      "item": "<strong>Hardcoded OpenAI API key.</strong> <code>classes/OpenAIChatController.cls</code> is documented in CLAUDE.md as containing a hardcoded OpenAI API key in source. The file is <strong>no longer present in the repository and does not appear anywhere in git history</strong> — it was removed (or never committed) before this audit. The key must still be treated as compromised: rotate it at the provider, and if the class is ever reinstated, move the secret to a Named Credential or protected Custom Metadata. Also remove the stale warning from CLAUDE.md so it stops sending readers after a file that is not there.",
+      "owner": "Platform / Security", "effort": "S", "verify": "generator: OpenAIChatController.cls presence in classes/"
+    },
+    {
+      "id": "P0-02", "severity": "P0", "area": "Automation",
+      "item": "<strong>No Approval Process exists anywhere in the org.</strong> <code>force-app/main/default/approvalProcesses/</code> is absent entirely. Granting a Diplomatic or Official passport — the highest-consequence action in the system — is today a picklist change by any user with edit access on the record. Build at least one: <em>Diplomatic/Official Grant Approval</em>, entry criteria <code>Passport_Category__c IN (Diplomatic, Official) AND Status__c = Granting</code>, approver the Regional Passport Officer role, with field updates locking the record on approval. A second process for high-risk grants (<code>Risk_Score__c &gt; 70</code>) is the obvious follow-up.",
+      "owner": "Platform", "effort": "M", "verify": "generator: approvalProcesses/ directory presence"
+    },
+    {
+      "id": "P1-01", "severity": "P1", "area": "Sharing",
+      "item": "<strong>Enterprise Territory Management is not enabled and cannot be enabled by deploy.</strong> Confirmed by query: <code>SELECT Id FROM Territory2Model</code> fails with <em>\"sObject type 'Territory2Model' is not supported\"</em>. ETM is a Setup toggle (Setup → Territory Settings → Enable Enterprise Territory Management) and is irreversible once on; no metadata deployment can flip it. Until someone makes that call, region-based access must be built from public groups plus criteria-based sharing rules — which is what the org does today. Decide explicitly whether to enable it or to commit to the group-based approach, and write the decision down.",
+      "owner": "Architecture", "effort": "M", "verify": "org query: Territory2Model queryability"
+    },
+    {
+      "id": "P1-02", "severity": "P1", "area": "Sharing",
+      "item": "<strong>Region-based sharing needs a real text field on the application.</strong> Criteria-based sharing rules cannot traverse a lookup and cannot read a formula field, so no rule can be written against <code>PSK_Office__r.Region__c</code>. The <code>Passport__c</code> sharing rule already carries a comment acknowledging the same limitation for its formula fields. Add a plain <code>Region__c</code> Text or Picklist field to <code>Passport_Application__c</code>, populate it from <code>PSK_Office__r.Region__c</code> in the before-save trigger (and backfill existing rows), then write one criteria-based rule per region sharing to the matching public group.",
+      "owner": "Platform", "effort": "M", "verify": "generator: presence of Region__c on Passport_Application__c"
+    },
+    {
+      "id": "P1-03", "severity": "P1", "area": "UI",
+      "item": "<strong>Per-record-type Lightning record page activation is a manual step.</strong> Org-default and app-default page assignments deploy fine, but per-record-type activation is not reliably representable in <code>FlexiPage</code> metadata and must be done in Lightning App Builder. After every deploy that touches record pages, open each page → Activation → App, Record Type and Profile, and assign it. Pages needing activation are listed in the table below this section (enumerated from <code>flexipages/</code> at generation time). At minimum: <code>Passport_Application_Record_Page</code> against all six application record types in the Application Management Console, and <code>App_Home</code> as that app's home page.",
+      "owner": "UI", "effort": "S", "verify": "generator: flexipages of type RecordPage"
+    },
+    {
+      "id": "P1-04", "severity": "P1", "area": "Reporting",
+      "item": "<strong>No reports, dashboards or custom report types exist for any PSK object.</strong> <code>reportTypes/</code> contains only inherited template types (flow orchestration, partner fund, MDF) and there is no <code>reports/</code> or <code>dashboards/</code> directory at all. Nothing in the org can answer an operational question in aggregate. Build custom report types for Application-with-Payments, Application-with-Police-Verification and Passport-with-Dispatch, then a manager dashboard: applications by stage, ageing against <code>SLA_Config__mdt</code>, Tatkal SLA breach count, PV turnaround, print/dispatch throughput.",
+      "owner": "Reporting", "effort": "M", "verify": "generator: reports/ and dashboards/ directory presence; PSK-named reportTypes"
+    },
+    {
+      "id": "P1-05", "severity": "P1", "area": "Channel",
+      "item": "<strong>No Experience Cloud citizen self-service site.</strong> The applicant journey is entirely staff-mediated: a citizen cannot start a draft, upload a document, pay a fee or check status without an officer doing it for them. The org does contain an inherited <em>Internal Zone</em> community and the standard self-registration controllers, but those are Service Analytics template leftovers, not a PSK portal — do not mistake them for progress. Building this is the largest single remaining piece of scope.",
+      "owner": "Product", "effort": "L", "verify": "generator: digitalExperiences / communities inventory"
+    },
+    {
+      "id": "P1-06", "severity": "P1", "area": "Data quality",
+      "item": "<strong><code>Citizen_Required_On_Submit</code> ships inactive on purpose and must be activated only after the citizen backfill has run.</strong> Activating it before every existing application has a <code>Citizen__c</code> value will make historical records unsaveable — any later edit to an old application would be blocked by a rule about a field that was optional when it was created. Sequence: backfill <code>Citizen__c</code> on all applications, verify zero nulls, then flip <code>&lt;active&gt;</code> to true and deploy the single rule. The generator reports the rule's live state in the validation-rule appendix; if it is absent from the appendix, it has not been written yet.",
+      "owner": "Data", "effort": "S", "verify": "generator: Citizen_Required_On_Submit validation rule presence + active flag"
+    },
+    {
+      "id": "P1-07", "severity": "P1", "area": "UI",
+      "item": "<strong>Several PSK objects have no page layout in the tree.</strong> <code>layouts/</code> contains layouts for the older objects but none for <code>Citizen__c</code>, <code>Passport__c</code>, <code>Print_Job__c</code>, <code>Dispatch__c</code> or <code>Family_Member__c</code>, which are the newest additions. They will fall back to an auto-generated layout, which puts fields in an arbitrary order and gives testers nothing to check against. Author a layout per object with the same section ordering convention as the application layout. (The generator lists which objects are missing a layout as of generation.)",
+      "owner": "UI", "effort": "M", "verify": "generator: layouts/ cross-referenced against object list"
+    },
+    {
+      "id": "P1-08", "severity": "P1", "area": "UI",
+      "item": "<strong>The Path covers only the Fresh record type.</strong> <code>pathAssistants/Passport_Application_Path</code> declares <code>&lt;recordTypeName&gt;Fresh&lt;/recordTypeName&gt;</code>, so the other five record types — Re-issue, Tatkal, Lost/Damaged, Minor, Diplomatic/Official — render no stage bar at all. Either add a path assistant per record type (they can share guidance text) or document that the Path is Fresh-only by design.",
+      "owner": "UI", "effort": "S", "verify": "generator: pathAssistants inventory and record types covered"
+    },
+    {
+      "id": "P2-01", "severity": "P2", "area": "Security",
+      "item": "<strong>Shield Platform Encryption is unavailable in Developer Edition, so <code>Aadhaar_Token__c</code> is plain text.</strong> This is a platform-edition constraint, not a defect to fix here — but it makes the discipline load-bearing: never populate <code>Aadhaar_Token__c</code> with an Aadhaar number, a hash of one, or anything else that could re-identify a person. It exists to hold an opaque provider reference. The DPDP-driven rule stands: store <code>Aadhaar_Verified__c</code> as the fact and the token as the receipt, never the number. Restrict the field to the manager and auditor personas via FLS, and add a note on the field description saying so.",
+      "owner": "Security", "effort": "S", "verify": "generator: Aadhaar_Token__c field type + encryption scheme"
+    },
+    {
+      "id": "P2-02", "severity": "P2", "area": "Hygiene",
+      "item": "<strong>Stray metadata to clean up, with the owner's consent before any delete.</strong> <code>classes/ABC.cls</code> (21 bytes) and <code>classes/TestSheet.cls</code> (27 bytes) are empty stubs. <code>classes/LeadController.cls</code> is unrelated to PSK. <code>layouts/Lead-Passport Application %28New%29 Layout.layout-meta.xml</code> is an orphan <em>Lead</em> page layout named after this project — confusing precisely because the name looks relevant. And <code>contentassets/</code> holds a large number of near-duplicate <code>_1</code>/<code>_11</code> variants of the same images. None of this breaks anything; all of it costs a reader time. (The generator reports the live counts.)",
+      "owner": "Platform", "effort": "S", "verify": "generator: file sizes and contentassets duplicate count"
+    },
+    {
+      "id": "P2-03", "severity": "P2", "area": "Localisation",
+      "item": "<strong><code>objectTranslations/</code> are empty en_US stubs.</strong> Every bundle is <code>&lt;Object&gt;-en_US</code> restating the English label — there is no Hindi and no regional translation, despite <code>Citizen__c.Preferred_Language__c</code> existing to record what language a citizen wants to be dealt with in. A passport office that records a language preference and then cannot honour it is worse than one that does not ask. Either add a real <code>hi</code> translation for the applicant-facing labels and picklist values, or drop <code>Preferred_Language__c</code> until the capability exists.",
+      "owner": "Product", "effort": "M", "verify": "generator: objectTranslations locale inventory"
+    },
+    {
+      "id": "P2-04", "severity": "P2", "area": "Tooling",
+      "item": "<strong><code>manifest/package.xml</code> is a wildcard manifest covering nearly 200 metadata types.</strong> Every retrieve pulls the whole org, including the Service Analytics / Wave template noise, which is slow and buries PSK changes in unrelated diffs. Add a second, scoped <code>manifest/psk-package.xml</code> listing only the PSK objects, layouts, permission sets, groups, queues, roles, sharing rules, custom metadata, global value sets, flexipages, LWCs, tabs, apps, path assistants and <code>PSK_*</code> Apex, and use it as the day-to-day retrieve target. Keep the full manifest for disaster recovery.",
+      "owner": "Platform", "effort": "S", "verify": "generator: count of <name> entries in manifest/package.xml"
+    },
+    {
+      "id": "P2-05", "severity": "P2", "area": "Tooling",
+      "item": "<strong>Apex <code>apiVersion</code> drift.</strong> The older <code>PSK_*</code> classes and their tests carry <code>apiVersion</code> 61.0 in their <code>.cls-meta.xml</code> while <code>sfdx-project.json</code> sets <code>sourceApiVersion</code> 67.0. Nothing is broken, but the mismatch means new classes and old classes can behave differently on version-gated platform behaviour. Bump the PSK classes to 67.0 and re-run the test suite in one deliberate change rather than discovering it during a future upgrade.",
+      "owner": "Platform", "effort": "S", "verify": "generator: apiVersion values across PSK_* cls-meta.xml"
+    }
+  ],
+
+  "orgLimits": {
+    "storageIntro": [
+      "Developer Edition gives roughly <strong>5 MB of data storage</strong>. Salesforce bills most records at 2 KB each regardless of how many fields are populated, which puts the practical ceiling at about <strong>2,500 records org-wide</strong> — not per object.",
+      "That ceiling is already substantially consumed by metadata inherited with the Service Analytics / CRM Analytics template, which was retrieved into this org before PSK work began. The record-count chart in this section shows where the space has gone.",
+      "This is why the demo-data generator targets roughly <strong>1,200–1,500 records at scale 1</strong>. It is not a modesty figure — it is what is left. A generator that produced a \"realistic\" 10,000 applications would fail partway through with a storage error and leave the org in a half-seeded state that is harder to reason about than an empty one."
+    ],
+    "deleteFirst": [
+      { "order": 1, "what": "<code>Task</code> and <code>Event</code>", "why": "The single largest block, and entirely template sample activity data. Nothing in PSK reads it. Deleting these frees more room than everything else combined." },
+      { "order": 2, "what": "<code>Case</code>", "why": "Service Analytics sample cases. PSK does not use Case at all." },
+      { "order": 3, "what": "<code>Opportunity</code> and <code>OpportunityHistory__c</code>", "why": "Wave dashboard feed data. Deleting it breaks the inherited Service Analytics dashboards — acceptable, since they are not part of PSK. Delete <code>OpportunityHistory__c</code> first to avoid orphan rows." },
+      { "order": 4, "what": "<code>Account</code> (the ~1,000 sample accounts)", "why": "The application's legacy <code>Applicant__c</code> lookup points at Account, so check nothing PSK-owned references an Account before deleting. <code>Citizen__c</code> is the intended identity object; Account is only still there for the earlier design." },
+      { "order": 5, "what": "<code>Lead</code>, <code>Reseller_Account_Plan__c</code>, <code>Contact</code>", "why": "Small, but free to remove — none are referenced by PSK metadata." },
+      { "order": 6, "what": "Empty the Recycle Bin", "why": "Deleted records keep consuming storage until the Recycle Bin is purged. <code>sf data delete bulk</code> plus <em>Empty Recycle Bin</em>, or storage will not appear to move at all." }
+    ],
+    "licenceNote": [
+      "The org has <strong>3 Salesforce licences, all 3 in use</strong>, and <strong>3 Salesforce Platform licences with 1 in use — 2 free</strong>. There is no room to stand up one user per persona.",
+      "Persona testing therefore uses <strong>a single Salesforce Platform user with permission sets swapped between passes</strong>, rather than six or seven dedicated users. Assign one <code>PSK_*</code> set, run that persona's rows in the access matrix, remove the set, assign the next.",
+      "Two consequences to be honest about. First, a swapped-set user does not prove that <em>concurrent</em> personas see the right things — anything that depends on record ownership by a different user (queue assignment, the owner-based half of the role hierarchy) needs a second real user, and there are two Platform licences available for exactly that.",
+      "Second, the Salesforce Platform licence itself withholds some objects and features that a full Salesforce licence grants. Do not read a Platform-user access failure as a permission-set bug until the licence has been ruled out."
+    ]
+  },
+
+  "appendix": {
+    "commandsIntro": "Run from the repository root. <code>psk-dev</code> is the project's default <code>target-org</code>, so <code>--target-org</code> is optional throughout.",
+    "commandGroups": [
+      {
+        "title": "1. Validate before you touch the org",
+        "commands": [
+          { "cmd": "sf project deploy start --source-dir force-app --dry-run", "note": "Full validation, nothing saved. Always do this first." },
+          { "cmd": "sf project deploy start --source-dir force-app/main/default/objects --dry-run", "note": "Narrower and much faster while iterating on the data model." }
+        ]
+      },
+      {
+        "title": "2. Deploy, in dependency order",
+        "commands": [
+          { "cmd": "sf project deploy start --metadata GlobalValueSet", "note": "Value sets first — picklist fields reference them." },
+          { "cmd": "sf project deploy start --source-dir force-app/main/default/objects", "note": "Objects, fields, record types, validation rules, compact layouts, list views." },
+          { "cmd": "sf project deploy start --source-dir force-app/main/default/layouts --source-dir force-app/main/default/flexipages", "note": "Layouts and Lightning pages, once the fields they reference exist." },
+          { "cmd": "sf project deploy start --metadata Role", "note": "Roles before groups — groups reference roles." },
+          { "cmd": "sf project deploy start --metadata Group --metadata Queue", "note": "Public groups and work queues." },
+          { "cmd": "sf project deploy start --metadata PermissionSet --metadata PermissionSetGroup", "note": "Personas. Field-level security lives here." },
+          { "cmd": "sf project deploy start --metadata SharingRules", "note": "Sharing rules last — they reference groups, roles and fields." },
+          { "cmd": "sf project deploy start --metadata CustomMetadata", "note": "Fee_Matrix__mdt and SLA_Config__mdt records." },
+          { "cmd": "sf project deploy start --source-dir force-app/main/default/lwc --source-dir force-app/main/default/classes", "note": "Apex and LWC." },
+          { "cmd": "sf project deploy start --metadata CustomApplication --metadata CustomTab --metadata PathAssistant", "note": "App shell, tabs and the Path." }
+        ]
+      },
+      {
+        "title": "3. Verify",
+        "commands": [
+          { "cmd": "sf apex run test --test-level RunLocalTests --result-format human --code-coverage", "note": "Whole local suite with coverage." },
+          { "cmd": "sf apex run test --class-names PSK_HomeControllerTest --result-format human", "note": "A single class while iterating." },
+          { "cmd": "sf data query -q \"SELECT COUNT(Id) FROM Passport_Application__c\"", "note": "Confirm rows are visible to the running user." },
+          { "cmd": "sf org open --path lightning/app/Application_Management_Console", "note": "Open the app and eyeball the home page and tab set." },
+          { "cmd": "sf org open --path lightning/setup/FlexiPageList/home", "note": "Lightning App Builder — do the manual per-record-type page activations (P1-03)." }
+        ]
+      },
+      {
+        "title": "4. Seed demo data",
+        "commands": [
+          { "cmd": "sf data query -q \"SELECT COUNT(Id) FROM Passport_Application__c\"", "note": "Baseline count before seeding, so the delta is provable." },
+          { "cmd": "sf apex run --file scripts/apex/seed-demo-data.apex", "note": "Anonymous-Apex seed at scale 1 (~1,200–1,500 records). Check the exact script name in scripts/apex/." },
+          { "cmd": "sf apex tail log --color", "note": "Watch it run; a storage failure shows up here, not in the CLI exit code." },
+          { "cmd": "sf org open --path lightning/setup/CompanyResourceDisk/home", "note": "Storage usage page — confirm you have not hit the 5 MB ceiling." }
+        ]
+      },
+      {
+        "title": "5. Retrieve back",
+        "commands": [
+          { "cmd": "sf project retrieve start --manifest manifest/package.xml", "note": "Full-org retrieve. Slow — nearly 200 wildcard types (see P2-04)." },
+          { "cmd": "sf project retrieve start --metadata CustomObject:Passport_Application__c", "note": "One object, which is what you usually want." }
+        ]
+      }
+    ]
+  }
+}

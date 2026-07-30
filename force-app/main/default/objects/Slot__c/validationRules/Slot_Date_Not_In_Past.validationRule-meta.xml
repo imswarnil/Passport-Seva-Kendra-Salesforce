@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Slot_Date_Not_In_Past</fullName>
+    <active>true</active>
+    <description>Create-only (ISNEW()). Historic slots must remain editable for back-office corrections and for the demo data set, so this only blocks newly created past-dated slots.</description>
+    <errorConditionFormula>AND( ISNEW(), NOT(ISBLANK(Slot_Date__c)), Slot_Date__c &lt; TODAY() )</errorConditionFormula>
+    <errorDisplayField>Slot_Date__c</errorDisplayField>
+    <errorMessage>Slot Date cannot be in the past. Choose today or a future date.</errorMessage>
+</ValidationRule>

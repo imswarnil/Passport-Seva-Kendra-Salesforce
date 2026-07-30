@@ -37,7 +37,7 @@
         <picklistValueName>Payment Pending</picklistValueName>
     </pathAssistantSteps>
     <pathAssistantSteps>
-        <info>Police verification in progress.</info>
+        <info>Fresh applications are Pre-PV by default. Police verification in progress.</info>
         <picklistValueName>Police Verification</picklistValueName>
     </pathAssistantSteps>
     <pathAssistantSteps>

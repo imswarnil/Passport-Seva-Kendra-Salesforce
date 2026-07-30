@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resolved_Requires_Notes_And_Date</fullName>
+    <active>true</active>
+    <description>Closing an objection releases the application; how and when it was resolved must be recorded.</description>
+    <errorConditionFormula>AND( ISPICKVAL(Status__c, &quot;Resolved&quot;), OR( ISBLANK(Resolution_Notes__c), ISBLANK(Resolved_Date__c) ) )</errorConditionFormula>
+    <errorDisplayField>Resolution_Notes__c</errorDisplayField>
+    <errorMessage>Enter both Resolution Notes and a Resolved Date before marking the objection Resolved.</errorMessage>
+</ValidationRule>

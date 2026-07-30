@@ -2,6 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Fresh</fullName>
     <active>true</active>
+    <compactLayoutAssignment>PSK_Compact</compactLayoutAssignment>
     <label>Fresh</label>
     <picklistValues>
         <picklist>Booklet_Pages__c</picklist>
@@ -11,29 +12,6 @@
         </values>
         <values>
             <fullName>60</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Clearance_Level__c</picklist>
-        <values>
-            <fullName>Ambassador</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Consular</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Delegation</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Govt Deputation</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Minister</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -84,14 +62,6 @@
     </picklistValues>
     <picklistValues>
         <picklist>Passport_Category__c</picklist>
-        <values>
-            <fullName>Diplomatic</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Official</fullName>
-            <default>false</default>
-        </values>
         <values>
             <fullName>Ordinary</fullName>
             <default>true</default>
@@ -146,39 +116,12 @@
     <picklistValues>
         <picklist>Police_Verification_Type__c</picklist>
         <values>
-            <fullName>No PV</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Post-PV</fullName>
             <default>false</default>
         </values>
         <values>
             <fullName>Pre-PV</fullName>
-            <default>false</default>
-        </values>
-    </picklistValues>
-    <picklistValues>
-        <picklist>Reason_For_Reissue__c</picklist>
-        <values>
-            <fullName>Change of Details</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Damaged</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Expiry</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Lost</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Pages Exhausted</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
     </picklistValues>
     <picklistValues>
