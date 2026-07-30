@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Passport_Application__c</entityName>
+    <fieldName>Status__c</fieldName>
+    <masterLabel>PSK Path - Lost / Damaged</masterLabel>
+    <pathAssistantSteps>
+        <info>Application cancelled; the lost booklet remains blacklisted.</info>
+        <picklistValueName>Cancelled</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Replacement passport delivered. Terminal state.</info>
+        <picklistValueName>Delivered</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Replacement booklet dispatched.</info>
+        <picklistValueName>Dispatch</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Verify the FIR, Annexure F, address proof and any damaged booklet remnants surrendered at the counter.</info>
+        <picklistValueName>Document Verification</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Lost / Damaged draft. Police FIR for the lost booklet and a signed Annexure F are BOTH mandatory before submission.</info>
+        <picklistValueName>Draft</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Grant only after the Pre-PV report is Cleared and every Risk Flag is closed.</info>
+        <picklistValueName>Granting</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Fee and penalty received. Proceed to document verification.</info>
+        <picklistValueName>Paid</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Lost / Damaged re-issue carries a penalty fee in addition to the base fee.</info>
+        <picklistValueName>Payment Pending</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Lost / Damaged is Pre-PV ONLY. Police clearance must be received before granting - never grant on a pending PV.</info>
+        <picklistValueName>Police Verification</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Replacement booklet queued. Ensure the lost booklet is blacklisted before printing.</info>
+        <picklistValueName>Printing</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Rejected - typically adverse police verification or a missing FIR.</info>
+        <picklistValueName>Rejected</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Submitted. Confirm the original FIR copy and Annexure F are attached and the old passport is marked Lost on the Passport record.</info>
+        <picklistValueName>Submitted</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Lost_Damaged</recordTypeName>
+</PathAssistant>

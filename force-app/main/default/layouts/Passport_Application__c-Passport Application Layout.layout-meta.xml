@@ -22,12 +22,12 @@
                 <behavior>Edit</behavior>
                 <field>Applicant__c</field>
             </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Payment_Status__c</field>
             </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Submitted_Date__c</field>
@@ -165,10 +165,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Clearance_Level__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>Booklet_Pages__c</field>
             </layoutItems>
             <layoutItems>
@@ -179,12 +175,16 @@
                 <behavior>Edit</behavior>
                 <field>Tatkal__c</field>
             </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ECR_Status__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Applied_For_Minor__c</field>
             </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Guardian_Name__c</field>
@@ -192,22 +192,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Guardian_Consent__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Previous_Passport_No__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Previous_Passport_Expiry__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Reason_For_Reissue__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ECR_Status__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -338,6 +322,176 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
+    <miniLayout>
+        <fields>Name</fields>
+        <fields>Status__c</fields>
+        <fields>Passport_Category__c</fields>
+        <fields>Citizen__c</fields>
+    </miniLayout>
+    <platformActionList>
+        <actionListContext>Record</actionListContext>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.New_Appointment</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>0</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.Collect_Payment</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>1</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.New_Document_Item</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>2</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.New_Objection</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>3</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.Raise_Risk_Flag</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>4</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.Log_Notification</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>5</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.New_Print_Job</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>6</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Passport_Application__c.New_Dispatch</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>7</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Edit</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>8</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Delete</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>9</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Clone</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>10</sortOrder>
+        </platformActionListItems>
+    </platformActionList>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Slot__c</fields>
+        <fields>Status__c</fields>
+        <fields>Counter_Number__c</fields>
+        <fields>Check_In_Time__c</fields>
+        <relatedList>Appointment__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Document_Type__c</fields>
+        <fields>Status__c</fields>
+        <fields>Received_Date__c</fields>
+        <fields>Verified_Date__c</fields>
+        <relatedList>Document_Checklist_Item__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Amount__c</fields>
+        <fields>Status__c</fields>
+        <fields>Payment_Mode__c</fields>
+        <fields>Payment_Date__c</fields>
+        <relatedList>Payment__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Objection_Type__c</fields>
+        <fields>Status__c</fields>
+        <fields>Raised_Date__c</fields>
+        <fields>Resolved_Date__c</fields>
+        <relatedList>Objection__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>PV_Type__c</fields>
+        <fields>Status__c</fields>
+        <fields>Police_Station__c</fields>
+        <fields>Report_Received_Date__c</fields>
+        <relatedList>Police_Verification__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Flag_Type__c</fields>
+        <fields>Severity__c</fields>
+        <fields>Status__c</fields>
+        <fields>Flagged_Date__c</fields>
+        <relatedList>Risk_Flag__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Message_Type__c</fields>
+        <fields>Channel__c</fields>
+        <fields>Status__c</fields>
+        <fields>Sent_Date__c</fields>
+        <relatedList>Notification_Log__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Outreach_Status__c</fields>
+        <fields>Expiry_Date__c</fields>
+        <fields>Follow_Up_Date__c</fields>
+        <relatedList>Renewal__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Status__c</fields>
+        <fields>Batch_Number__c</fields>
+        <fields>Printed_Date__c</fields>
+        <fields>Quality_Check_Passed__c</fields>
+        <relatedList>Print_Job__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Status__c</fields>
+        <fields>Courier_Partner__c</fields>
+        <fields>Tracking_Number__c</fields>
+        <fields>Delivered_Date__c</fields>
+        <relatedList>Dispatch__c.Passport_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Status__c</fields>
+        <fields>Date_of_Issue__c</fields>
+        <fields>Date_of_Expiry__c</fields>
+        <fields>Days_To_Expiry__c</fields>
+        <relatedList>Passport__c.Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>Name</fields>
+        <fields>Member_Name__c</fields>
+        <fields>Relationship__c</fields>
+        <fields>Is_Guardian__c</fields>
+        <relatedList>Family_Member__c.Minor_Application__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <relatedList>RelatedFileList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <relatedList>RelatedNoteList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <relatedList>RelatedHistoryList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <relatedList>RelatedActivityList</relatedList>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>true</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>

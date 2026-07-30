@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reviewed_Requires_Reviewer</fullName>
+    <active>true</active>
+    <description>Confirming or dismissing a risk flag is an accountable decision; the reviewing user must be named.</description>
+    <errorConditionFormula>AND( OR( ISPICKVAL(Status__c, &quot;Confirmed&quot;), ISPICKVAL(Status__c, &quot;Dismissed&quot;) ), ISBLANK(Reviewed_By__c) )</errorConditionFormula>
+    <errorDisplayField>Reviewed_By__c</errorDisplayField>
+    <errorMessage>Set Reviewed By before confirming or dismissing a risk flag.</errorMessage>
+</ValidationRule>

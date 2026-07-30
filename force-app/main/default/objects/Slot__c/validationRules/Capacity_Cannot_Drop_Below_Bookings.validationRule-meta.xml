@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Capacity_Cannot_Drop_Below_Bookings</fullName>
+    <active>true</active>
+    <description>Booked_Count__c is the roll-up of child Appointment__c records. Letting capacity fall below it would leave the slot permanently overbooked and break the Slot_Not_Overbooked guard on Appointment__c.</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(Capacity__c)), Capacity__c &lt; Booked_Count__c )</errorConditionFormula>
+    <errorDisplayField>Capacity__c</errorDisplayField>
+    <errorMessage>Capacity cannot be lower than the number of appointments already booked. Cancel or move appointments first.</errorMessage>
+</ValidationRule>

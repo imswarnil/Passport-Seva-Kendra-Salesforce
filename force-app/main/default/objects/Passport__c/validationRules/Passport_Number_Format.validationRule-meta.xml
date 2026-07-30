@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Passport_Number_Format</fullName>
+    <active>true</active>
+    <description>The Name field IS the passport number. Indian passport numbers are one uppercase letter followed by 7 digits; the letters I, O, Q, X and Z are not issued as the leading character.</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(Name)), NOT(REGEX(Name, &quot;^[A-PR-WY][0-9]{7}$&quot;)) )</errorConditionFormula>
+    <errorDisplayField>Name</errorDisplayField>
+    <errorMessage>Enter a valid Indian passport number: one letter (A-Z excluding I, O, Q, X, Z) followed by 7 digits, e.g. K1234567.</errorMessage>
+</ValidationRule>

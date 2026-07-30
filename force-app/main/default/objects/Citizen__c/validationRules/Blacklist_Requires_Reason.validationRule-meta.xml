@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Blacklist_Requires_Reason</fullName>
+    <active>true</active>
+    <description>Blacklisting blocks a citizen from applying, so the reason must be on the record for audit and for the officer who later reviews the block.</description>
+    <errorConditionFormula>AND( Is_Blacklisted__c, ISBLANK(Blacklist_Reason__c) )</errorConditionFormula>
+    <errorDisplayField>Blacklist_Reason__c</errorDisplayField>
+    <errorMessage>Enter a Blacklist Reason before marking this citizen as blacklisted.</errorMessage>
+</ValidationRule>

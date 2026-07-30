@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PSK_Compact_Minor</fullName>
+    <fields>Name</fields>
+    <fields>Status__c</fields>
+    <fields>Guardian_Name__c</fields>
+    <fields>Guardian_Consent__c</fields>
+    <fields>Citizen__c</fields>
+    <label>PSK Compact Minor</label>
+</CompactLayout>

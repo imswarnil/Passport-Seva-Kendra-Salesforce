@@ -1,3 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata"/>
-
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Tatkal_To_Managers</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Tatkal (expedited) applications need manager oversight to hit the SLA.</description>
+        <label>Tatkal To Managers</label>
+        <sharedTo>
+            <group>PSK_Managers</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Tatkal__c</field>
+            <operation>equals</operation>
+            <value>true</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>High_Risk_To_Verification</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>High risk-score applications become readable by the verification hierarchy.</description>
+        <label>High Risk To Verification</label>
+        <sharedTo>
+            <roleAndSubordinates>Police_Verification_Team</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>Risk_Score__c</field>
+            <operation>greaterThan</operation>
+            <value>70</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Diplomatic_To_RPO</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Diplomatic and Official category applications are handled by the RPO.</description>
+        <label>Diplomatic To RPO</label>
+        <sharedTo>
+            <role>Regional_Passport_Officer</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Passport_Category__c</field>
+            <operation>equals</operation>
+            <value>Diplomatic,Official</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Granting_Stage_To_Granting_Officers</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Applications at granting stage are editable by granting officers.</description>
+        <label>Granting Stage To Granting Officers</label>
+        <sharedTo>
+            <role>Granting_Officers</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Granting,Printing</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Fulfilment_Stage_To_Fulfilment</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Applications in printing/dispatch/delivered are editable by the fulfilment team.</description>
+        <label>Fulfilment Stage To Fulfilment</label>
+        <sharedTo>
+            <role>Fulfilment_Team</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Printing,Dispatch,Delivered</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>
