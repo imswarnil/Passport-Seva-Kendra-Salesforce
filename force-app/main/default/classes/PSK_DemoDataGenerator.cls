@@ -1470,7 +1470,24 @@ public with sharing class PSK_DemoDataGenerator {
         for (Integer j = 1; j <= historicalCount; j++) {
             Integer i = currentCount + j;
             Lcg rnd = new Lcg(10200 + i);
-            Citizen__c citizen = citizens[Math.mod(j * 3, citizens.size())];
+
+            // Deliberately reuse a citizen that already holds a current booklet, so
+            // linkReissueChain always has a real chain to build rather than relying
+            // on an incidental collision. Falls back to any demo citizen when no
+            // application reached Granting.
+            Citizen__c citizen = null;
+            if (currentCount > 0) {
+                Id ownerId = granted[Math.mod(j - 1, currentCount)].Citizen__c;
+                for (Citizen__c candidate : citizens) {
+                    if (candidate.Id == ownerId) {
+                        citizen = candidate;
+                        break;
+                    }
+                }
+            }
+            if (citizen == null) {
+                citizen = citizens[Math.mod(j * 3, citizens.size())];
+            }
 
             // Non-Ordinary record types do not expose the 'Lost' status.
             List<String> statusPool = PSK_Constants.PASSPORT_STATUSES;

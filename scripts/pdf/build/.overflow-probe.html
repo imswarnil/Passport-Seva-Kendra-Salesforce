@@ -1514,3 +1514,16 @@
     Independent portfolio project. Not affiliated with the Ministry of External Affairs, Passport Seva, or any government body. All data in the org is synthetic.
   </div>
 </section>
+
+<script>
+  var w = document.documentElement.clientWidth, out = [];
+  document.querySelectorAll('table, pre, svg, div').forEach(function (el) {
+    if (el.getBoundingClientRect().width > w + 1) {
+      var head = el.querySelector && el.querySelector('thead');
+      out.push(el.tagName + (el.className ? '.' + el.className : '') +
+        ' width=' + Math.round(el.getBoundingClientRect().width) + '/' + w +
+        (head ? ' [' + head.innerText.replace(/\s+/g, ' ').trim().slice(0, 120) + ']' : ''));
+    }
+  });
+  document.title = 'OVERFLOW:' + (out.length ? out.slice(0, 6).join(' ;; ') : 'none');
+</script>

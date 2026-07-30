@@ -148,7 +148,11 @@ public with sharing class PSK_DocumentChecklistController {
                 Passport_Application__c = applicationId,
                 Document_Type__c = docType,
                 Status__c = PSK_Constants.DOC_REQUIRED,
-                External_Id__c = 'DCI-' + applicationId + '-' + docType.replaceAll('[^A-Za-z0-9]', '')
+                // External_Id__c is Text(40): 'DCI-' (4) + a 18-character id + '-'
+                // leaves 17, so the document type is truncated to 15. The first 15
+                // characters are still distinct across all seven document types.
+                External_Id__c = 'DCI-' + applicationId + '-'
+                    + docType.replaceAll('[^A-Za-z0-9]', '').left(15)
             ));
         }
 

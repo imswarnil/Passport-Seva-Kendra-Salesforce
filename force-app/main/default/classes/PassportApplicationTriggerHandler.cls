@@ -77,9 +77,17 @@ public with sharing class PassportApplicationTriggerHandler {
             if (oldMap != null && app.Id != null && oldMap.containsKey(app.Id)) {
                 priorStatus = oldMap.get(app.Id).Status__c;
             }
+            Boolean isInsert = (oldMap == null);
             Boolean statusChanged = (priorStatus != app.Status__c);
 
-            if (statusChanged) {
+            if (isInsert) {
+                // An insert is not a transition FROM anything, so an explicitly
+                // supplied stage clock (a data load, a backdated migration) is
+                // respected. Only fill the gap.
+                if (app.Stage_Entered_Date__c == null) {
+                    app.Stage_Entered_Date__c = nowStamp;
+                }
+            } else if (statusChanged) {
                 app.Stage_Entered_Date__c = nowStamp;
             }
 
