@@ -147,12 +147,15 @@ public with sharing class PSK_SlotBookingController {
             );
         }
 
+        // External_Id__c is deliberately left null. It exists as the demo
+        // generator's idempotency key; stamping a deterministic value here would
+        // make the unique constraint reject a legitimate rebooking of the same
+        // application into the same slot after a cancellation.
         Appointment__c apt = new Appointment__c(
             Passport_Application__c = applicationId,
             Slot__c = slotId,
             Status__c = 'Scheduled'
         );
-        apt.External_Id__c = 'APT-' + applicationId + '-' + slotId;
 
         try {
             insert apt;

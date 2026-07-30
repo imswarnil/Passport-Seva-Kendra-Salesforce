@@ -333,6 +333,17 @@ function scanPermissionSetGroups() {
     });
 }
 
+/**
+ * Declared order of a restricted picklist's values. Metadata stores <values> blocks in
+ * alphabetical order inside a field, but a Path's steps are only meaningful in lifecycle
+ * order — so the order has to come from the field's own valueSetDefinition.
+ */
+function picklistOrder(objectApi, fieldApi) {
+  const xml = read(join(SRC, 'objects', objectApi, 'fields', `${fieldApi}.field-meta.xml`));
+  const def = /<valueSetDefinition>([\s\S]*?)<\/valueSetDefinition>/.exec(xml)?.[1] ?? '';
+  return [...def.matchAll(/<value>([\s\S]*?)<\/value>/g)].map((m) => tag1(m[1], 'fullName') || tag1(m[1], 'label'));
+}
+
 function scanTranslations() {
   const locales = new Set();
   const bundles = [];
@@ -471,8 +482,16 @@ function derive(F, DATA) {
   // Aadhaar token field state.
   const aadhaarToken = appObj?.fields.find((f) => f.api === 'Aadhaar_Token__c');
 
-  // Path coverage.
-  const appPaths = F.pathAssistants.filter((p) => p.entity === 'Passport_Application__c');
+  // Path coverage. Re-order each path's steps into the picklist's declared lifecycle
+  // order; the metadata lists them alphabetically, which reads as a false sequence.
+  const statusOrder = picklistOrder('Passport_Application__c', 'Status__c');
+  const rank = (v) => {
+    const i = statusOrder.indexOf(v);
+    return i === -1 ? 999 : i;
+  };
+  const appPaths = F.pathAssistants
+    .filter((p) => p.entity === 'Passport_Application__c')
+    .map((p) => ({ ...p, steps: [...p.steps].sort((a, b) => rank(a) - rank(b)) }));
   const coveredRecordTypes = new Set(appPaths.map((p) => p.recordType).filter(Boolean));
   const uncoveredRecordTypes = (appObj?.recordTypes ?? [])
     .map((rt) => rt.api)
@@ -726,7 +745,7 @@ function renderObjectInventory(F) {
     .map((o) => {
       const nameField = o.nameFieldType === 'AutoNumber' ? `Auto Number <code>${esc(o.nameFieldFormat)}</code>` : `${esc(o.nameFieldType || '—')} — ${esc(o.nameFieldLabel || 'Name')}`;
       const rts = o.recordTypes.length ? o.recordTypes.map((r) => esc(r.api)).join(', ') : '<span class="muted">none</span>';
-      const tab = F.tabSet.has(o.api) ? '<span class="yes">yes</span>' : '<span class="no">none</span>';
+      const tab = F.tabSet.has(o.api) ? '<span class="yes">&#10003;</span>' : '<span class="no">&mdash;</span>';
       const app = (F.appForObject[o.api] ?? []).join(', ') || '<span class="muted">not in any app</span>';
       return `<tr>
         <td><code>${esc(o.api)}</code></td>
@@ -735,7 +754,7 @@ function renderObjectInventory(F) {
         <td>${nameField}</td>
         <td>${rts}</td>
         <td class="num">${o.fieldCount}</td>
-        <td>${tab}</td>
+        <td class="nw">${tab}</td>
         <td class="small">${app}</td>
       </tr>`;
     })
@@ -752,7 +771,7 @@ function renderObjectInventory(F) {
   <table class="grid">
     <thead><tr>
       <th>API name</th><th>Label</th><th>OWD</th><th>Name field</th><th>Record types</th>
-      <th class="num">Fields</th><th>Tab</th><th>App</th>
+      <th class="num">Fields</th><th class="nw">Tab</th><th>App</th>
     </tr></thead>
     <tbody>${rows}${mdt}</tbody>
   </table>`;
@@ -907,7 +926,14 @@ function renderUatChecklist(F, D) {
 
       // layout
       if (layouts.length) {
-        items.push(checkRow(`Page layout <em>${esc(layouts.join(', '))}</em> is assigned and sections are in the documented order.`, `Lifecycle → Applicant Details → Address → Application Details → Payment → Verification &amp; Compliance → Consent &amp; Notifications → System.`));
+        items.push(
+          checkRow(
+            `Page layout <em>${esc(layouts.join(', '))}</em> is assigned and its sections are in a deliberate order.`,
+            o.api === 'Passport_Application__c'
+              ? `Expect: Lifecycle → Applicant Details → Address → Application Details → Payment → Verification &amp; Compliance → Consent &amp; Notifications → System.`
+              : `No field should sit in a section it does not belong to, and nothing should be in a nameless catch-all section. Confirm the lookup to the parent is on the layout and read-only where it should be.`
+          )
+        );
       } else {
         items.push(checkRow(`<span class="flag">No layout</span> No <code>Layout</code> metadata exists for this object — it will render an auto-generated layout.`, `See action item P1-07.`));
       }
@@ -1224,8 +1250,12 @@ function renderHtml(F, D, DATA) {
   h4 { font-size: 9.8pt; margin: 10px 0 4px; text-transform: uppercase; letter-spacing: .06em; color: var(--navy-2); }
 
   /* ---------- cards / callouts ---------- */
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-  .card { break-inside: avoid; border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; background: #fff; }
+  /* Single column on purpose: these two lists are long, and a two-column grid item
+     that has to fragment across a page break leaves an empty stub behind in Chrome. */
+  .cards { display: block; }
+  .card { border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px 4px; background: #fff; margin-bottom: 9px; }
+  .card ul { columns: 2; column-gap: 10mm; }
+  .card li { break-inside: avoid; }
   .card.can { border-left: 3px solid var(--green); }
   .card.cant { border-left: 3px solid var(--red); }
   .card h4 { margin-top: 0; }
@@ -1265,7 +1295,16 @@ function renderHtml(F, D, DATA) {
   table.grid td { padding: 4.5px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
   /* Nothing may exceed the printable width: a single overflowing cell makes Chrome
      shrink the ENTIRE document to fit, silently reducing every font size. */
-  table.grid th, table.grid td { overflow-wrap: anywhere; }
+  table.grid td { overflow-wrap: anywhere; }
+  /* overflow-wrap:anywhere on a header lets the auto table layout shrink the column
+     to one character, turning "FIELDS" into a vertical stack of letters. break-word
+     does not reduce min-content width, so short headers stay whole while a long API
+     name like POLICE_VERIFICATION_TYPE__C can still break rather than blow the table
+     past the page width (which would silently scale the whole document down). */
+  table.grid th { overflow-wrap: break-word; word-break: break-word; }
+  table.grid th.num, table.grid td.num,
+  table.grid th.nw, table.grid td.nw { white-space: nowrap; }
+  table.grid td.nw { text-align: center; }
   .formula { overflow-wrap: anywhere; }
   table.grid tbody tr { break-inside: avoid; }
   table.grid tbody tr:nth-child(even) { background: #fafbfd; }
@@ -1684,6 +1723,50 @@ function renderHtml(F, D, DATA) {
 
 /* ------------------------------------------------------------------- pipeline */
 
+/**
+ * Chrome's print pipeline scales the WHOLE document down when any box is wider than
+ * the page box, so a single un-wrappable table cell shows up as "the PDF looks zoomed
+ * out" — every font silently shrinks — rather than as an error. This probe renders the
+ * built HTML with a throwaway measuring script and warns with the offending table's
+ * header row, which is the only fast way to find the culprit.
+ */
+function checkNoHorizontalOverflow() {
+  const probePath = join(BUILD, '.overflow-probe.html');
+  const probe = `${readFileSync(HTML_OUT, 'utf8')}
+<script>
+  var w = document.documentElement.clientWidth, out = [];
+  document.querySelectorAll('table, pre, svg, div').forEach(function (el) {
+    if (el.getBoundingClientRect().width > w + 1) {
+      var head = el.querySelector && el.querySelector('thead');
+      out.push(el.tagName + (el.className ? '.' + el.className : '') +
+        ' width=' + Math.round(el.getBoundingClientRect().width) + '/' + w +
+        (head ? ' [' + head.innerText.replace(/\\s+/g, ' ').trim().slice(0, 120) + ']' : ''));
+    }
+  });
+  document.title = 'OVERFLOW:' + (out.length ? out.slice(0, 6).join(' ;; ') : 'none');
+</script>`;
+  writeFileSync(probePath, probe, 'utf8');
+  let dom = '';
+  try {
+    dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox', '--virtual-time-budget=4000', '--dump-dom', `file://${probePath}`], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+      maxBuffer: 64 * 1024 * 1024,
+    });
+  } catch {
+    return; // probe is best-effort; never block the actual PDF on it
+  }
+  const found = /OVERFLOW:([^<]*)/.exec(dom)?.[1]?.trim();
+  if (found && found !== 'none') {
+    console.warn(
+      `WARN  horizontal overflow — Chrome will scale the whole PDF down to fit:\n      ${found}\n` +
+        `      Fix the offending box (usually a table cell that cannot wrap) rather than accepting the smaller type.`
+    );
+  } else {
+    console.log('Fit   no horizontal overflow — document prints at scale 1.');
+  }
+}
+
 function main() {
   const dataPath = join(HERE, 'report-data.json');
   if (!existsSync(dataPath)) {
@@ -1713,6 +1796,8 @@ function main() {
     console.error(`Chrome not found at ${CHROME}. Re-run with --html-only, or install Chrome.`);
     process.exit(2);
   }
+
+  checkNoHorizontalOverflow();
 
   execFileSync(
     CHROME,
