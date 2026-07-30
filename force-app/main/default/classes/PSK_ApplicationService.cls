@@ -271,15 +271,18 @@ public with sharing class PSK_ApplicationService {
      */
     public static String generateBookletNumber(String seed) {
         String basis = String.isBlank(seed) ? String.valueOf(System.now().getTime()) : seed;
-        Long h = 1125899906842597L;
+        // Reduce modulo a large prime on every step so the accumulator can never
+        // overflow Long, however long the seed is.
+        Long h = 2166136261L;
         for (Integer i = 0; i < basis.length(); i++) {
-            h = 31 * h + basis.charAt(i);
+            h = Math.mod(31L * h + basis.charAt(i), 1000000007L);
         }
         if (h < 0) {
             h = -h;
         }
-        Integer letterIndex = (Integer) Math.mod(h, BOOKLET_ALPHABET.length());
-        Long digits = Math.mod(h / BOOKLET_ALPHABET.length(), 10000000L);
+        Long alphabetSize = BOOKLET_ALPHABET.length();
+        Integer letterIndex = (Integer) Math.mod(h, alphabetSize);
+        Long digits = Math.mod(h / alphabetSize, 10000000L);
         String digitPart = String.valueOf(digits).leftPad(7, '0');
         return BOOKLET_ALPHABET.substring(letterIndex, letterIndex + 1) + digitPart;
     }

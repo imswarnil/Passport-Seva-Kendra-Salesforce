@@ -102,8 +102,7 @@
         <fields>Is_Available__c</fields>
     </miniLayout>
     <relatedLists>
-        <fields>Name</fields>
-        <fields>Passport_Application__c</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Counter_Number__c</fields>
         <fields>Check_In_Time__c</fields>

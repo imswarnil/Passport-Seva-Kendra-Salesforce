@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Print and dispatch fulfilment board for the PSK Operations console.</description>
+    <flexiPage>Fulfilment_Board</flexiPage>
+    <label>Fulfilment Board</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom57: Building Block</motif>
+</CustomTab>

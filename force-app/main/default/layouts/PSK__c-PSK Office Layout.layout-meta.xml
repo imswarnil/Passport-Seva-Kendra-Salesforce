@@ -163,7 +163,7 @@
         </platformActionListItems>
     </platformActionList>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Slot_Date__c</fields>
         <fields>Start_Time__c</fields>
         <fields>End_Time__c</fields>
@@ -173,7 +173,7 @@
         <relatedList>Slot__c.PSK_Office__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Passport_Category__c</fields>
         <fields>Citizen__c</fields>

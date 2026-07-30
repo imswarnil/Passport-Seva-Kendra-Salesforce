@@ -24,6 +24,8 @@
     <label>Passport Validator</label>
     <navType>Standard</navType>
     <tabs>standard-home</tabs>
+    <tabs>Passport__c</tabs>
+    <tabs>Citizen__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Passport_Validator_UtilityBar</utilityBar>
 </CustomApplication>

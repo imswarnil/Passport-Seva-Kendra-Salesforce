@@ -17,6 +17,15 @@
                         onclick={handleAdvance}
                     ></lightning-button>
                 </template>
+                <template if:true={canIssuePassport}>
+                    <lightning-button
+                        variant="neutral"
+                        label="Issue Passport Booklet"
+                        class="psk-action-button slds-m-bottom_x-small"
+                        disabled={actionsDisabled}
+                        onclick={handleIssuePassport}
+                    ></lightning-button>
+                </template>
                 <template if:true={canReject}>
                     <lightning-button
                         variant="destructive-text"

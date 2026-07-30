@@ -22,6 +22,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>c:pskMyWorkQueue</componentName>
+                <identifier>c_pskMyWorkQueue</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>c:pskHomeSidebarSummary</componentName>
                 <identifier>c_pskHomeSidebarSummary</identifier>
             </componentInstance>

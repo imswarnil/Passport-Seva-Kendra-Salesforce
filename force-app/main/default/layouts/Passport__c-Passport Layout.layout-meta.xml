@@ -197,7 +197,7 @@
         </platformActionListItems>
     </platformActionList>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Batch_Number__c</fields>
         <fields>Printed_Date__c</fields>
@@ -205,7 +205,7 @@
         <relatedList>Print_Job__c.Passport__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Name</fields>
+        <fields>NAME</fields>
         <fields>Status__c</fields>
         <fields>Courier_Partner__c</fields>
         <fields>Tracking_Number__c</fields>

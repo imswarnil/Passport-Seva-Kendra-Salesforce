@@ -13,7 +13,7 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
-    <label>Application Management Console</label>
+    <label>Passport Seva Console</label>
     <navType>Standard</navType>
     <profileActionOverrides>
         <actionName>Tab</actionName>
