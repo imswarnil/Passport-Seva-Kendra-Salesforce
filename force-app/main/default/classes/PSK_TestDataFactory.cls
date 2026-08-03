@@ -321,11 +321,11 @@ public class PSK_TestDataFactory {
      */
     public static Passport__c buildPassport(Id applicationId, Id citizenId, String status) {
         Integer n = nextSeq();
-        String number = PSK_ApplicationService.generateBookletNumber('TEST-PASS-' + n);
+        String bookletNo = PSK_ApplicationService.generateBookletNumber('TEST-PASS-' + n);
         Date issued = Date.today().addDays(-30);
         return new Passport__c(
-            Name = number,
-            External_Id__c = number,
+            Name = bookletNo,
+            External_Id__c = bookletNo,
             Application__c = applicationId,
             Citizen__c = citizenId,
             Status__c = String.isBlank(status) ? PSK_Constants.PASSPORT_ACTIVE : status,

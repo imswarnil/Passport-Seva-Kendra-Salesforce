@@ -11,14 +11,14 @@ private class PassportTriggerHandlerTest {
         Citizen__c citizen = PSK_TestDataFactory.createCitizen();
         Passport__c passport = PSK_TestDataFactory.buildPassport(
             null, citizen.Id, PSK_Constants.PASSPORT_ACTIVE);
-        String number = passport.Name;
+        String bookletNo = passport.Name;
         passport.External_Id__c = null;
 
         Test.startTest();
         insert passport;
         Test.stopTest();
 
-        System.assertEquals(number,
+        System.assertEquals(bookletNo,
             [SELECT External_Id__c FROM Passport__c WHERE Id = :passport.Id].External_Id__c,
             'The trigger must mirror Name into External_Id__c');
     }
@@ -45,7 +45,7 @@ private class PassportTriggerHandlerTest {
         Passport__c passport = PSK_TestDataFactory.createPassport(null, citizen.Id);
 
         String renumbered = PSK_ApplicationService.generateBookletNumber('RENUMBERED-SEED');
-        System.assertNotEquals(passport.Name, renumbered, 'Precondition: a different number');
+        System.assertNotEquals(passport.Name, renumbered, 'Precondition: a different bookletNo');
 
         Test.startTest();
         passport.Name = renumbered;
@@ -54,7 +54,7 @@ private class PassportTriggerHandlerTest {
 
         System.assertEquals(renumbered,
             [SELECT External_Id__c FROM Passport__c WHERE Id = :passport.Id].External_Id__c,
-            'Changing the booklet number must carry the external id with it');
+            'Changing the booklet bookletNo must carry the external id with it');
     }
 
     @IsTest
