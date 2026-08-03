@@ -13,6 +13,22 @@
  */
 public with sharing class PSK_ApplicationService {
 
+    /**
+     * Build an AuraHandledException that actually carries its message.
+     *
+     * `new AuraHandledException(msg)` sets only the field the LWC error handler
+     * reads; getMessage() still returns the literal 'Script-thrown exception'.
+     * That makes the exception useless in Apex tests and in any log, so
+     * setMessage() is called too. Every @AuraEnabled entry point in this app
+     * raises its errors through here.
+     */
+    public static AuraHandledException auraError(String message) {
+        String text = String.isBlank(message) ? 'The operation could not be completed.' : message;
+        AuraHandledException e = new AuraHandledException(text);
+        e.setMessage(text);
+        return e;
+    }
+
     // ------------------------------------------------------------------ Wrappers
 
     public class FeeBreakdown {

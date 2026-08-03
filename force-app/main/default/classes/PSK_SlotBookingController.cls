@@ -109,10 +109,10 @@ public with sharing class PSK_SlotBookingController {
     @AuraEnabled
     public static BookingResult book(Id applicationId, Id slotId) {
         if (applicationId == null || slotId == null) {
-            throw new AuraHandledException('Both an application and a slot are required.');
+            throw PSK_ApplicationService.auraError('Both an application and a slot are required.');
         }
         if (!Schema.sObjectType.Appointment__c.isCreateable()) {
-            throw new AuraHandledException('You do not have permission to book appointments.');
+            throw PSK_ApplicationService.auraError('You do not have permission to book appointments.');
         }
 
         List<Passport_Application__c> apps = [
@@ -123,10 +123,10 @@ public with sharing class PSK_SlotBookingController {
             LIMIT 1
         ];
         if (apps.isEmpty()) {
-            throw new AuraHandledException('Application not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Application not found, or you do not have access to it.');
         }
         if (PSK_Constants.TERMINAL_STATUSES.contains(apps[0].Status__c)) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 'An appointment cannot be booked for an application in status "'
                 + apps[0].Status__c + '".'
             );
@@ -142,7 +142,7 @@ public with sharing class PSK_SlotBookingController {
             LIMIT 1
         ];
         if (!live.isEmpty()) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 'This application already has a live appointment. Cancel it before booking another.'
             );
         }
@@ -161,7 +161,7 @@ public with sharing class PSK_SlotBookingController {
             insert apt;
         } catch (DmlException e) {
             // The FOR UPDATE capacity check in AppointmentTriggerHandler surfaces here.
-            throw new AuraHandledException(e.getDmlMessage(0));
+            throw PSK_ApplicationService.auraError(e.getDmlMessage(0));
         }
 
         BookingResult r = new BookingResult();
@@ -180,7 +180,7 @@ public with sharing class PSK_SlotBookingController {
     @AuraEnabled
     public static BookingResult cancel(Id appointmentId) {
         if (appointmentId == null) {
-            throw new AuraHandledException('An appointment id is required.');
+            throw PSK_ApplicationService.auraError('An appointment id is required.');
         }
         List<Appointment__c> apts = [
             SELECT Id, Name, Slot__c, Status__c
@@ -190,14 +190,22 @@ public with sharing class PSK_SlotBookingController {
             LIMIT 1
         ];
         if (apts.isEmpty()) {
-            throw new AuraHandledException('Appointment not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Appointment not found, or you do not have access to it.');
         }
         Appointment__c apt = apts[0];
-        apt.Status__c = 'Cancelled';
+        // Update a fresh, minimal record rather than the queried one. Appointment__c
+        // hangs off two NON-REPARENTABLE master-detail fields (Slot__c and
+        // Passport_Application__c); Apex sends every populated field on an update,
+        // and the platform rejects the write on a master-detail it will not let you
+        // change -- INACCESSIBLE_FIELD -- even when the value is unchanged.
+        Appointment__c cancellation = new Appointment__c(
+            Id = apt.Id,
+            Status__c = 'Cancelled'
+        );
         try {
-            update apt;
+            update cancellation;
         } catch (DmlException e) {
-            throw new AuraHandledException(e.getDmlMessage(0));
+            throw PSK_ApplicationService.auraError(e.getDmlMessage(0));
         }
 
         BookingResult r = new BookingResult();

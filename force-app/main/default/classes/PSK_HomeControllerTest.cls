@@ -25,6 +25,11 @@ private class PSK_HomeControllerTest {
             First_Name__c = 'Chitra', Last_Name__c = 'Iyer', Status__c = 'Delivered',
             Date_of_Birth__c = Date.newInstance(1985, 8, 20), Mobile__c = '9123456780',
             Address_Line1__c = '45 Park Street', Payment_Status__c = 'Paid',
+            // An application delivered today was submitted weeks ago. Leaving this
+            // null made PassportApplicationTriggerHandler stamp it with today (it
+            // stamps the first time a record is not Draft), which put two records
+            // into the "submitted today" bucket and made that stat meaningless.
+            Submitted_Date__c = System.now().addDays(-30),
             Granted_Date__c = System.now()
         ));
         insert apps;

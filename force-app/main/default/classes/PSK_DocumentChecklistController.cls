@@ -48,14 +48,14 @@ public with sharing class PSK_DocumentChecklistController {
     @AuraEnabled
     public static ChecklistItem setStatus(Id itemId, String status) {
         if (itemId == null) {
-            throw new AuraHandledException('A checklist item id is required.');
+            throw PSK_ApplicationService.auraError('A checklist item id is required.');
         }
         if (String.isBlank(status)) {
-            throw new AuraHandledException('A status is required.');
+            throw PSK_ApplicationService.auraError('A status is required.');
         }
         Set<String> allowed = new Set<String>(PSK_Constants.DOCUMENT_STATUSES);
         if (!allowed.contains(status)) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 '"' + status + '" is not a valid document status. Expected one of: '
                 + String.join(PSK_Constants.DOCUMENT_STATUSES, ', ') + '.'
             );
@@ -70,7 +70,7 @@ public with sharing class PSK_DocumentChecklistController {
             LIMIT 1
         ];
         if (items.isEmpty()) {
-            throw new AuraHandledException('Checklist item not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Checklist item not found, or you do not have access to it.');
         }
 
         Document_Checklist_Item__c item = items[0];
@@ -94,7 +94,7 @@ public with sharing class PSK_DocumentChecklistController {
         try {
             update item;
         } catch (DmlException e) {
-            throw new AuraHandledException(e.getDmlMessage(0));
+            throw PSK_ApplicationService.auraError(e.getDmlMessage(0));
         }
         return toWrapper(item);
     }
@@ -107,10 +107,10 @@ public with sharing class PSK_DocumentChecklistController {
     @AuraEnabled
     public static SeedResult seedFromTemplate(Id applicationId) {
         if (applicationId == null) {
-            throw new AuraHandledException('An application id is required.');
+            throw PSK_ApplicationService.auraError('An application id is required.');
         }
         if (!Schema.sObjectType.Document_Checklist_Item__c.isCreateable()) {
-            throw new AuraHandledException('You do not have permission to create checklist items.');
+            throw PSK_ApplicationService.auraError('You do not have permission to create checklist items.');
         }
 
         List<Passport_Application__c> apps = [
@@ -121,7 +121,7 @@ public with sharing class PSK_DocumentChecklistController {
             LIMIT 1
         ];
         if (apps.isEmpty()) {
-            throw new AuraHandledException('Application not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Application not found, or you do not have access to it.');
         }
 
         String rtName = PSK_ApplicationService.applicationRecordTypeName(apps[0].RecordTypeId);
@@ -166,7 +166,7 @@ public with sharing class PSK_DocumentChecklistController {
                 insert toInsert;
                 r.created = toInsert.size();
             } catch (DmlException e) {
-                throw new AuraHandledException(e.getDmlMessage(0));
+                throw PSK_ApplicationService.auraError(e.getDmlMessage(0));
             }
         }
 

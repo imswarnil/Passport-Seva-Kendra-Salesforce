@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>collapsed</name>
@@ -35,7 +35,7 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentName>force:detailPanel</componentName>
                 <identifier>force_detailPanel</identifier>
@@ -45,7 +45,7 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentName>pskDocumentChecklist</componentName>
                 <identifier>c_pskDocumentChecklist</identifier>
@@ -55,25 +55,17 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
-                <componentInstanceProperties>
-                    <name>relatedListId</name>
-                    <value>Guardian_Links__r</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>rowsToDisplay</name>
-                    <value>10</value>
-                </componentInstanceProperties>
-                <componentName>force:relatedListSingleContainer</componentName>
-                <identifier>force_relatedListSingleContainer_guardians</identifier>
+                <componentName>force:relatedListContainer</componentName>
+                <identifier>force_relatedListContainer1</identifier>
             </componentInstance>
         </itemInstances>
         <name>guardianTabContent</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentName>pskApplicationTimeline</componentName>
                 <identifier>c_pskApplicationTimeline</identifier>
@@ -83,7 +75,7 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>relatedListComponentOverride</name>
@@ -105,7 +97,7 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>active</name>
@@ -183,7 +175,7 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
@@ -197,7 +189,7 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
+                <itemInstances>
             <componentInstance>
                 <componentName>pskApplicationSidebar</componentName>
                 <identifier>c_pskApplicationSidebar</identifier>

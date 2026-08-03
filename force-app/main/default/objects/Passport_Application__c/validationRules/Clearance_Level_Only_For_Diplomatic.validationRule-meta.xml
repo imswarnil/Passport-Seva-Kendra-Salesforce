@@ -2,8 +2,8 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Clearance_Level_Only_For_Diplomatic</fullName>
     <active>true</active>
-    <description>The mirror of Diplomatic_Requires_Clearance_Level: stops a clearance level being smuggled onto an Ordinary application. Applies on Draft too, because it removes data rather than requiring it - clearing the field is always possible.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(TEXT(Clearance_Level__c))), ISPICKVAL(Passport_Category__c, &quot;Ordinary&quot;) )</errorConditionFormula>
+    <description>Mirror of Diplomatic_Requires_Clearance_Level. Fires whenever the category is anything other than Diplomatic or Official, including blank - checking only for Ordinary left a gap. Applies on Draft too, since clearing the field is always possible.</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(TEXT(Clearance_Level__c))), NOT(ISPICKVAL(Passport_Category__c, &quot;Diplomatic&quot;)), NOT(ISPICKVAL(Passport_Category__c, &quot;Official&quot;)) )</errorConditionFormula>
     <errorDisplayField>Clearance_Level__c</errorDisplayField>
     <errorMessage>Clearance Level applies only to Diplomatic and Official passports. Clear it, or change the Passport Category.</errorMessage>
 </ValidationRule>

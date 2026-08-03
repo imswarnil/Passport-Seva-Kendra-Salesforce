@@ -23,7 +23,7 @@ public with sharing class PSK_FeeService {
         Passport_Application__c app = loadApplication(applicationId);
 
         if (!Schema.sObjectType.Passport_Application__c.fields.Fee__c.isUpdateable()) {
-            throw new AuraHandledException('You do not have permission to update the application fee.');
+            throw PSK_ApplicationService.auraError('You do not have permission to update the application fee.');
         }
 
         PSK_ApplicationService.FeeBreakdown fb = PSK_ApplicationService.resolveFee(app);
@@ -31,14 +31,14 @@ public with sharing class PSK_FeeService {
         try {
             update app;
         } catch (DmlException e) {
-            throw new AuraHandledException('Could not save the recalculated fee: ' + e.getDmlMessage(0));
+            throw PSK_ApplicationService.auraError('Could not save the recalculated fee: ' + e.getDmlMessage(0));
         }
         return fb;
     }
 
     private static Passport_Application__c loadApplication(Id applicationId) {
         if (applicationId == null) {
-            throw new AuraHandledException('An application id is required.');
+            throw PSK_ApplicationService.auraError('An application id is required.');
         }
         List<Passport_Application__c> apps = [
             SELECT Id, RecordTypeId, Booklet_Pages__c, Validity_Years__c, Tatkal__c,
@@ -49,7 +49,7 @@ public with sharing class PSK_FeeService {
             LIMIT 1
         ];
         if (apps.isEmpty()) {
-            throw new AuraHandledException('Application not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Application not found, or you do not have access to it.');
         }
         return apps[0];
     }
