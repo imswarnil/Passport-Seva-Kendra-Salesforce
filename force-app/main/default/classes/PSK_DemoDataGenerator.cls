@@ -471,8 +471,8 @@ public with sharing class PSK_DemoDataGenerator {
             if (bound == null || bound <= 0) {
                 return 0;
             }
-            Long limit = bound;
-            return (Integer) Math.mod(state / 65536L, limit);
+            Long bound2 = bound;
+            return (Integer) Math.mod(state / 65536L, bound2);
         }
 
         /** Inclusive on both ends. */
@@ -1450,10 +1450,10 @@ public with sharing class PSK_DemoDataGenerator {
                 ? 10 : Integer.valueOf(app.Validity_Years__c);
             Date issued = Date.today().addDays(-rnd.between(1, 900));
 
-            String number = PSK_ApplicationService.generateBookletNumber('DEMO-PASS-' + i);
+            String bookletNo = PSK_ApplicationService.generateBookletNumber('DEMO-PASS-' + i);
             passports.add(new Passport__c(
-                Name = number,
-                External_Id__c = number, // External_Id_Must_Mirror_Number
+                Name = bookletNo,
+                External_Id__c = bookletNo, // External_Id_Must_Mirror_Number
                 Application__c = app.Id,
                 Citizen__c = app.Citizen__c,
                 PSK_Office__c = app.PSK_Office__c,
@@ -1497,10 +1497,10 @@ public with sharing class PSK_DemoDataGenerator {
             }
 
             Date issued = Date.today().addYears(-rnd.between(11, 18));
-            String number = PSK_ApplicationService.generateBookletNumber('DEMO-PASS-' + i);
+            String bookletNo = PSK_ApplicationService.generateBookletNumber('DEMO-PASS-' + i);
             passports.add(new Passport__c(
-                Name = number,
-                External_Id__c = number,
+                Name = bookletNo,
+                External_Id__c = bookletNo,
                 Application__c = null,
                 Citizen__c = citizen.Id,
                 PSK_Office__c = offices.isEmpty()

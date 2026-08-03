@@ -263,12 +263,12 @@ public with sharing class PSK_Citizen360Controller {
         if (String.isBlank(term) || term.trim().length() < 2) {
             return out;
         }
-        String like = '%' + term.trim() + '%';
+        String term2 = '%' + term.trim() + '%';
         for (Citizen__c c : [
             SELECT Id, Name, Citizen_Reference__c, Mobile__c, City__c, State__c,
                    KYC_Status__c, Date_of_Birth__c
             FROM Citizen__c
-            WHERE Name LIKE :like OR Mobile__c LIKE :like OR Citizen_Reference__c LIKE :like
+            WHERE Name LIKE :term2 OR Mobile__c LIKE :term2 OR Citizen_Reference__c LIKE :term2
             WITH USER_MODE
             ORDER BY Name
             LIMIT 25

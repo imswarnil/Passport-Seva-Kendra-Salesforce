@@ -428,11 +428,11 @@ private class PSK_DemoDataGeneratorTest {
     @IsTest
     static void testRunFromUIReturnsJson() {
         Test.startTest();
-        String json = PSK_DemoDataGenerator.runFromUI(1);
+        String payload = PSK_DemoDataGenerator.runFromUI(1);
         Test.stopTest();
 
-        System.assertNotEquals(null, json);
-        Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(json);
+        System.assertNotEquals(null, payload);
+        Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(payload);
         System.assertEquals('generateAll', parsed.get('action'));
         System.assertEquals(1, parsed.get('scale'));
         System.assertNotEquals(null, parsed.get('counts'));

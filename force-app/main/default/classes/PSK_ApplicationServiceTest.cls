@@ -158,7 +158,7 @@ private class PSK_ApplicationServiceTest {
         String other = PSK_ApplicationService.generateBookletNumber('SEED-B');
 
         System.assertEquals(first, again,
-            'The same seed must always produce the same booklet number -- this is what '
+            'The same seed must always produce the same booklet bookletNo -- this is what '
             + 'makes the generator and the trigger idempotent');
         System.assertNotEquals(first, other, 'Different seeds should differ');
         System.assertEquals(8, first.length());
@@ -170,19 +170,19 @@ private class PSK_ApplicationServiceTest {
     static void testBookletNumberAvoidsExcludedLetters() {
         Set<String> excluded = new Set<String>{ 'I', 'O', 'Q', 'X', 'Z' };
         for (Integer i = 0; i < 60; i++) {
-            String number = PSK_ApplicationService.generateBookletNumber('SEED-' + i);
-            System.assertEquals(true, BOOKLET_FORMAT.matcher(number).matches(),
-                number + ' must match the passport number format');
-            System.assertEquals(false, excluded.contains(number.substring(0, 1)),
-                number + ' starts with an excluded letter');
+            String bookletNo = PSK_ApplicationService.generateBookletNumber('SEED-' + i);
+            System.assertEquals(true, BOOKLET_FORMAT.matcher(bookletNo).matches(),
+                bookletNo + ' must match the passport bookletNo format');
+            System.assertEquals(false, excluded.contains(bookletNo.substring(0, 1)),
+                bookletNo + ' starts with an excluded letter');
         }
     }
 
     @IsTest
     static void testBookletNumberHandlesBlankSeed() {
-        String number = PSK_ApplicationService.generateBookletNumber(null);
-        System.assertEquals(true, BOOKLET_FORMAT.matcher(number).matches(),
-            'A null seed must still produce a valid booklet number');
+        String bookletNo = PSK_ApplicationService.generateBookletNumber(null);
+        System.assertEquals(true, BOOKLET_FORMAT.matcher(bookletNo).matches(),
+            'A null seed must still produce a valid booklet bookletNo');
     }
 
     // -------------------------------------------------------- Citizen handling
@@ -377,7 +377,7 @@ private class PSK_ApplicationServiceTest {
             SELECT Previous_Passport__c FROM Passport__c WHERE Application__c = :app.Id
         ];
         System.assertEquals(older.Id, issued.Previous_Passport__c,
-            'The reissue chain should link back to the previous booklet number');
+            'The reissue chain should link back to the previous booklet bookletNo');
     }
 
     @IsTest
