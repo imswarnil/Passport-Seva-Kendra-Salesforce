@@ -43,7 +43,9 @@ private class PSK_ApplicationActionsControllerTest {
         Passport_Application__c app = newApp('Police Verification');
         insert app;
         insert new Police_Verification__c(
-            Passport_Application__c = app.Id, Status__c = 'Referred', PV_Type__c = 'Post-PV', Referred_Date__c = Date.today()
+            // Referred_Requires_Station_And_Date wants both the station and the date.
+            Passport_Application__c = app.Id, Status__c = 'Referred', PV_Type__c = 'Post-PV',
+            Police_Station__c = 'MG Road PS', Referred_Date__c = Date.today()
         );
 
         Test.startTest();

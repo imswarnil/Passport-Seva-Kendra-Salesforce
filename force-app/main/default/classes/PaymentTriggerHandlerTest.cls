@@ -89,8 +89,11 @@ private class PaymentTriggerHandlerTest {
             'An initiated payment is pending, not paid');
 
         Test.startTest();
-        payment.Status__c = PSK_Constants.PAYMENT_SUCCESS;
-        update payment;
+        // Settle the payment through a minimal record. Payment__c.Passport_Application__c
+        // is a non-reparentable master-detail, and re-sending it on an update -- which
+        // is what happens if the fully-populated record from the factory is used --
+        // is rejected with INACCESSIBLE_FIELD even though the parent has not changed.
+        update new Payment__c(Id = payment.Id, Status__c = PSK_Constants.PAYMENT_SUCCESS);
         Test.stopTest();
 
         System.assertEquals(PSK_Constants.PAY_PAID, paymentStatusOf(app.Id),

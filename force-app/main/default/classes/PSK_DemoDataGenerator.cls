@@ -206,7 +206,11 @@ public with sharing class PSK_DemoDataGenerator {
      * @param confirmToken must be exactly 'DELETE-PSK-DEMO-DATA'
      */
     public static Summary cleanUp(String confirmToken) {
-        if (confirmToken != PSK_Constants.CLEANUP_TOKEN) {
+        // String == / != in Apex is CASE-INSENSITIVE, so `confirmToken !=
+        // CLEANUP_TOKEN` waved through 'delete-psk-demo-data'. This is the guard on
+        // a mass delete, so the comparison has to be exact: String.equals() is the
+        // case-sensitive one.
+        if (confirmToken == null || !PSK_Constants.CLEANUP_TOKEN.equals(confirmToken)) {
             throw new PSK_DemoDataException(
                 'cleanUp refused: pass the exact confirmation token \''
                 + PSK_Constants.CLEANUP_TOKEN + '\' to delete demo data.'
@@ -382,14 +386,14 @@ public with sharing class PSK_DemoDataGenerator {
     @AuraEnabled
     public static String runFromUI(Integer scale) {
         if (!Schema.sObjectType.Passport_Application__c.isCreateable()) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 'You do not have permission to create passport applications.'
             );
         }
         try {
             return JSON.serializePretty(generateAll(scale));
         } catch (Exception e) {
-            throw new AuraHandledException('Demo data generation failed: ' + e.getMessage());
+            throw PSK_ApplicationService.auraError('Demo data generation failed: ' + e.getMessage());
         }
     }
 
@@ -711,12 +715,50 @@ public with sharing class PSK_DemoDataGenerator {
 
     // ================================================================ Stage: PSK__c
 
+    /**
+     * CITY_STATE_PIN covers all 36 states and union territories, but PSK__c.State__c
+     * is a restricted picklist carrying only the 28 states plus Delhi -- it omits
+     * Jammu and Kashmir, Ladakh, Chandigarh, Puducherry, Lakshadweep, Andaman and
+     * Nicobar Islands and Dadra and Nagar Haveli and Daman and Diu, all of which
+     * Citizen__c and Passport_Application__c do accept. Indexing the full list
+     * therefore silently dropped one office in six at scale 1 (i=5 landed on
+     * Srinagar). Filter to what PSK__c can actually store, from the describe, so
+     * this stays correct if the value set is widened later.
+     */
+    private static List<String> officeLocations;
+
+    private static List<String> officeLocations() {
+        if (officeLocations != null) {
+            return officeLocations;
+        }
+        Set<String> allowedStates = new Set<String>();
+        for (Schema.PicklistEntry pe :
+                PSK__c.State__c.getDescribe().getPicklistValues()) {
+            if (pe.isActive()) {
+                allowedStates.add(pe.getValue());
+            }
+        }
+        officeLocations = new List<String>();
+        for (String entry : CITY_STATE_PIN) {
+            if (allowedStates.contains(entry.split('\\|')[1])) {
+                officeLocations.add(entry);
+            }
+        }
+        // Never hand back an empty list: a describe that returns nothing would
+        // otherwise turn into a divide-by-zero on the modulo below.
+        if (officeLocations.isEmpty()) {
+            officeLocations = CITY_STATE_PIN;
+        }
+        return officeLocations;
+    }
+
     private static void buildOffices(Integer scale, Summary sum) {
         Integer howMany = Math.min(target('PSK__c', scale), MAX_OFFICES);
+        List<String> locations = officeLocations();
         List<PSK__c> offices = new List<PSK__c>();
         for (Integer i = 1; i <= howMany; i++) {
             Lcg rnd = new Lcg(9100 + i);
-            List<String> loc = CITY_STATE_PIN[Math.mod(i * 7, CITY_STATE_PIN.size())].split('\\|');
+            List<String> loc = locations[Math.mod(i * 7, locations.size())].split('\\|');
             offices.add(new PSK__c(
                 Name = 'PSK ' + loc[0] + ' (Demo)',
                 Office_Code__c = 'DEMO-PSK' + String.valueOf(i).leftPad(2, '0'),
@@ -945,16 +987,32 @@ public with sharing class PSK_DemoDataGenerator {
                 ? Date.today().addYears(-rnd.between(4, 17)).addDays(-rnd.between(0, 300))
                 : Date.today().addYears(-rnd.between(19, 66)).addDays(-rnd.between(0, 300));
 
-            String category = 'Ordinary';
+            // Passport_Category__c, Booklet_Pages__c, Validity_Years__c,
+            // ECR_Status__c and Police_Verification_Type__c are restricted
+            // picklists that each record type narrows further (Minor is 36 pages /
+            // 5 years / ECNR / No PV, Diplomatic_Official is 60 pages / ECNR / No
+            // PV, Tatkal is Post-PV only, ...). Cycling a value through the full
+            // field value set ignores that and the row is rejected with
+            // INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST, so every one of them is
+            // chosen from the record type's own list.
+            String category = PSK_Constants.allowedAt(
+                PSK_Constants.CATEGORIES_BY_RECORD_TYPE, rtName, i, 'Ordinary');
             String clearance = null;
             if (isDiplomatic) {
-                category = Math.mod(i, 2) == 0 ? 'Diplomatic' : 'Official';
                 List<String> branch = PSK_Constants.CLEARANCE_BY_CATEGORY.get(category);
                 clearance = branch[Math.mod(i, branch.size())];
             }
 
-            String validity = isMinorType ? '5' : (Math.mod(i, 11) == 0 ? '5' : '10');
-            String bookletPages = Math.mod(i, 3) == 0 ? '60' : '36';
+            String validity = PSK_Constants.allowedAt(
+                PSK_Constants.VALIDITY_BY_RECORD_TYPE, rtName,
+                (isMinorType || Math.mod(i, 11) == 0) ? 1 : 0, '10');
+            String bookletPages = PSK_Constants.allowedAt(
+                PSK_Constants.BOOKLET_PAGES_BY_RECORD_TYPE, rtName,
+                Math.mod(i, 3) == 0 ? 1 : 0, '36');
+            String ecrStatus = PSK_Constants.allowedAt(
+                PSK_Constants.ECR_BY_RECORD_TYPE, rtName, i - 1, 'ECNR');
+            String pvType = PSK_Constants.allowedAt(
+                PSK_Constants.PV_TYPES_BY_RECORD_TYPE, rtName, i - 1, 'Post-PV');
 
             Passport_Application__c app = new Passport_Application__c(
                 External_Id__c = 'DEMO-APP-' + i,
@@ -996,12 +1054,10 @@ public with sharing class PSK_DemoDataGenerator {
                 Clearance_Level__c = clearance,
                 Booklet_Pages__c = bookletPages,
                 Validity_Years__c = validity,
-                ECR_Status__c = PSK_Constants.ECR_STATUSES[Math.mod(i - 1, 2)],
+                ECR_Status__c = ecrStatus,
                 Tatkal__c = isTatkal,
 
-                Police_Verification_Type__c = PSK_Constants.PV_TYPES[
-                    Math.mod(i - 1, PSK_Constants.PV_TYPES.size())
-                ],
+                Police_Verification_Type__c = pvType,
                 Risk_Score__c = rnd.between(0, 100),
 
                 Aadhaar_Verified__c = rnd.chance(75),
@@ -1025,11 +1081,12 @@ public with sharing class PSK_DemoDataGenerator {
                 app.Previous_Passport_No__c =
                     PSK_ApplicationService.generateBookletNumber('DEMO-PREV-' + i);
                 app.Previous_Passport_Expiry__c = Date.today().addDays(-rnd.between(1, 900));
-                app.Reason_For_Reissue__c = isLostDamaged
-                    ? (Math.mod(i, 2) == 0 ? 'Lost' : 'Damaged')
-                    : PSK_Constants.REASONS_FOR_REISSUE[
-                        Math.mod(i - 1, PSK_Constants.REASONS_FOR_REISSUE.size())
-                      ];
+                // Re_Issue exposes only Expiry / Pages Exhausted / Change of
+                // Details; Lost_Damaged exposes only Damaged / Lost. Cycling the
+                // whole REASONS_FOR_REISSUE list put 'Damaged' and 'Lost' onto
+                // Re_Issue rows, which the record type rejects.
+                app.Reason_For_Reissue__c = PSK_Constants.allowedAt(
+                    PSK_Constants.REISSUE_REASONS_BY_RECORD_TYPE, rtName, i - 1, null);
             }
 
             applyStatusFields(app, status, i, rnd);
@@ -1685,6 +1742,11 @@ public with sharing class PSK_DemoDataGenerator {
                 ? null : System.now().addDays(-rnd.between(1, 30));
             DateTime delivered = (status == 'Delivered')
                 ? dispatched.addDays(rnd.between(1, 7)) : null;
+            // Expected_Delivery_Not_Before_Dispatch. Anchoring the estimate to
+            // today while Dispatched_Date__c wandered up to 30 days into the past
+            // let the courier "expect" delivery before it had the booklet.
+            Date expectedDelivery = (dispatched == null ? Date.today() : dispatched.date())
+                .addDays(rnd.between(2, 7));
 
             dispatches.add(new Dispatch__c(
                 External_Id__c = 'DEMO-DSP-' + i,
@@ -1697,7 +1759,7 @@ public with sharing class PSK_DemoDataGenerator {
                 Tracking_Number__c = 'DEMOTRK' + String.valueOf(i).leftPad(9, '0'),
                 Dispatched_Date__c = dispatched,
                 Delivered_Date__c = delivered,
-                Expected_Delivery_Date__c = Date.today().addDays(rnd.between(-10, 10)),
+                Expected_Delivery_Date__c = expectedDelivery,
                 Delivery_Attempts__c = (status == 'Returned') ? 3 : rnd.between(0, 2),
                 Received_By__c = (status == 'Delivered')
                     ? rnd.pick(MALE_FIRST) + ' ' + rnd.pick(LAST_NAMES) : null,

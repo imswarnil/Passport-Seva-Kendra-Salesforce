@@ -10,24 +10,32 @@ private class PSK_ApplicationSidebarControllerTest {
         );
         insert app;
 
+        // Each child below carries the fields its own status-conditional
+        // validation rule demands: Verified_Requires_Verified_Date,
+        // Rejected_Requires_Rejection_Reason, Success_Requires_Reference,
+        // Referred_Requires_Station_And_Date and Reviewed_Requires_Reviewer.
         insert new List<Document_Checklist_Item__c>{
-            new Document_Checklist_Item__c(Passport_Application__c = app.Id, Document_Type__c = 'Address Proof', Status__c = 'Verified'),
-            new Document_Checklist_Item__c(Passport_Application__c = app.Id, Document_Type__c = 'Aadhaar Proof', Status__c = 'Rejected'),
+            new Document_Checklist_Item__c(Passport_Application__c = app.Id, Document_Type__c = 'Address Proof', Status__c = 'Verified',
+                Received_Date__c = Date.today().addDays(-3), Verified_Date__c = Date.today().addDays(-1)),
+            new Document_Checklist_Item__c(Passport_Application__c = app.Id, Document_Type__c = 'Aadhaar Proof', Status__c = 'Rejected',
+                Received_Date__c = Date.today().addDays(-3), Rejection_Reason__c = 'Name does not match the birth certificate.'),
             new Document_Checklist_Item__c(Passport_Application__c = app.Id, Document_Type__c = 'Date of Birth Proof', Status__c = 'Required')
         };
 
         insert new Payment__c(
             Passport_Application__c = app.Id, Status__c = 'Success', Amount__c = 1500,
-            Payment_Date__c = System.now()
+            Payment_Date__c = System.now(), Payment_Reference__c = 'SIDEBAR-PAYREF-1'
         );
 
         insert new Police_Verification__c(
-            Passport_Application__c = app.Id, Status__c = 'In Progress', PV_Type__c = 'Pre-PV'
+            Passport_Application__c = app.Id, Status__c = 'In Progress', PV_Type__c = 'Pre-PV',
+            Police_Station__c = 'Lake View PS', Referred_Date__c = Date.today().addDays(-4)
         );
 
         insert new List<Risk_Flag__c>{
             new Risk_Flag__c(Passport_Application__c = app.Id, Flag_Type__c = 'Address Anomaly', Status__c = 'Open', Severity__c = 'Medium'),
-            new Risk_Flag__c(Passport_Application__c = app.Id, Flag_Type__c = 'Duplicate Application', Status__c = 'Dismissed', Severity__c = 'Low')
+            new Risk_Flag__c(Passport_Application__c = app.Id, Flag_Type__c = 'Duplicate Application', Status__c = 'Dismissed', Severity__c = 'Low',
+                Reviewed_By__c = UserInfo.getUserId())
         };
     }
 

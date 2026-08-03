@@ -103,7 +103,10 @@ private class AppointmentTriggerHandlerTest {
     @IsTest
     static void testZeroCapacitySlotIsRejected() {
         PSK__c office = PSK_TestDataFactory.createOffice();
-        Slot__c slot = PSK_TestDataFactory.createSlot(office.Id, 0);
+        // Capacity_Must_Be_Positive rejects a zero outright ("To close a slot,
+        // uncheck Is Available"), so the shape that actually reaches the trigger's
+        // "no capacity configured" guard is a slot with Capacity__c left null.
+        Slot__c slot = PSK_TestDataFactory.createSlotWithoutCapacity(office.Id);
         Passport_Application__c app = PSK_TestDataFactory.createApplication(
             PSK_Constants.STATUS_SUBMITTED);
 

@@ -35,7 +35,8 @@ public with sharing class PSK_ApplicationActionsController {
     @AuraEnabled
     public static ActionResult advance(Id applicationId) {
         Passport_Application__c app = [
-            SELECT Id, Status__c, Payment_Status__c, Police_Verification_Type__c
+            SELECT Id, Status__c, Payment_Status__c, Police_Verification_Type__c,
+                   City__c, District__c
             FROM Passport_Application__c
             WHERE Id = :applicationId
             WITH SECURITY_ENFORCED
@@ -48,7 +49,7 @@ public with sharing class PSK_ApplicationActionsController {
             // application is finished, and No_Backward_Move_Once_Delivered would
             // reject any attempt to move a Delivered record anyway. Anything else
             // reaching here is an unrecognised status.
-            throw new AuraHandledException(terminalMessage(current));
+            throw PSK_ApplicationService.auraError(terminalMessage(current));
         }
         String next = NEXT_STATUS.get(current);
 
@@ -60,10 +61,15 @@ public with sharing class PSK_ApplicationActionsController {
         }
         if (current == 'Document Verification') {
             app.Documents_Verified__c = true;
+            // Referred_Requires_Station_And_Date: any verification past
+            // 'Not Initiated' must name the station it was referred to, so the
+            // record is stamped with the jurisdiction taken from the application's
+            // own address rather than left blank for the officer to fill in.
             insert new Police_Verification__c(
                 Passport_Application__c = applicationId,
                 Status__c = 'Referred',
                 PV_Type__c = String.isBlank(app.Police_Verification_Type__c) ? 'Post-PV' : app.Police_Verification_Type__c,
+                Police_Station__c = policeStationFor(app),
                 Referred_Date__c = Date.today()
             );
         }
@@ -127,7 +133,7 @@ public with sharing class PSK_ApplicationActionsController {
             LIMIT 1
         ];
         if (app.Status__c == 'Delivered' || app.Status__c == 'Rejected' || app.Status__c == 'Cancelled') {
-            throw new AuraHandledException('Cannot reject an application in status "' + app.Status__c + '".');
+            throw PSK_ApplicationService.auraError('Cannot reject an application in status "' + app.Status__c + '".');
         }
         app.Status__c = 'Rejected';
         app.Stage_Entered_Date__c = System.now();
@@ -173,7 +179,7 @@ public with sharing class PSK_ApplicationActionsController {
             LIMIT 1
         ];
         if (app.Status__c == 'Delivered' || app.Status__c == 'Rejected' || app.Status__c == 'Cancelled') {
-            throw new AuraHandledException('Cannot cancel an application in status "' + app.Status__c + '".');
+            throw PSK_ApplicationService.auraError('Cannot cancel an application in status "' + app.Status__c + '".');
         }
         app.Status__c = 'Cancelled';
         app.Stage_Entered_Date__c = System.now();
@@ -228,6 +234,22 @@ public with sharing class PSK_ApplicationActionsController {
             a.blockedReason = terminalMessage(current);
         }
         return a;
+    }
+
+    /**
+     * The station a verification is referred to. Police_Station__c is Text(120)
+     * and required from 'Referred' onwards by Referred_Requires_Station_And_Date;
+     * the applicant's own locality is the right default, and an officer can
+     * correct it on the record.
+     */
+    private static String policeStationFor(Passport_Application__c app) {
+        String locality = String.isNotBlank(app.City__c)
+            ? app.City__c
+            : (String.isNotBlank(app.District__c) ? app.District__c : null);
+        String station = String.isBlank(locality)
+            ? 'Local Police Station'
+            : locality + ' City Police Station';
+        return station.length() > 120 ? station.left(120) : station;
     }
 
     private static String terminalMessage(String current) {

@@ -49,7 +49,7 @@ public with sharing class PSK_HomeController {
     @AuraEnabled(cacheable=true)
     public static HomeStats getHomeStats(Id recordTypeId) {
         if (!Schema.sObjectType.Passport_Application__c.isAccessible()) {
-            throw new AuraHandledException('Insufficient access to Passport Application.');
+            throw PSK_ApplicationService.auraError('Insufficient access to Passport Application.');
         }
 
         HomeStats stats = new HomeStats();
@@ -85,9 +85,15 @@ public with sharing class PSK_HomeController {
             new Map<String, Object>{ 'recordTypeId' => recordTypeId },
             AccessLevel.USER_MODE
         );
+        // Granted_Date__c is a DateTime. Binding a Date to it resolves to that
+        // day's MIDNIGHT, so the old '<= :todayDate' upper bound silently excluded
+        // everything granted today -- the common case for this tile. A half-open
+        // window ending at the start of tomorrow covers the whole of today while
+        // still keeping future-dated rows out.
+        Date tomorrow = todayDate.addDays(1);
         stats.grantedThisMonthCount = Database.countQueryWithBinds(
-            'SELECT COUNT() FROM Passport_Application__c WHERE Granted_Date__c >= :monthStart AND Granted_Date__c <= :todayDate' + rtFilter,
-            new Map<String, Object>{ 'monthStart' => monthStart, 'todayDate' => todayDate, 'recordTypeId' => recordTypeId },
+            'SELECT COUNT() FROM Passport_Application__c WHERE Granted_Date__c >= :monthStart AND Granted_Date__c < :tomorrow' + rtFilter,
+            new Map<String, Object>{ 'monthStart' => monthStart, 'tomorrow' => tomorrow, 'recordTypeId' => recordTypeId },
             AccessLevel.USER_MODE
         );
         stats.tatkalCount = Database.countQueryWithBinds(
@@ -133,7 +139,7 @@ public with sharing class PSK_HomeController {
     @AuraEnabled(cacheable=true)
     public static List<Passport_Application__c> getRecentApplications(Integer recordLimit, Id recordTypeId) {
         if (!Schema.sObjectType.Passport_Application__c.isAccessible()) {
-            throw new AuraHandledException('Insufficient access to Passport Application.');
+            throw PSK_ApplicationService.auraError('Insufficient access to Passport Application.');
         }
         Integer safeLimit = (recordLimit == null || recordLimit <= 0 || recordLimit > 50) ? 10 : recordLimit;
         String rtFilter = recordTypeId == null ? '' : ' WHERE RecordTypeId = :recordTypeId';

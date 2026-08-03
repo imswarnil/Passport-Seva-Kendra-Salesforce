@@ -49,7 +49,7 @@ public with sharing class PSK_OfficeCapacityController {
     @AuraEnabled(cacheable=true)
     public static OfficeUtilisation getUtilisation(Id officeId, Integer days) {
         if (officeId == null) {
-            throw new AuraHandledException('An office id is required.');
+            throw PSK_ApplicationService.auraError('An office id is required.');
         }
         Integer horizon = (days == null || days <= 0) ? 14 : Math.min(days, 90);
 
@@ -61,7 +61,7 @@ public with sharing class PSK_OfficeCapacityController {
             LIMIT 1
         ];
         if (offices.isEmpty()) {
-            throw new AuraHandledException('Office not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Office not found, or you do not have access to it.');
         }
         PSK__c office = offices[0];
 

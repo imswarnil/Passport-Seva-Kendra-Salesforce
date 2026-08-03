@@ -11,7 +11,7 @@ public with sharing class PSK_PassportIssuanceController {
     @AuraEnabled
     public static PSK_ApplicationService.IssuanceResult issue(Id applicationId) {
         if (applicationId == null) {
-            throw new AuraHandledException('An application id is required.');
+            throw PSK_ApplicationService.auraError('An application id is required.');
         }
 
         List<Passport_Application__c> apps = [
@@ -23,26 +23,26 @@ public with sharing class PSK_PassportIssuanceController {
             LIMIT 1
         ];
         if (apps.isEmpty()) {
-            throw new AuraHandledException('Application not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Application not found, or you do not have access to it.');
         }
         Passport_Application__c app = apps[0];
 
         if (!Schema.sObjectType.Passport__c.isCreateable()) {
-            throw new AuraHandledException('You do not have permission to create passports.');
+            throw PSK_ApplicationService.auraError('You do not have permission to create passports.');
         }
         if (app.Status__c == PSK_Constants.STATUS_REJECTED
                 || app.Status__c == PSK_Constants.STATUS_CANCELLED) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 'A passport cannot be issued for an application in status "' + app.Status__c + '".'
             );
         }
         if (app.Payment_Status__c != PSK_Constants.PAY_PAID) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 'The application fee must be fully paid before a passport can be issued.'
             );
         }
         if (!PSK_Constants.isAtOrBeyond(app.Status__c, PSK_Constants.STATUS_GRANTING)) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 'The application must reach Granting before a passport can be issued. Current status: '
                 + app.Status__c + '.'
             );
@@ -53,10 +53,10 @@ public with sharing class PSK_PassportIssuanceController {
 
         PSK_ApplicationService.IssuanceResult result = results.get(applicationId);
         if (result == null) {
-            throw new AuraHandledException('Passport issuance did not return a result.');
+            throw PSK_ApplicationService.auraError('Passport issuance did not return a result.');
         }
         if (result.passportId == null) {
-            throw new AuraHandledException(
+            throw PSK_ApplicationService.auraError(
                 String.isBlank(result.message) ? 'Passport issuance failed.' : result.message
             );
         }

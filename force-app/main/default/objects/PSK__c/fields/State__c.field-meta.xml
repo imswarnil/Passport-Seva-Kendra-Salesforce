@@ -155,6 +155,41 @@
                 <default>false</default>
                 <label>Delhi</label>
             </value>
+            <value>
+                <fullName>Andaman and Nicobar Islands</fullName>
+                <default>false</default>
+                <label>Andaman and Nicobar Islands</label>
+            </value>
+            <value>
+                <fullName>Chandigarh</fullName>
+                <default>false</default>
+                <label>Chandigarh</label>
+            </value>
+            <value>
+                <fullName>Dadra and Nagar Haveli and Daman and Diu</fullName>
+                <default>false</default>
+                <label>Dadra and Nagar Haveli and Daman and Diu</label>
+            </value>
+            <value>
+                <fullName>Jammu and Kashmir</fullName>
+                <default>false</default>
+                <label>Jammu and Kashmir</label>
+            </value>
+            <value>
+                <fullName>Ladakh</fullName>
+                <default>false</default>
+                <label>Ladakh</label>
+            </value>
+            <value>
+                <fullName>Lakshadweep</fullName>
+                <default>false</default>
+                <label>Lakshadweep</label>
+            </value>
+            <value>
+                <fullName>Puducherry</fullName>
+                <default>false</default>
+                <label>Puducherry</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

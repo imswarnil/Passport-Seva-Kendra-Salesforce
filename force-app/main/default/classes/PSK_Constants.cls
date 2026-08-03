@@ -281,6 +281,98 @@ public with sharing class PSK_Constants {
             'Official' => new List<String>{ 'Govt Deputation', 'Delegation' }
         };
 
+    /**
+     * Record-type picklist availability on Passport_Application__c.
+     *
+     * A restricted picklist value is only writable if it is ALSO assigned to the
+     * record type -- otherwise the platform rejects the row with
+     * INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST. These maps mirror the
+     * <picklistValues> blocks in
+     * objects/Passport_Application__c/recordTypes/*.recordType-meta.xml, so any
+     * Apex that stamps one of these fields can pick a legal value for the record
+     * type it is writing. Keep them in step with that metadata.
+     */
+    public static final Map<String, List<String>> PV_TYPES_BY_RECORD_TYPE =
+        new Map<String, List<String>>{
+            RT_FRESH => new List<String>{ 'Pre-PV', 'Post-PV' },
+            RT_RE_ISSUE => new List<String>{ 'Post-PV', 'No PV' },
+            RT_TATKAL => new List<String>{ 'Post-PV' },
+            RT_MINOR => new List<String>{ 'No PV' },
+            RT_LOST_DAMAGED => new List<String>{ 'Pre-PV' },
+            RT_DIPLOMATIC_OFFICIAL => new List<String>{ 'No PV' }
+        };
+
+    public static final Map<String, List<String>> BOOKLET_PAGES_BY_RECORD_TYPE =
+        new Map<String, List<String>>{
+            RT_FRESH => new List<String>{ '36', '60' },
+            RT_RE_ISSUE => new List<String>{ '36', '60' },
+            RT_TATKAL => new List<String>{ '36', '60' },
+            RT_MINOR => new List<String>{ '36' },
+            RT_LOST_DAMAGED => new List<String>{ '36', '60' },
+            RT_DIPLOMATIC_OFFICIAL => new List<String>{ '60' }
+        };
+
+    public static final Map<String, List<String>> VALIDITY_BY_RECORD_TYPE =
+        new Map<String, List<String>>{
+            RT_FRESH => new List<String>{ '10', '5' },
+            RT_RE_ISSUE => new List<String>{ '10', '5' },
+            RT_TATKAL => new List<String>{ '10', '5' },
+            RT_MINOR => new List<String>{ '5' },
+            RT_LOST_DAMAGED => new List<String>{ '10', '5' },
+            RT_DIPLOMATIC_OFFICIAL => new List<String>{ '10', '5' }
+        };
+
+    public static final Map<String, List<String>> ECR_BY_RECORD_TYPE =
+        new Map<String, List<String>>{
+            RT_FRESH => new List<String>{ 'ECR', 'ECNR' },
+            RT_RE_ISSUE => new List<String>{ 'ECR', 'ECNR' },
+            RT_TATKAL => new List<String>{ 'ECR', 'ECNR' },
+            RT_MINOR => new List<String>{ 'ECNR' },
+            RT_LOST_DAMAGED => new List<String>{ 'ECR', 'ECNR' },
+            RT_DIPLOMATIC_OFFICIAL => new List<String>{ 'ECNR' }
+        };
+
+    /** Record types that expose Reason_For_Reissue__c at all, and with which values. */
+    public static final Map<String, List<String>> REISSUE_REASONS_BY_RECORD_TYPE =
+        new Map<String, List<String>>{
+            RT_RE_ISSUE => new List<String>{ 'Expiry', 'Pages Exhausted', 'Change of Details' },
+            RT_TATKAL => new List<String>{ 'Expiry', 'Damaged', 'Lost' },
+            RT_LOST_DAMAGED => new List<String>{ 'Damaged', 'Lost' }
+        };
+
+    /** Only Diplomatic_Official may carry a non-Ordinary Passport_Category__c. */
+    public static final Map<String, List<String>> CATEGORIES_BY_RECORD_TYPE =
+        new Map<String, List<String>>{
+            RT_FRESH => new List<String>{ 'Ordinary' },
+            RT_RE_ISSUE => new List<String>{ 'Ordinary' },
+            RT_TATKAL => new List<String>{ 'Ordinary' },
+            RT_MINOR => new List<String>{ 'Ordinary' },
+            RT_LOST_DAMAGED => new List<String>{ 'Ordinary' },
+            RT_DIPLOMATIC_OFFICIAL => new List<String>{ 'Diplomatic', 'Official' }
+        };
+
+    /**
+     * First legal value of `field` for `recordType`, or `fallback` when the record
+     * type is unknown. Deterministic: callers that need variety index into the
+     * matching map themselves.
+     */
+    public static String firstAllowed(Map<String, List<String>> byRecordType,
+                                      String recordType, String fallback) {
+        List<String> allowed = byRecordType.get(recordType);
+        return (allowed == null || allowed.isEmpty()) ? fallback : allowed[0];
+    }
+
+    /** Deterministic pick of a record-type-legal value, cycling with `index`. */
+    public static String allowedAt(Map<String, List<String>> byRecordType,
+                                   String recordType, Integer index, String fallback) {
+        List<String> allowed = byRecordType.get(recordType);
+        if (allowed == null || allowed.isEmpty()) {
+            return fallback;
+        }
+        Integer i = (index == null) ? 0 : Math.abs(index);
+        return allowed[Math.mod(i, allowed.size())];
+    }
+
     // --------------------------------------------------------------- Demo data
     public static final String DEMO_PREFIX = 'DEMO-';
     public static final String CLEANUP_TOKEN = 'DELETE-PSK-DEMO-DATA';

@@ -89,7 +89,7 @@ public with sharing class PSK_Citizen360Controller {
     @AuraEnabled(cacheable=true)
     public static CitizenProfile getProfile(Id citizenId) {
         if (citizenId == null) {
-            throw new AuraHandledException('A citizen id is required.');
+            throw PSK_ApplicationService.auraError('A citizen id is required.');
         }
 
         List<Citizen__c> citizens = [
@@ -104,7 +104,7 @@ public with sharing class PSK_Citizen360Controller {
             LIMIT 1
         ];
         if (citizens.isEmpty()) {
-            throw new AuraHandledException('Citizen not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Citizen not found, or you do not have access to it.');
         }
         Citizen__c c = citizens[0];
 

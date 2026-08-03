@@ -53,7 +53,7 @@ public with sharing class PSK_PassportController {
     @AuraEnabled(cacheable=true)
     public static PassportDetail getPassport(Id passportId) {
         if (passportId == null) {
-            throw new AuraHandledException('A passport id is required.');
+            throw PSK_ApplicationService.auraError('A passport id is required.');
         }
 
         List<Passport__c> records = [
@@ -69,7 +69,7 @@ public with sharing class PSK_PassportController {
             LIMIT 1
         ];
         if (records.isEmpty()) {
-            throw new AuraHandledException('Passport not found, or you do not have access to it.');
+            throw PSK_ApplicationService.auraError('Passport not found, or you do not have access to it.');
         }
         Passport__c p = records[0];
 
