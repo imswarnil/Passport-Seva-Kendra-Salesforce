@@ -629,6 +629,11 @@
         <field>Police_Verification__c.Verifying_Officer__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Passport_Application__c.Approval_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>PSK Granting Officer</label>
     <objectPermissions>

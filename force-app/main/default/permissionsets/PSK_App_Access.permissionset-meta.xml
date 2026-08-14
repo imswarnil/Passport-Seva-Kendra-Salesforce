@@ -1056,6 +1056,11 @@
         <field>Dispatch__c.Transit_Days__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Passport_Application__c.Approval_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>PSK App Access</label>
     <objectPermissions>

@@ -51,6 +51,7 @@ private class PSK_PassportIssuanceControllerTest {
         Passport_Application__c app = PSK_TestDataFactory.buildApplication(
             PSK_Constants.STATUS_DOC_VERIFICATION);
         app.Payment_Status__c = PSK_Constants.PAY_PAID;
+        app.Citizen__c = PSK_TestDataFactory.createCitizen().Id;
         insert app;
         PSK_AutomationControl.reset();
 
@@ -73,6 +74,7 @@ private class PSK_PassportIssuanceControllerTest {
         Passport_Application__c app = PSK_TestDataFactory.buildApplication(
             PSK_Constants.STATUS_POLICE_VERIFICATION);
         app.Payment_Status__c = PSK_Constants.PAY_PENDING;
+        app.Citizen__c = PSK_TestDataFactory.createCitizen().Id;
         insert app;
         PSK_AutomationControl.reset();
 
@@ -92,6 +94,7 @@ private class PSK_PassportIssuanceControllerTest {
         Passport_Application__c app = PSK_TestDataFactory.buildApplication(
             PSK_Constants.STATUS_REJECTED);
         app.Payment_Status__c = PSK_Constants.PAY_PAID;
+        app.Citizen__c = PSK_TestDataFactory.createCitizen().Id;
         insert app;
         PSK_AutomationControl.reset();
 
@@ -144,6 +147,7 @@ private class PSK_PassportIssuanceControllerTest {
         Passport_Application__c unpaid = PSK_TestDataFactory.buildApplication(
             PSK_Constants.STATUS_SUBMITTED);
         unpaid.Payment_Status__c = PSK_Constants.PAY_PENDING;
+        unpaid.Citizen__c = PSK_TestDataFactory.createCitizen().Id;
         insert unpaid;
         PSK_AutomationControl.reset();
 

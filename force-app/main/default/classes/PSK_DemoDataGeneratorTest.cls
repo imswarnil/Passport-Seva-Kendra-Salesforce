@@ -361,11 +361,20 @@ private class PSK_DemoDataGeneratorTest {
     @IsTest
     static void testBackfillCitizens() {
         // Insert applications with no citizen by bypassing the reverse-create.
+        //
+        // Status__c must stay Draft here: Citizen_Required_On_Submit now forces
+        // every non-Draft application to carry a Citizen__c, so a blank-citizen
+        // record can no longer be persisted at any other status even with the
+        // trigger bypassed (the bypass only skips ensureCitizens(), it cannot
+        // skip the validation rule -- Apex DML never can). backfillCitizens()
+        // itself queries purely on "Citizen__c = NULL" with no status filter, so
+        // Draft orphans exercise the exact same code path the Submitted orphans
+        // would have.
         PSK_AutomationControl.reset();
         PSK_AutomationControl.bypassTriggers = true;
         List<Passport_Application__c> apps = new List<Passport_Application__c>();
         for (Integer i = 0; i < 5; i++) {
-            apps.add(PSK_TestDataFactory.buildApplication(PSK_Constants.STATUS_SUBMITTED));
+            apps.add(PSK_TestDataFactory.buildApplication(PSK_Constants.STATUS_DRAFT));
         }
         // Two applications for the SAME person must end up sharing one citizen.
         Passport_Application__c twin = apps[0].clone(false, true, false, false);

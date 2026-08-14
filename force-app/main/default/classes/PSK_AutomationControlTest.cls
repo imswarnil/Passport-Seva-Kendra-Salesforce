@@ -36,8 +36,15 @@ private class PSK_AutomationControlTest {
         PSK_AutomationControl.reset();
         PSK_AutomationControl.bypassTriggers = true;
 
+        // Status__c must stay Draft: Citizen_Required_On_Submit requires every
+        // non-Draft application to carry a Citizen__c, and the bypass above only
+        // suppresses the trigger's ensureCitizens() reverse-create -- it cannot
+        // suppress the validation rule (Apex DML can never bypass a validation
+        // rule). Draft is exempt from the rule while still exercising
+        // ensureCitizens()/applyFees(), which run unconditionally off status, so
+        // the bypass assertions below remain meaningful.
         Passport_Application__c app = PSK_TestDataFactory.buildApplication(
-            PSK_Constants.STATUS_SUBMITTED);
+            PSK_Constants.STATUS_DRAFT);
         app.Fee__c = null;
         insert app;
 

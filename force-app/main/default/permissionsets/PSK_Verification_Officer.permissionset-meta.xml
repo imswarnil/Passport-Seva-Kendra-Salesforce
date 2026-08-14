@@ -5,6 +5,10 @@
         <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
+        <application>PSK_Police_Verification_Console</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
         <application>Passport_Validator</application>
         <visible>true</visible>
     </applicationVisibilities>

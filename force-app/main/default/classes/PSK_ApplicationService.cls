@@ -700,6 +700,55 @@ public with sharing class PSK_ApplicationService {
         return String.isBlank(composed) ? 'Unnamed Citizen' : composed.left(80);
     }
 
+    // ------------------------------------------------------- Ownership routing
+
+    private static Map<String, Id> queueIdByDeveloperName;
+
+    /**
+     * Id of a Queue by DeveloperName, or null if no such queue exists (never
+     * throws -- a missing queue in a scratch/dev org should not break saves).
+     * Cached per transaction.
+     */
+    public static Id queueId(String developerName) {
+        if (String.isBlank(developerName)) {
+            return null;
+        }
+        if (queueIdByDeveloperName == null) {
+            queueIdByDeveloperName = new Map<String, Id>();
+            for (Group g : [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue']) {
+                queueIdByDeveloperName.put(g.DeveloperName, g.Id);
+            }
+        }
+        return queueIdByDeveloperName.get(developerName);
+    }
+
+    /**
+     * Auto-assign OwnerId to the specialist queue for the stage a record is
+     * entering, replacing manual assignment rules. Only fires on the transition
+     * INTO a stage that has a queue (see PSK_Constants.APPLICATION_STAGE_QUEUE),
+     * so an officer who has already picked up a record out of the queue keeps it
+     * until the record's status moves again -- this never fights a manual
+     * reassignment mid-stage.
+     */
+    public static void routeOwnership(List<Passport_Application__c> newList,
+                                      Map<Id, Passport_Application__c> oldMap) {
+        for (Passport_Application__c app : newList) {
+            String priorStatus = (oldMap != null && app.Id != null && oldMap.containsKey(app.Id))
+                ? oldMap.get(app.Id).Status__c : null;
+            if (app.Status__c == priorStatus) {
+                continue;
+            }
+            String queueName = PSK_Constants.APPLICATION_STAGE_QUEUE.get(app.Status__c);
+            if (queueName == null) {
+                continue;
+            }
+            Id qId = queueId(queueName);
+            if (qId != null) {
+                app.OwnerId = qId;
+            }
+        }
+    }
+
     // -------------------------------------------------- Document checklist seeds
 
     /** Required document types by application record type developer name. */
@@ -729,5 +778,63 @@ public with sharing class PSK_ApplicationService {
         }
         // Fresh and anything unmapped.
         return new List<String>{ 'Aadhaar Proof', 'Address Proof', 'Date of Birth Proof' };
+    }
+
+    /**
+     * Bulk, idempotent version of the logic behind
+     * PSK_DocumentChecklistController.seedFromTemplate -- shared so a checklist
+     * seeded by the trigger (on Submit) and one seeded by the button are
+     * generated the same way. Skips document types already on the checklist.
+     * @return number of checklist items created.
+     */
+    public static Integer seedChecklistItems(Set<Id> applicationIds) {
+        if (applicationIds == null || applicationIds.isEmpty()) {
+            return 0;
+        }
+        Map<Id, Passport_Application__c> apps = new Map<Id, Passport_Application__c>([
+            SELECT Id, RecordTypeId FROM Passport_Application__c WHERE Id IN :applicationIds
+        ]);
+        if (apps.isEmpty()) {
+            return 0;
+        }
+
+        Map<Id, Set<String>> existingByApp = new Map<Id, Set<String>>();
+        for (Document_Checklist_Item__c item : [
+            SELECT Passport_Application__c, Document_Type__c
+            FROM Document_Checklist_Item__c
+            WHERE Passport_Application__c IN :applicationIds
+        ]) {
+            if (!existingByApp.containsKey(item.Passport_Application__c)) {
+                existingByApp.put(item.Passport_Application__c, new Set<String>());
+            }
+            existingByApp.get(item.Passport_Application__c).add(item.Document_Type__c);
+        }
+
+        List<Document_Checklist_Item__c> toInsert = new List<Document_Checklist_Item__c>();
+        for (Id appId : apps.keySet()) {
+            String rtName = applicationRecordTypeName(apps.get(appId).RecordTypeId);
+            Set<String> already = existingByApp.containsKey(appId) ? existingByApp.get(appId) : new Set<String>();
+            for (String docType : checklistTemplate(rtName)) {
+                if (already.contains(docType)) {
+                    continue;
+                }
+                toInsert.add(new Document_Checklist_Item__c(
+                    Passport_Application__c = appId,
+                    Document_Type__c = docType,
+                    Status__c = PSK_Constants.DOC_REQUIRED,
+                    External_Id__c = 'DCI-' + appId + '-' + docType.left(15)
+                ));
+            }
+        }
+        if (toInsert.isEmpty()) {
+            return 0;
+        }
+        Integer created = 0;
+        for (Database.SaveResult sr : Database.insert(toInsert, false)) {
+            if (sr.isSuccess()) {
+                created++;
+            }
+        }
+        return created;
     }
 }
