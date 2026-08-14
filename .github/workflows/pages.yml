@@ -2,7 +2,7 @@ name: Deploy Jekyll site to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feature/psk-full-buildout"]
     paths:
       - "salesforce-passport/**"
       - ".github/workflows/pages.yml"
