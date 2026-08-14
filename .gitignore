@@ -13,3 +13,10 @@ manifest/.*.json
 .idea/
 .vscode/
 *.swp
+
+# Jekyll (jekyll/)
+jekyll/_site/
+jekyll/.jekyll-cache/
+jekyll/.jekyll-metadata
+jekyll/.bundle/
+jekyll/vendor/
