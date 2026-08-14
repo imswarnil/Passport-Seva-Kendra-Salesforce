@@ -38,7 +38,19 @@ body {
   padding-top: 16px;
   padding-bottom: 16px;
 }
-.brand__logo { height: 28px; display: block; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.brand__mark { font-size: 1.3rem; line-height: 1; }
+.brand__word {
+  color: #eef0fa;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+}
 .site-nav a {
   color: #dfe3f2;
   text-decoration: none;
