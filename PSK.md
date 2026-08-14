@@ -369,37 +369,40 @@ Then do the manual steps that metadata cannot express: per-record-type Lightning
 
 ## 9. Status — built / in flight / not started
 
+See also: **[WORKFLOW.md](WORKFLOW.md)** (end-to-end process + persona access walkthrough), **[CASE_STUDY.md](CASE_STUDY.md)** / **[PERSONAS.md](PERSONAS.md)** (portfolio narrative and qualitative personas), **[n8n.md](n8n.md)** (integration/automation roadmap).
+
 ### Built and deployed
 | Layer | What |
 |---|---|
-| Data model | All 16 objects, ~230 custom fields, 9 record types across 2 objects, `Fee_Matrix__mdt` (10 records), `SLA_Config__mdt` (26 records) |
+| Data model | All 16 objects, ~230+ custom fields, 9 record types across 2 objects, `Fee_Matrix__mdt` (10 records), `SLA_Config__mdt` (26 records), `Approval_Status__c` on `Passport_Application__c` |
 | Vocabulary | 13 global value sets |
-| Validation | 4 active rules on `Passport_Application__c` |
-| Security | 11 roles, 6 public groups, 6 queues, 9 criteria-based sharing rules, `PSK_App_Access` |
-| UI | 2 custom apps, 17 tabs, 3 Lightning pages, 4 LWCs, 1 Path, 8 compact layouts |
-| Apex | 5 `PSK_*` classes with test classes |
-| Demo data | ~40 PSK records seeded across applications, offices, slots, appointments, checklist items, payments, PVs, objections, risk flags, notification logs |
+| Validation | 60 validation rules across every PSK object (13 on `Passport_Application__c` alone, including `Diplomatic_Official_Requires_Approval`) |
+| Security | 11 roles, 6 public groups, 6 queues, 9 criteria-based sharing rules, 8 persona permission sets (`PSK_App_Access`, `PSK_Auditor_Read_Only`, `PSK_Fulfilment_Officer`, `PSK_Granting_Officer`, `PSK_Office_Manager`, `PSK_Officer`, `PSK_Reference_Data_Admin`, `PSK_Verification_Officer`), 3 permission set groups |
+| Apex | 4 triggers (`AppointmentTrigger`, `PassportApplicationTrigger`, `PassportTrigger`, `PaymentTrigger`) + handlers, ~18 `PSK_*` service/controller classes, all with test classes; 233 local tests, 220+ green (a handful of unrelated inherited Trailhead/Wave Analytics template tests fail on a pre-existing hardcoded-date bug — see below) |
+| **Automation — auto-assignment** | `PSK_ApplicationService.routeOwnership()` (called from `PassportApplicationTriggerHandler`) reassigns `OwnerId` to the matching queue (`Document_Verification`, `Police_Verification`, `Granting`, `Printing_And_Dispatch`) the moment `Status__c` transitions into that stage — no manual assignment rules to maintain. A new `Police_Verification__c` record is likewise auto-assigned to the `Police_Verification` queue on creation |
+| **Automation — document checklist** | `PSK_ApplicationService.seedChecklistItems()` auto-generates the required-document checklist (from `checklistTemplate()`, keyed by record type) the moment an application transitions Draft → Submitted |
+| **Automation — approval process** | `Diplomatic_Official_Grant_Approval` (`force-app/main/default/approvalProcesses/`) gates Diplomatic/Official grants. `PSK_ApplicationActionsController.advance()` auto-submits the moment such a record enters Granting; `Diplomatic_Official_Requires_Approval` blocks it from reaching Printing until `Approval_Status__c = Approved`. **Known placeholder:** the approver is currently the org admin user rather than the `Regional_Passport_Officer` role — role-based approver routing hit metadata-format friction this session (see git history) and needs a Setup-level fix |
+| **Automation — fulfilment** | `Passport__c` + `Print_Job__c` minted on entering Printing, `Dispatch__c` on entering Dispatch — idempotent, unchanged from the original build |
+| UI | 4 custom apps (`Application_Management_Console`, `PSK_Operations_Console`, `Passport_Validator`, `PSK_Police_Verification_Console`), 21 tabs, Lightning Record Pages for every object (no classic Layouts anywhere — this build uses FlexiPages exclusively), 14 LWC bundles, 1 Path (Fresh only), 8 compact layouts |
+| Demo data | `PSK_DemoDataGenerator` seeds all 16 objects, idempotently. Live counts in `psk-dev` as of this session: 162 applications, 71 passports, 56 print jobs, 51 dispatches, 60 family members, 57 police verifications, 94 appointments, 66 slots |
 
-### In flight
+### In flight / known gaps
 | Item | Note |
 |---|---|
-| The 7 persona permission sets | Being authored. `PSK_App_Access` is the interim catch-all |
-| Permission set groups | Depend on the persona sets landing first |
-| Trigger + service layer | `PSK_Constants` and `PSK_AutomationControl` are on disk without `.cls-meta.xml`; the handlers that use them are not written yet |
-| Page layouts for the newest objects | `Citizen__c`, `Passport__c`, `Print_Job__c`, `Dispatch__c`, `Family_Member__c` have no `Layout` metadata and fall back to an auto-generated layout |
-| `Citizen_Required_On_Submit` | Ships **inactive**. Activate only after every existing application has a `Citizen__c` value — otherwise historical records become unsaveable |
-| Citizen / Passport / Print Job / Dispatch / Family Member demo data | Objects exist and are empty |
+| Diplomatic/Official approval routing | Approver is a single admin user placeholder, not the `Regional_Passport_Officer` role — see above |
+| `Family_Member__c` has no dedicated FlexiPage | Reachable only via the `Citizen__c.New_Family_Member` quick action |
+| Path only on `Fresh` record type | The other five record types render no stage bar |
+| PII field-level security drift | `WORKFLOW.md` flags that `PSK_Verification_Officer`, `PSK_Granting_Officer`, `PSK_Office_Manager`, and `PSK_Officer` currently have `Aadhaar_Token__c` etc. as fully editable, not matching the read-only-PII intent in §5.2 — worth a permission-set audit |
+| Inherited Trailhead/Wave Analytics template tests | `DataManager_QuotaTest`, `DataManager_CleanUpTest`, `DataManager_OpportunityTest`, `DataManager_controllerTest`, `DataManager_OpportunityRelatedTest`, `DataManager_ActivityTest` fail on a hardcoded `ClosedDate` assumed to be in the past — unrelated to PSK, not touched per §10 |
 
 ### Not started
 | Item | Why it matters |
 |---|---|
 | **Visa department** — `Visa_Application__c`, `Country__c`, `Sponsor__c` | The `Visa_Processing_Team` role, `PSK_Visa_Team` group and `PSK_Visa_Type` value set already exist waiting for them |
-| **Approval processes** | `approvalProcesses/` is absent entirely. Granting a Diplomatic or Official passport is currently a picklist change by anyone with edit access. This is the highest-priority gap in the org |
 | **Experience Cloud citizen site** | The applicant journey is entirely staff-mediated. The inherited *Internal Zone* community is Service Analytics template residue, not a PSK portal |
 | **Reports, dashboards, custom report types** | Zero exist for any PSK object. Nothing can answer an operational question in aggregate |
-| **Paths for the other 5 record types** | Only `Fresh` has a stage bar |
 | **Region-based sharing** | Needs a real `Region__c` field on the application first (see §5.5) |
-| **n8n / Twilio / AI integrations** | `Notification_Log__c` exists with a `Provider_Message_Id__c` idempotency key and is empty of real sends |
+| **n8n / Twilio / AI integrations** | Not yet built. `Notification_Log__c` exists with a `Provider_Message_Id__c` idempotency key ready for it. Full roadmap in [n8n.md](n8n.md) |
 | **Hindi / regional translation** | `objectTranslations/` are en_US stubs, despite `Citizen__c.Preferred_Language__c` existing |
 
 ---

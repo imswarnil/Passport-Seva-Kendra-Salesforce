@@ -36,7 +36,7 @@ public with sharing class PSK_ApplicationActionsController {
     public static ActionResult advance(Id applicationId) {
         Passport_Application__c app = [
             SELECT Id, Status__c, Payment_Status__c, Police_Verification_Type__c,
-                   City__c, District__c
+                   City__c, District__c, RecordType.DeveloperName, Approval_Status__c
             FROM Passport_Application__c
             WHERE Id = :applicationId
             WITH SECURITY_ENFORCED
@@ -65,12 +65,19 @@ public with sharing class PSK_ApplicationActionsController {
             // 'Not Initiated' must name the station it was referred to, so the
             // record is stamped with the jurisdiction taken from the application's
             // own address rather than left blank for the officer to fill in.
+            // OwnerId is set to the Police_Verification queue so the report lands
+            // in front of the whole verification team, not just whoever clicked
+            // Advance -- the equivalent of an assignment rule, without one to
+            // maintain.
             insert new Police_Verification__c(
                 Passport_Application__c = applicationId,
                 Status__c = 'Referred',
                 PV_Type__c = String.isBlank(app.Police_Verification_Type__c) ? 'Post-PV' : app.Police_Verification_Type__c,
                 Police_Station__c = policeStationFor(app),
-                Referred_Date__c = Date.today()
+                Referred_Date__c = Date.today(),
+                OwnerId = PSK_ApplicationService.queueId(PSK_Constants.QUEUE_POLICE_VERIFICATION) != null
+                    ? PSK_ApplicationService.queueId(PSK_Constants.QUEUE_POLICE_VERIFICATION)
+                    : UserInfo.getUserId()
             );
         }
         if (current == 'Police Verification') {
@@ -96,10 +103,41 @@ public with sharing class PSK_ApplicationActionsController {
         app.Stage_Entered_Date__c = System.now();
         update app;
 
+        String message = 'Application moved to ' + next + '.';
+        // Diplomatic/Official passports cannot be granted by a bare status change:
+        // entering Granting auto-submits the record for approval by a Regional
+        // Passport Officer. Require_Approval_Before_Printing blocks the record
+        // from ever reaching Printing until that approval clears, so there is no
+        // manual "click submit for approval" step to forget.
+        if (next == 'Granting' && app.RecordType.DeveloperName == PSK_Constants.RT_DIPLOMATIC_OFFICIAL) {
+            message += submitForApproval(applicationId);
+        }
+
         ActionResult result = new ActionResult();
         result.newStatus = next;
-        result.message = 'Application moved to ' + next + '.';
+        result.message = message;
         return result;
+    }
+
+    /**
+     * Submit a Diplomatic/Official application for grant approval. Best-effort:
+     * a record that is already under approval, or one for which Process Builder
+     * / Flow-driven approval is unavailable in the running context (e.g. a test
+     * org missing the approval process), must not block the status move that
+     * already committed above.
+     */
+    private static String submitForApproval(Id applicationId) {
+        try {
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(applicationId);
+            req.setSubmitterId(UserInfo.getUserId());
+            Approval.ProcessResult result = Approval.process(req);
+            return result.isSuccess()
+                ? ' Submitted for Regional Passport Officer approval.'
+                : '';
+        } catch (Exception e) {
+            return '';
+        }
     }
 
     /**

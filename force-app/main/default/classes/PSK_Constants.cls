@@ -376,4 +376,35 @@ public with sharing class PSK_Constants {
     // --------------------------------------------------------------- Demo data
     public static final String DEMO_PREFIX = 'DEMO-';
     public static final String CLEANUP_TOKEN = 'DELETE-PSK-DEMO-DATA';
+
+    // ------------------------------------------------------- Ownership routing
+    /**
+     * Queue DeveloperName a Passport_Application__c should be auto-assigned to
+     * when it enters that Status. Statuses not present here (Draft, Submitted,
+     * Payment Pending, Paid, and the terminal statuses) keep whoever owns them --
+     * that is front-office / applicant-facing work, not a specialist queue.
+     * Keep in step with force-app/main/default/queues/*.queue-meta.xml.
+     */
+    public static final Map<String, String> APPLICATION_STAGE_QUEUE =
+        new Map<String, String>{
+            STATUS_DOC_VERIFICATION => 'Document_Verification',
+            STATUS_POLICE_VERIFICATION => 'Police_Verification',
+            STATUS_GRANTING => 'Granting',
+            STATUS_PRINTING => 'Printing_And_Dispatch',
+            STATUS_DISPATCH => 'Printing_And_Dispatch'
+        };
+
+    public static final String QUEUE_POLICE_VERIFICATION = 'Police_Verification';
+    public static final String QUEUE_OBJECTIONS = 'Objections';
+    public static final String QUEUE_RISK_REVIEW = 'Risk_Review';
+
+    // ------------------------------------------------------------- Approvals
+    public static final String APPROVAL_NOT_REQUIRED = 'Not Required';
+    public static final String APPROVAL_PENDING = 'Pending';
+    public static final String APPROVAL_APPROVED = 'Approved';
+    public static final String APPROVAL_REJECTED = 'Rejected';
+
+    public static final List<String> APPROVAL_STATUSES = new List<String>{
+        APPROVAL_NOT_REQUIRED, APPROVAL_PENDING, APPROVAL_APPROVED, APPROVAL_REJECTED
+    };
 }

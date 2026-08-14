@@ -27,6 +27,7 @@ public with sharing class PassportApplicationTriggerHandler {
         stampDates(newList, null);
         PSK_ApplicationService.applyFees(newList, null);
         applyDefaults(newList);
+        PSK_ApplicationService.routeOwnership(newList, null);
     }
 
     // ------------------------------------------------------------ Before update
@@ -40,6 +41,7 @@ public with sharing class PassportApplicationTriggerHandler {
         stampDates(newList, oldMap);
         PSK_ApplicationService.applyFees(newList, oldMap);
         applyDefaults(newList);
+        PSK_ApplicationService.routeOwnership(newList, oldMap);
     }
 
     // ------------------------------------------------------------- After insert
@@ -153,6 +155,7 @@ public with sharing class PassportApplicationTriggerHandler {
                                          Map<Id, Passport_Application__c> oldMap) {
         Set<Id> enteringPrinting = new Set<Id>();
         Set<Id> enteringDispatch = new Set<Id>();
+        Set<Id> enteringSubmitted = new Set<Id>();
 
         for (Passport_Application__c app : newList) {
             String priorStatus = (oldMap != null && oldMap.containsKey(app.Id))
@@ -167,7 +170,21 @@ public with sharing class PassportApplicationTriggerHandler {
                 // skipped straight past Printing.
                 enteringPrinting.add(app.Id);
                 enteringDispatch.add(app.Id);
+            } else if (app.Status__c == PSK_Constants.STATUS_SUBMITTED
+                    && priorStatus == PSK_Constants.STATUS_DRAFT) {
+                // The required-document checklist is generated automatically the
+                // moment a Draft is submitted, so Document Verification always has
+                // something to check against without a staff member pressing
+                // "seed checklist" first. Scoped to a genuine Draft -> Submitted
+                // transition (oldMap != null, so priorStatus is never null here) --
+                // a record inserted directly at Submitted (a data load, a test
+                // fixture) is assumed to bring its own checklist.
+                enteringSubmitted.add(app.Id);
             }
+        }
+
+        if (!enteringSubmitted.isEmpty()) {
+            PSK_ApplicationService.seedChecklistItems(enteringSubmitted);
         }
 
         // The issuance guard applies to booklet creation ONLY. A record that was

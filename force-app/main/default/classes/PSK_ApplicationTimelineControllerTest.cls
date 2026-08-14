@@ -97,7 +97,7 @@ private class PSK_ApplicationTimelineControllerTest {
     static void testTimelineVariantsFlagProblems() {
         PSK_AutomationControl.reset();
         PSK_AutomationControl.bypassTriggers = true;
-        Passport_Application__c app = PSK_TestDataFactory.createApplication(
+        Passport_Application__c app = PSK_TestDataFactory.createLinkedApplication(
             PSK_Constants.STATUS_DOC_VERIFICATION);
         insert PSK_TestDataFactory.buildDocument(
             app.Id, 'Affidavit', PSK_Constants.DOC_REJECTED);
