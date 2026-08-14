@@ -1,0 +1,106 @@
+---
+layout: default
+title: Home
+---
+
+<section class="hero">
+  <div class="wrap">
+    <span class="kicker">Portfolio build · Salesforce</span>
+    <h1>Passport Seva Kendra, rebuilt on Salesforce</h1>
+    <p class="lede">
+      A working model of how an Indian Passport Seva Kendra could run on
+      Salesforce — one object carrying a full application lifecycle, staff
+      queues that route themselves, and an audit trail that never rewrites
+      history. Built solo, documented as it went.
+    </p>
+    <div class="cta-row">
+      <a class="primary" href="https://github.com/{{ site.repository }}">View the repo</a>
+      <a class="secondary" href="{{ '/build-log/' | relative_url }}">How it's built</a>
+    </div>
+  </div>
+</section>
+
+<section id="aim">
+  <div class="wrap">
+    <span class="section-kicker">The aim</span>
+    <h2>Why this exists</h2>
+    <p class="intro">
+      Passport processing is a good stress test for a Salesforce data model:
+      one long-lived record moves through many hands, each stage has a
+      different owner, some of what's recorded is a legal declaration that
+      must never quietly change, and every step needs a paper trail. This
+      project builds that, end to end, on a Developer Edition org — not a
+      toy CRM demo, a real object model with security, automation, and the
+      people who'd actually use it.
+    </p>
+    <div class="grid">
+      <div class="card">
+        <h3>Few objects, many fields</h3>
+        <p>The whole application lifecycle lives on one object with a Status
+        picklist and record types — not a new object per stage.</p>
+      </div>
+      <div class="card">
+        <h3>Automatic, not unattended</h3>
+        <p>Every status change cascades its required side effects — queue
+        routing, document checklists, passport minting — but a human still
+        decides when to move the record forward.</p>
+      </div>
+      <div class="card">
+        <h3>Declared vs. current</h3>
+        <p>What an applicant declared at submission is preserved even after
+        their identity record changes later — because a passport is a legal
+        instrument, not a live profile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="build">
+  <div class="wrap">
+    <span class="section-kicker">Where it stands</span>
+    <h2>The build so far</h2>
+    <p class="intro">
+      Everything below is deployed to a live Developer Edition org and
+      covered by an Apex test suite — not just designed on paper.
+    </p>
+    <div class="stats">
+      <div class="stat"><span class="num">16</span><span class="label">custom objects</span></div>
+      <div class="stat"><span class="num">8</span><span class="label">persona permission sets</span></div>
+      <div class="stat"><span class="num">4</span><span class="label">Lightning apps</span></div>
+      <div class="stat"><span class="num">227+</span><span class="label">passing tests</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="docs">
+  <div class="wrap">
+    <span class="section-kicker">Read more</span>
+    <h2>The write-ups</h2>
+    <p class="intro">
+      The build log below is a start — these documents are where the real
+      detail lives for now.
+    </p>
+    <ul class="doc-list">
+      <li>
+        <a href="https://github.com/{{ site.repository }}/blob/main/PSK.md">PSK.md — the build guide</a>
+        <div class="desc">Object catalogue, security model, automation layer, and exactly what's built vs. pending.</div>
+      </li>
+      <li>
+        <a href="https://github.com/{{ site.repository }}/blob/main/CASE_STUDY.md">CASE_STUDY.md</a>
+        <div class="desc">The problem, the research approach, and what the system solves, persona by persona.</div>
+      </li>
+      <li>
+        <a href="https://github.com/{{ site.repository }}/blob/main/PERSONAS.md">PERSONAS.md</a>
+        <div class="desc">Every job in the system, from the applicant to the auditor, and a day in their life.</div>
+      </li>
+      <li>
+        <a href="https://github.com/{{ site.repository }}/blob/main/WORKFLOW.md">WORKFLOW.md</a>
+        <div class="desc">The 12-stage lifecycle, who owns each stage, and what's automatic vs. manual.</div>
+      </li>
+      <li>
+        <a href="https://github.com/{{ site.repository }}/blob/main/n8n.md">n8n.md</a>
+        <div class="desc">The integration roadmap — SMS/WhatsApp, payments, SLA alerts, AI document checks.</div>
+      </li>
+    </ul>
+  </div>
+</section>
