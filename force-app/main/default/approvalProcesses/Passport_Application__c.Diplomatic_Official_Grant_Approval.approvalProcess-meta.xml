@@ -37,8 +37,8 @@
         <allowDelegate>true</allowDelegate>
         <assignedApprover>
             <approver>
-                <type>user</type>
-                <name>admin@passportoffice.com</name>
+                <type>queue</type>
+                <name>RPO_Approvals</name>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>

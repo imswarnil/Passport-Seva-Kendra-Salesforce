@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "jekyll/**"
+      - "salesforce-passport/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -29,14 +29,14 @@ jobs:
         with:
           ruby-version: "3.3"
           bundler-cache: true
-          working-directory: jekyll
+          working-directory: salesforce-passport
 
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
       - name: Build with Jekyll
-        working-directory: jekyll
+        working-directory: salesforce-passport
         run: bundle exec jekyll build --destination ../_site --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production

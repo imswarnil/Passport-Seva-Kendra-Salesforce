@@ -14,9 +14,9 @@ manifest/.*.json
 .vscode/
 *.swp
 
-# Jekyll (jekyll/)
-jekyll/_site/
-jekyll/.jekyll-cache/
-jekyll/.jekyll-metadata
-jekyll/.bundle/
-jekyll/vendor/
+# Jekyll (salesforce-passport/)
+salesforce-passport/_site/
+salesforce-passport/.jekyll-cache/
+salesforce-passport/.jekyll-metadata
+salesforce-passport/.bundle/
+salesforce-passport/vendor/
