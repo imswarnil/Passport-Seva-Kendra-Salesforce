@@ -1,6 +1,8 @@
 ---
 number: 4
 title: "Security: Roles, Permission Sets, Sharing, and Least Privilege"
+description: >-
+  Two independent gates that beginners collapse into one: what you can do, and which records you can do it to. Personas as permission sets, and escalation as a standing query.
 concept: Security Model
 you_will_learn:
   - "Why this org uses one thin baseline plus additive permission sets instead of a profile per job"

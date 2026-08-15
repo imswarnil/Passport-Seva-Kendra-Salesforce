@@ -1,6 +1,8 @@
 ---
 number: 5
 title: "Apex Triggers and the Service Layer Pattern"
+description: >-
+  One trigger per object, no logic in it, and a service layer underneath. The four reasons that shape beats the alternative, and the idempotency guard that stops duplicate passports.
 concept: Apex Architecture
 you_will_learn:
   - "Why a trigger file should contain almost no logic at all"

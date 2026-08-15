@@ -1,0 +1,41 @@
+{%- comment -%}
+  Renders lesson content with in-article ads injected automatically.
+
+    {% include content-ads.html content=content %}
+
+  How the split works: kramdown ends every TOP-LEVEL paragraph with the exact
+  sequence "</p>\n\n" — a closing tag followed by a blank line. Paragraphs nested
+  inside a blockquote or list item are indented, so their closing tag is followed
+  by "\n</blockquote>" or "\n</li>" instead. Splitting on "</p>\n\n" therefore
+  only ever lands us at a top-level block boundary, and an ad can never end up
+  inside a blockquote, a list or a table.
+
+  Splitting on the paragraph END (rather than on paragraph-to-paragraph
+  adjacency) matters: most paragraphs here are followed by a heading, a table or
+  a list, so keying on adjacency would count almost nothing in a long lesson.
+
+  An ad goes in after every Nth paragraph, repeating, and never within two
+  blocks of the end. Lessons shorter than `min_paragraphs` get none at all.
+{%- endcomment -%}
+{%- assign body = include.content -%}
+{%- assign n = site.adsense.in_article.every_n_paragraphs | default: 7 -%}
+{%- assign floor = site.adsense.in_article.min_paragraphs | default: 12 -%}
+
+{%- capture sep %}</p>
+
+{% endcapture -%}
+{%- assign chunks = body | split: sep -%}
+
+{%- if chunks.size < floor or n < 1 -%}
+{{ body }}
+{%- else -%}
+{%- for chunk in chunks -%}
+{{ chunk }}
+{%- unless forloop.last -%}
+{{ sep }}
+{%- assign m = forloop.index | modulo: n -%}
+{%- assign remaining = chunks.size | minus: forloop.index -%}
+{%- if m == 0 and remaining > 2 %}{% include ad.html type="in_article" %}{% endif -%}
+{%- endunless -%}
+{%- endfor -%}
+{%- endif -%}

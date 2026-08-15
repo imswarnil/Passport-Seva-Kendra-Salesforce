@@ -1,0 +1,125 @@
+{%- comment -%}
+  JSON-LD structured data. Three shapes:
+    · home / lessons index -> Course with a hasPart syllabus of every lesson
+    · a lesson page        -> LearningResource + BreadcrumbList
+    · anything else        -> WebPage
+  jekyll-seo-tag already emits Open Graph and Twitter tags; this adds the
+  schema.org layer it does not cover.
+{%- endcomment -%}
+{%- assign site_url = site.url | append: site.baseurl -%}
+
+{%- if page.schema_type == 'course' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": {{ site.title | jsonify }},
+  "description": {{ site.description | strip_newlines | jsonify }},
+  "url": {{ site_url | append: page.url | jsonify }},
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "teaches": [
+    "Salesforce data modelling","Record types","Master-detail and lookup relationships",
+    "Formula fields and roll-up summaries","Validation rules","Org-wide defaults and sharing rules",
+    "Permission sets and permission set groups","Queues and approval processes",
+    "Record-triggered flows","Apex triggers and the handler pattern","Bulkification",
+    "Custom metadata types","Lightning Web Components","Apex and Jest testing","SFDX deployment"
+  ],
+  "educationalLevel": "Beginner to Intermediate",
+  "provider": {
+    "@type": "Person",
+    "name": {{ site.author.name | jsonify }},
+    "url": {{ "https://github.com/" | append: site.author.github | jsonify }}
+  },
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "PT8H"
+  },
+  "hasPart": [
+    {%- assign first = true -%}
+    {%- assign n = 0 -%}
+    {%- for m in site.data.curriculum -%}
+      {%- for l in m.lessons -%}
+        {%- unless first %},{% endunless %}{%- assign first = false -%}
+        {%- assign n = n | plus: 1 -%}
+        {
+          "@type": "LearningResource",
+          "name": {{ l.title | jsonify }},
+          "url": {{ site_url | append: "/lessons/" | append: l.slug | append: "/" | jsonify }},
+          "about": {{ l.concept | jsonify }},
+          "timeRequired": "PT{{ l.minutes }}M",
+          "position": {{ n }},
+          "isPartOf": { "@type": "Course", "name": {{ m.title | prepend: "Module " | prepend: m.number | append: " — " | jsonify }} }
+        }
+      {%- endfor -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- elsif page.collection == 'lessons' -%}
+{%- assign mod = nil -%}{%- assign les = nil -%}{%- assign pos = 0 -%}{%- assign n = 0 -%}
+{%- for m in site.data.curriculum -%}
+  {%- for l in m.lessons -%}
+    {%- assign n = n | plus: 1 -%}
+    {%- comment -%} position must count across the whole course, not restart per module {%- endcomment -%}
+    {%- if l.slug == page.slug -%}{%- assign mod = m -%}{%- assign les = l -%}{%- assign pos = n -%}{%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": {{ page.title | jsonify }},
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page.description | default: page.title | strip_newlines | jsonify }},
+  "url": {{ site_url | append: page.url | jsonify }},
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  {%- if les %}
+  "about": {{ les.concept | jsonify }},
+  "timeRequired": "PT{{ les.minutes }}M",
+  "position": {{ pos }},
+  {%- endif %}
+  {%- if page.you_will_learn %}
+  "teaches": {{ page.you_will_learn | jsonify }},
+  {%- endif %}
+  "learningResourceType": "Lesson",
+  "educationalLevel": "Beginner to Intermediate",
+  "author": { "@type": "Person", "name": {{ site.author.name | jsonify }} },
+  "isPartOf": {
+    "@type": "Course",
+    "name": {{ site.title | jsonify }},
+    "url": {{ site_url | append: "/lessons/" | jsonify }}
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home",    "item": {{ site_url | append: "/" | jsonify }} },
+    { "@type": "ListItem", "position": 2, "name": "Lessons", "item": {{ site_url | append: "/lessons/" | jsonify }} },
+    {%- if mod %}
+    { "@type": "ListItem", "position": 3, "name": {{ mod.title | jsonify }}, "item": {{ site_url | append: "/lessons/#module-" | append: mod.id | jsonify }} },
+    { "@type": "ListItem", "position": 4, "name": {{ page.title | jsonify }}, "item": {{ site_url | append: page.url | jsonify }} }
+    {%- else %}
+    { "@type": "ListItem", "position": 3, "name": {{ page.title | jsonify }}, "item": {{ site_url | append: page.url | jsonify }} }
+    {%- endif %}
+  ]
+}
+</script>
+{%- else -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": {{ page.title | default: site.title | jsonify }},
+  "description": {{ page.description | default: site.description | strip_newlines | jsonify }},
+  "url": {{ site_url | append: page.url | jsonify }},
+  "inLanguage": "en",
+  "isPartOf": { "@type": "WebSite", "name": {{ site.title | jsonify }}, "url": {{ site_url | append: "/" | jsonify }} }
+}
+</script>
+{%- endif -%}

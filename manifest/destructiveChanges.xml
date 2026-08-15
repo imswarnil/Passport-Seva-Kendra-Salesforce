@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================================
+  DESTRUCTIVE CHANGES — NOT YET DEPLOYED
+  ============================================================================
+
+  Deleting a CustomObject deletes EVERY RECORD IN IT, PERMANENTLY.
+  Approximately 500 records are affected. There is no undo.
+
+  DO NOT RUN THIS until all three sign-offs in MIGRATION.md §2 are given
+  and steps 0-6 of MIGRATION.md §3 are complete. Steps 1-6 remove the Apex,
+  LWC, layout, app and permission-set references that would otherwise make
+  this deploy fail.
+
+  ALWAYS dry-run first:
+    sf project deploy start \
+      --manifest manifest/destructive-package.xml \
+      --post-destructive-changes manifest/destructiveChanges.xml \
+      --dry-run --verbose
+
+  Target state: DATA_MODEL.md. Rationale per object: DATA_MODEL.md §10.
+  ============================================================================
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- ===== PSK objects folded into survivors ============================
+         Payment__c          -> 4 fields on Passport_Application__c
+         Print_Job__c        -> print milestone fields on Dispatch__c
+         Objection__c        -> status + reason on Document_Checklist_Item__c
+         Risk_Flag__c        -> Risk_Score__c / Risk_Reason__c on the application
+         Family_Member__c    -> Guardian__c lookup to Citizen__c
+         Notification_Log__c -> dropped; integration is out of scope
+         Renewal__c          -> a renewal IS a Re-Issue application
+         Visa_Application__c -> Visa_Enquiry record type on Case
+         Appointment__c      -> scheduling out of scope
+         Slot__c             -> scheduling out of scope
+    -->
+    <types>
+        <members>Payment__c</members>
+        <members>Print_Job__c</members>
+        <members>Objection__c</members>
+        <members>Risk_Flag__c</members>
+        <members>Family_Member__c</members>
+        <members>Notification_Log__c</members>
+        <members>Renewal__c</members>
+        <members>Visa_Application__c</members>
+        <members>Appointment__c</members>
+        <members>Slot__c</members>
+
+        <!-- ===== Inherited Service Analytics template objects ==============
+             REQUIRES SIGN-OFF 2.2: deleting these permanently breaks the
+             CRM Analytics dashboards that shipped with this org.
+             Nothing in PSK reads them. Removing them is also what clears
+             the six failing DataManager_* tests.
+        -->
+        <members>OpportunityHistory__c</members>
+        <members>Reseller_Account_Plan__c</members>
+
+        <name>CustomObject</name>
+    </types>
+
+    <!-- ===== Apps replaced by the four job-named apps ===================== -->
+    <types>
+        <members>PSK_Operations_Console</members>
+        <members>Passport_Validator</members>
+        <members>PSK_Police_Verification_Console</members>
+        <members>Trailhead_Data_Manager</members>
+        <name>CustomApplication</name>
+    </types>
+
+    <!-- ===== Apex whose only purpose was a cut object ===================== -->
+    <types>
+        <members>AppointmentTriggerHandler</members>
+        <members>AppointmentTriggerHandlerTest</members>
+        <members>PaymentTriggerHandler</members>
+        <members>PaymentTriggerHandlerTest</members>
+        <members>PSK_SlotBookingController</members>
+        <members>PSK_SlotBookingControllerTest</members>
+        <members>PSK_OfficeCapacityController</members>
+        <members>PSK_OfficeCapacityControllerTest</members>
+        <members>DataManager_Activity</members>
+        <members>DataManager_ActivityTest</members>
+        <members>DataManager_CleanUp</members>
+        <members>DataManager_CleanUpTest</members>
+        <members>DataManager_controller</members>
+        <members>DataManager_controllerTest</members>
+        <members>DataManager_Dataflow</members>
+        <members>DataManager_DataflowTest</members>
+        <members>DataManager_Opportunity</members>
+        <members>DataManager_OpportunityTest</members>
+        <members>DataManager_OpportunityRelated</members>
+        <members>DataManager_OpportunityRelatedTest</members>
+        <members>DataManager_Quota</members>
+        <members>DataManager_QuotaTest</members>
+        <members>DataManager_Utils</members>
+        <members>DataManager_UtilsTest</members>
+        <members>DataManager_TestUtils</members>
+        <name>ApexClass</name>
+    </types>
+
+    <types>
+        <members>AppointmentTrigger</members>
+        <members>PaymentTrigger</members>
+        <name>ApexTrigger</name>
+    </types>
+
+    <!-- ===== Permission set whose only object is being deleted ============ -->
+    <types>
+        <members>PSK_Visa_Officer</members>
+        <name>PermissionSet</name>
+    </types>
+
+    <!-- ===== Queues for objects that no longer exist ======================
+         Granting is also removed: a criteria-based sharing rule on Status__c
+         does the job without an ownership change (ACCESS_MATRIX.md §7).
+    -->
+    <types>
+        <members>Objections</members>
+        <members>Risk_Review</members>
+        <members>Granting</members>
+        <name>Queue</name>
+    </types>
+
+    <version>67.0</version>
+</Package>

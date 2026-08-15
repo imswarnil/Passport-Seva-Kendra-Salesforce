@@ -1,6 +1,8 @@
 ---
 number: 8
 title: "Config as Data: Custom Metadata Types Instead of Hardcoded Constants"
+description: >-
+  Fee tables and SLA targets as custom metadata rather than Apex string literals, so changing a fee is a deploy of a record instead of a code change.
 concept: Custom Metadata Types
 you_will_learn:
   - "What a Custom Metadata Type actually is, and why it deploys instead of loading like data"

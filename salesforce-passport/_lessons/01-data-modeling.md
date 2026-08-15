@@ -1,6 +1,8 @@
 ---
 number: 1
 title: "Data Modeling: Few Objects, Many Fields"
+description: >-
+  Why a whole application lifecycle lives on one object instead of one per stage, what a record type actually changes, and how to choose between master-detail and lookup as a business call.
 concept: Data Modeling
 you_will_learn:
   - "Why a whole application lifecycle lives on one object instead of one object per stage"

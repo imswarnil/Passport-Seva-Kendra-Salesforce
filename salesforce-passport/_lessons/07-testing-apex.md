@@ -1,6 +1,8 @@
 ---
 number: 7
 title: "Testing Apex: Bulk-Safe, Deterministic, No Org Dependency"
+description: >-
+  Tests that would fail if you deleted the code they cover: bulk-safe, deterministic, and with no dependency on whatever happens to be in the org.
 concept: Apex Testing
 you_will_learn:
   - "Why Apex tests build their own data with a shared factory instead of querying whatever's already in the org"

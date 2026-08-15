@@ -1,0 +1,25 @@
+# The design documents in the repository root, listed on /design/.
+- file: SOLUTION.md
+  title: Solution design
+  blurb: The problem, the assumptions, the four apps, and what each one teaches.
+- file: DATA_MODEL.md
+  title: Data model
+  blurb: Eight objects, field by field, with the cut list and why each relationship is the type it is.
+- file: JOURNEYS.md
+  title: Personas and journeys
+  blurb: Eight personas, the Draft-to-Delivered walkthrough, and the three handoff mechanisms.
+- file: AUTOMATION.md
+  title: Automation catalogue
+  blurb: Order of execution, all seven trigger contexts, the stage machine, flows and the approval process.
+- file: ACCESS_MATRIX.md
+  title: Access matrix
+  blurb: Roles, OWD, permission sets, queues and sharing — plus the deliberate refusals.
+- file: DEMO_DATA.md
+  title: Scenario design
+  blurb: Twenty-four named scenarios covering every branch, including the failures.
+- file: TESTING.md
+  title: Test strategy
+  blurb: Five layers, from unit tests to a narrated end-to-end run that publishes what it saw.
+- file: MIGRATION.md
+  title: Migration plan
+  blurb: The ordered teardown from seventeen objects to eight, and what is irreversible.

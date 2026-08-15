@@ -27,7 +27,7 @@ We are building a **custom Salesforce platform for a Passport Seva Kendra (PSK)*
 
 ## 2. The object catalogue
 
-All sixteen custom objects below are **built and deployed**. Objects #2–#11 were originally sketched only as a one-line roadmap here and then built out from a blog build-log export (`psk.json`) — this table is their first real documentation in the repository, so treat it as authoritative and keep it current.
+All sixteen custom objects below are **built and deployed**. Objects #2–#11 were originally sketched only as a one-line roadmap here and then built out from a blog build-log export (`psk.json`, since removed) — this table is their first real documentation in the repository, so treat it as authoritative and keep it current.
 
 Two of them were not in the original roadmap at all and were added because the model needed them: `Citizen__c` (a golden identity record, so the applicant is not an Account) and `Family_Member__c` (citizen-to-citizen links, which also carry the guardian link a minor application needs).
 

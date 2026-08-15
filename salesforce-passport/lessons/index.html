@@ -1,28 +1,62 @@
 ---
 layout: default
-title: Lessons
+title: The syllabus
+description: >-
+  Seven modules in build order — design, data model, data quality, security,
+  automation, configuration and testing — taught against one real Salesforce org.
+schema_type: course
 permalink: /lessons/
 ---
 
-<section>
-  <div class="wrap" style="padding-top:52px;">
-    <span class="section-kicker">Learn by reading the real thing</span>
-    <h2>Eight lessons, one real Salesforce build</h2>
-    <p class="intro">
-      Every lesson below is grounded in code and metadata that actually
-      deployed to a live org — file paths you can open in the repo, not
-      invented examples. Read them in order if you're new to Salesforce;
-      jump to whichever concept you need if you're not.
-    </p>
+{%- assign total = 0 -%}{%- assign minutes = 0 -%}
+{%- for m in site.data.curriculum -%}
+  {%- assign total = total | plus: m.lessons.size -%}
+  {%- for l in m.lessons -%}{%- assign minutes = minutes | plus: l.minutes -%}{%- endfor -%}
+{%- endfor -%}
 
-    <ol class="lesson-list">
-      {% assign sorted = site.lessons | sort: 'number' %}
-      {% for lesson in sorted %}
-      <li>
-        <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
-        <div class="concepts">{{ lesson.concept }}</div>
-      </li>
-      {% endfor %}
-    </ol>
+<section class="hero" style="padding-bottom: 32px;">
+  <div class="wrap">
+    <p class="hero__eyebrow">{% include icon.html name="list" size="15" %} {{ site.data.curriculum.size }} modules · {{ total }} lessons · {{ minutes }} minutes</p>
+    <h1>The syllabus</h1>
+    <p class="hero__lede">
+      In build order, not reference order. Design comes before schema, schema before
+      security, security before code — because in a Salesforce org each layer genuinely
+      depends on the one above it, and building out of sequence is how people end up
+      rebuilding.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 24px;">
+  <div class="wrap">
+    {%- assign running = 0 -%}
+    {%- for m in site.data.curriculum -%}
+    <div class="module-block" id="module-{{ m.id }}" style="--module-accent: {{ m.accent }};">
+      <div class="module-block__head">
+        <span class="module-block__badge">{% include icon.html name=m.icon size="22" %}</span>
+        <div>
+          <span class="module-block__kicker">Module {{ m.number }}</span>
+          <h2>{{ m.title }}</h2>
+          <p>{{ m.summary }}</p>
+        </div>
+      </div>
+      <div class="cards">
+        {%- for l in m.lessons -%}
+        {%- assign running = running | plus: 1 -%}
+        <a class="card" href="{{ '/lessons/' | append: l.slug | append: '/' | relative_url }}">
+          {% include thumb.html icon=l.icon accent=m.accent label=m.number %}
+          <div class="card__body">
+            <p class="card__kicker">Lesson {{ m.number }}.{{ forloop.index }} · {{ l.concept }}</p>
+            <h3 class="card__title">{{ l.title }}</h3>
+            <p class="card__foot">
+              {% include icon.html name="clock" size="14" %} {{ l.minutes }} min read
+              <span aria-hidden="true">·</span> {{ running }} of {{ total }}
+            </p>
+          </div>
+        </a>
+        {%- endfor -%}
+      </div>
+    </div>
+    {%- endfor -%}
   </div>
 </section>

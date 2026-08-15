@@ -1,6 +1,8 @@
 ---
 number: 2
 title: "Fields & Formulas: Snapshot vs. Derived Data"
+description: >-
+  Snapshot a declaration, derive a fact. The single most useful schema instinct in this build, and how to tell which kind a field is before you create it.
 concept: Fields & Formulas
 you_will_learn:
   - "The difference between a field that snapshots a value and one that derives it live"

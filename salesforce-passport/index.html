@@ -1,230 +1,267 @@
 ---
 layout: default
-title: Home
+title: Learn Salesforce by building a real system
+description: >-
+  I build a real Salesforce app first, then take it apart and show how it was
+  built. One connected system — a passport office — instead of a pile of
+  disconnected tutorials.
+schema_type: course
+body_class: home
 ---
+
+{%- assign total = 0 -%}{%- assign minutes = 0 -%}
+{%- for m in site.data.curriculum -%}
+  {%- assign total = total | plus: m.lessons.size -%}
+  {%- for l in m.lessons -%}{%- assign minutes = minutes | plus: l.minutes -%}{%- endfor -%}
+{%- endfor -%}
+{%- assign first = site.data.curriculum[0].lessons[0] -%}
 
 <section class="hero">
   <div class="wrap">
-    <span class="kicker">A Salesforce build, used to teach Salesforce</span>
-    <h1>Salesforce Passport</h1>
-    <p class="lede" style="font-size:1.3rem;color:#fff;font-weight:600;margin-bottom:10px;">
-      "The only passport you need to start your Salesforce journey."
-    </p>
-    <p class="lede">
-      This is a real, deployed Salesforce org — a working passport office —
-      documented step by step so it can also teach you how it was built.
-      No slides, no toy examples: the objects, security model, Apex, and
-      automation below are the actual metadata that shipped, with file paths
-      you can open yourself.
-    </p>
-    <div class="cta-row">
-      <a class="primary" href="{{ '/lessons/' | relative_url }}">Start the lessons</a>
-      <a class="secondary" href="https://github.com/{{ site.repository }}">View the repo</a>
+    <div class="hero__grid">
+      <div data-reveal>
+        <p class="eyebrow">{% include icon.html name="passport" size="15" %} Build first, then teach</p>
+        <h1>Learn Salesforce by watching a real system get built</h1>
+        <p class="hero__lede">
+          I build the app first. Then I take it apart and show exactly how it was made —
+          the objects, the sharing rules, the triggers, the tests, and the decisions that
+          turned out to be wrong. It's how I teach Salesforce, and how I keep my own
+          skills sharp.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="{{ '/lessons/' | append: first.slug | append: '/' | relative_url }}">
+            {% include icon.html name="graduation" size="17" %} Start learning
+          </a>
+          <a class="btn" href="{{ '/build-log/' | relative_url }}">
+            {% include icon.html name="git-branch" size="16" %} See how it was built
+          </a>
+        </div>
+        <p class="hero__meta">
+          <span>{% include icon.html name="stack" size="15" %} {{ site.data.curriculum.size }} modules</span>
+          <span>{% include icon.html name="list" size="15" %} {{ total }} lessons</span>
+          <span>{% include icon.html name="clock" size="15" %} {{ minutes }} min</span>
+          <span>{% include icon.html name="sparkle" size="15" %} Free, no sign-up</span>
+        </p>
+      </div>
+
+      <div data-reveal>
+        <figure class="shot" style="margin:0;">
+          <div class="shot__bar" aria-hidden="true">
+            <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+            <span class="shot__url">psk-dev.lightning.force.com &mdash; Application Management</span>
+          </div>
+          <img src="{{ '/assets/img/screenshots/home-dashboard.jpg' | relative_url }}"
+               alt="The Passport Seva Kendra console home page in Salesforce, showing application counts by stage, SLA breaches and queue depth."
+               width="1568" height="707" loading="eager" decoding="async">
+          <figcaption class="shot__cap">
+            <strong>The real org.</strong> Every screenshot on this site is the actual
+            build running in a Developer Edition org — not a mockup.
+          </figcaption>
+        </figure>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="screens">
+<section class="section">
   <div class="wrap">
-    <span class="section-kicker">The actual org</span>
-    <h2>What's live in the org right now</h2>
-    <p class="intro">
-      Screenshots of the deployed Developer Edition org, not mockups. Real
-      applicant data seeded by <code class="highlighter-rouge">PSK_DemoDataGenerator</code>,
-      real SLA breach flags, real report output.
-    </p>
-    <div class="shot-grid">
-      <figure class="shot">
-        <img src="{{ '/assets/img/screenshots/home-dashboard.jpg' | relative_url }}" alt="PSK operations home dashboard with stage counts and an SLA-breach work queue">
-        <figcaption>The Application Management Console home — stage counts, queue depth, and a live "My Work" list with SLA breach flags.</figcaption>
+    <div class="beats">
+      <div class="beat" data-reveal>
+        <span class="beat__step">1</span>
+        <h3>Build the thing</h3>
+        <p>A working passport office in Salesforce — intake, verification, approvals, printing, despatch. Real metadata, deployed to a real org, with real tests.</p>
+      </div>
+      <div class="beat" data-reveal>
+        <span class="beat__step">2</span>
+        <h3>Take it apart</h3>
+        <p>Every lesson picks one decision from that build and explains what it is, why it exists, and what breaks without it — using the code that shipped.</p>
+      </div>
+      <div class="beat" data-reveal>
+        <span class="beat__step">3</span>
+        <h3>Keep it honest</h3>
+        <p>The build log keeps the dead ends and the bugs in. Teaching something is the fastest way to find out you only half understood it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2>What gets built</h2>
+      <p>
+        A Passport Seva Kendra: the office that takes an application at a counter,
+        verifies the documents, sends the police to check the address, authorises the
+        passport, prints the booklet and couriers it out. Grouped below by the layer
+        of the org each piece lives in.
+      </p>
+    </div>
+
+    <div class="layers">
+      {%- for l in site.data.layers -%}
+      <section class="layer" id="{{ l.id }}" style="--layer-accent: {{ l.accent }};" data-reveal>
+        <header class="layer__head">
+          <span class="layer__icon">{% include icon.html name=l.icon size="20" %}</span>
+          <div>
+            <h3>{{ l.title }}</h3>
+            <p>{{ l.sub }}</p>
+          </div>
+        </header>
+        <div class="layer__body">
+          <ul class="layer__list">
+            {%- for item in l.items -%}
+            <li>{% include icon.html name="check-circle" size="16" %}<span>{{ item }}</span></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </section>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="stats" data-reveal>
+      <div class="stat"><span class="stat__num">8</span><span class="stat__label">Objects in the finished org</span></div>
+      <div class="stat"><span class="stat__num">4</span><span class="stat__label">Apps, one per job</span></div>
+      <div class="stat"><span class="stat__num">9</span><span class="stat__label">Personas as permission sets</span></div>
+      <div class="stat"><span class="stat__num">24</span><span class="stat__label">Demo scenarios, failures included</span></div>
+      <div class="stat"><span class="stat__num">5</span><span class="stat__label">Layers of testing</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2>The org itself</h2>
+      <p>What the finished build actually looks like to the people who use it.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot" data-reveal style="margin:0;">
+        <div class="shot__bar" aria-hidden="true">
+          <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+          <span class="shot__url">Passport Application &mdash; record page</span>
+        </div>
+        <img src="{{ '/assets/img/screenshots/application-record.jpg' | relative_url }}"
+             alt="A passport application record page in Salesforce showing the status path, applicant details and related records."
+             width="1568" height="707" loading="lazy" decoding="async">
+        <figcaption class="shot__cap">
+          <strong>One record, five personas.</strong> The Path across the top, Dynamic
+          Forms hiding fields that don't apply, and a sidebar pulling in the citizen,
+          documents and verification.
+        </figcaption>
       </figure>
-      <figure class="shot">
-        <img src="{{ '/assets/img/screenshots/application-record.jpg' | relative_url }}" alt="A Passport Application record detail page">
-        <figcaption>A Passport Application record — the single object that carries the whole Draft-to-Delivered lifecycle.</figcaption>
+
+      <figure class="shot" data-reveal style="margin:0;">
+        <div class="shot__bar" aria-hidden="true">
+          <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+          <span class="shot__url">Operations dashboard</span>
+        </div>
+        <img src="{{ '/assets/img/screenshots/dashboard.jpg' | relative_url }}"
+             alt="A Salesforce dashboard showing passport applications grouped by stage and flagged SLA breaches."
+             width="1536" height="784" loading="lazy" decoding="async">
+        <figcaption class="shot__cap">
+          <strong>Where the manager's day starts.</strong> Stage counts, SLA breaches and
+          queue depth — so escalation is something you see, not something you're told.
+        </figcaption>
       </figure>
-      <figure class="shot">
-        <img src="{{ '/assets/img/screenshots/report-example.jpg' | relative_url }}" alt="The Applications by Stage report grouped by status">
-        <figcaption>One of five custom reports — Applications by Stage, grouped and totalled straight from the object model.</figcaption>
+
+      <figure class="shot" data-reveal style="margin:0;">
+        <div class="shot__bar" aria-hidden="true">
+          <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+          <span class="shot__url">Reports &mdash; Applications by Stage</span>
+        </div>
+        <img src="{{ '/assets/img/screenshots/report-example.jpg' | relative_url }}"
+             alt="A Salesforce summary report listing passport applications grouped by processing stage."
+             width="1568" height="707" loading="lazy" decoding="async">
+        <figcaption class="shot__cap">
+          <strong>Custom report types.</strong> Built on custom objects, which turns out
+          to have a genuinely obscure metadata quirk — documented in the build log.
+        </figcaption>
       </figure>
-      <figure class="shot">
-        <img src="{{ '/assets/img/screenshots/dashboard.jpg' | relative_url }}" alt="The PSK Operations Dashboard">
-        <figcaption>The PSK Operations Dashboard, built (and rebuilt, after Salesforce's row-limit quirks) this session.</figcaption>
-      </figure>
     </div>
   </div>
 </section>
 
-<section id="what">
+<section class="section section--tint">
   <div class="wrap">
-    <span class="section-kicker">What's in this build</span>
-    <h2>Features</h2>
-    <ul class="feature-list">
-      <li><span class="tick">&#10003;</span><div><strong>17 custom objects</strong> — one Status-driven lifecycle object plus offices, slots, appointments, citizens, passports, print jobs, dispatches, and a visa department MVP.</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>9 persona permission sets</strong> — front office, document verification, police verification, granting, fulfilment, office manager, auditor, reference-data admin, visa officer.</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>Queue-based auto-routing</strong> — status changes reassign ownership automatically, no hand-maintained assignment rules.</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>A real Approval Process</strong> — Diplomatic/Official grants route to a Regional Passport Officer queue and block Printing until approved.</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>Region-based sharing</strong> — six public groups and criteria-based sharing rules working around Salesforce's lookup-traversal limitation.</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>Custom reports and a dashboard</strong> — built, broken by a Salesforce quirk, and fixed in the open (see the build log).</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>234+ passing Apex tests</strong> — bulk-safe, deterministic, no dependency on org data.</div></li>
-      <li><span class="tick">&#10003;</span><div><strong>4 Lightning apps</strong>, one per way of working — the main console, operations, the police verification console, and a passport validator.</div></li>
-    </ul>
+    <div class="section__head" data-reveal>
+      <h2>Who uses it</h2>
+      <p>
+        Nine personas, one of whom never logs in — and he's the one who keeps every
+        other decision honest.
+      </p>
+    </div>
+    <div class="cards">
+      {%- for p in site.data.personas limit: 3 -%}
+      <article class="card" data-reveal>
+        <div class="card__body">
+          <div class="persona__top">
+            <span class="persona__avatar" style="--persona-accent: {{ p.accent }};">{{ p.initials }}</span>
+            <div>
+              <p class="persona__name">{{ p.name }}</p>
+              <p class="persona__role">{{ p.role }}</p>
+            </div>
+          </div>
+          <p class="persona__quote">&ldquo;{{ p.quote }}&rdquo;</p>
+        </div>
+      </article>
+      {%- endfor -%}
+    </div>
+    <p style="margin-top: 26px;">
+      <a class="btn" href="{{ '/personas/' | relative_url }}">
+        {% include icon.html name="users" size="16" %} Meet all nine personas
+      </a>
+    </p>
   </div>
 </section>
 
-<section id="why">
+<section class="section">
   <div class="wrap">
-    <span class="section-kicker">Why a passport office</span>
-    <h2>Why this teaches Salesforce better than a tutorial does</h2>
-    <p class="intro">
-      Most Salesforce learning is scattered — a data-modelling module here, a
-      Flow tutorial there, none of it connected to the others. A real project
-      forces every concept to interact with every other one, which is exactly
-      what happens on the job. A passport application is a good vehicle for
-      that: one long-lived record, many owners, real legal/PII constraints,
-      and a lifecycle long enough to need most of what the platform offers.
-    </p>
-    <div class="grid">
-      <div class="card">
-        <h3>Data modelling</h3>
-        <p>17 custom objects, master-detail vs. lookup decisions that
-        actually matter, record types instead of object-per-stage sprawl,
-        and a deliberate case of "declared vs. current" data duplication.</p>
-      </div>
-      <div class="card">
-        <h3>Security &amp; sharing</h3>
-        <p>Role hierarchy, 9 persona permission sets, queues, criteria-based
-        sharing rules, and field-level security on real PII.</p>
-      </div>
-      <div class="card">
-        <h3>Automation</h3>
-        <p>Apex triggers and service classes, auto-assignment to queues
-        instead of hand-built assignment rules, and a real Approval Process
-        gating a business-critical status change.</p>
-      </div>
-      <div class="card">
-        <h3>Lightning UI</h3>
-        <p>Lightning Web Components, Dynamic Forms, compact layouts, custom
-        apps per persona, Path, and a home dashboard backed by real Apex.</p>
-      </div>
-      <div class="card">
-        <h3>Apex &amp; testing</h3>
-        <p>~18 service/controller classes, trigger handlers, a shared test
-        data factory, and 234+ passing tests — the discipline that separates
-        a demo from something deployable.</p>
-      </div>
-      <div class="card">
-        <h3>Integration thinking</h3>
-        <p>An idempotency-ready notification log, a documented n8n roadmap,
-        and an honest list of what's still outside the org boundary.</p>
-      </div>
+    <div class="section__head" data-reveal>
+      <h2>Built with</h2>
+      <p>Everything in the org is version-controlled SFDX source, deployed from the command line.</p>
+    </div>
+    <div class="pills" data-reveal>
+      <span class="pill pill--on">Salesforce Platform</span>
+      <span class="pill pill--on">SFDX source format</span>
+      <span class="pill pill--on">Salesforce CLI</span>
+      <span class="pill pill--on">Apex</span>
+      <span class="pill pill--on">Lightning Web Components</span>
+      <span class="pill pill--on">Flow Builder</span>
+      <span class="pill pill--on">Custom Metadata Types</span>
+      <span class="pill pill--on">Approval Processes</span>
+      <span class="pill pill--on">Standard Case</span>
+      <span class="pill">Jest</span>
+      <span class="pill">Jekyll</span>
+      <span class="pill">Git</span>
     </div>
   </div>
 </section>
 
-<section id="lessons-teaser">
+<section class="section" style="padding-top: 0;">
   <div class="wrap">
-    <span class="section-kicker">Learn from it</span>
-    <h2>Eight lessons, each grounded in real code</h2>
-    <p class="intro">
-      Data modelling, snapshot vs. derived fields, validation rules, the
-      security model, the trigger/service pattern, queue-based automation,
-      testing, and config-as-data — each lesson quotes the actual file that
-      shipped, not a simplified stand-in.
-    </p>
-    <a class="secondary" style="border-color:var(--navy);color:var(--navy);" href="{{ '/lessons/' | relative_url }}">Browse all lessons &rarr;</a>
-  </div>
-</section>
-
-<section id="aim">
-  <div class="wrap">
-    <span class="section-kicker">The design</span>
-    <h2>Few objects, many fields</h2>
-    <p class="intro">
-      The whole application lifecycle lives on <strong>one object</strong>
-      with a Status picklist and record types — not a new object per stage.
-      It's a small decision with a big teaching payoff: modelling state as
-      data, not as schema sprawl, is the difference between a Salesforce
-      build that scales and one that doesn't.
-    </p>
-    <div class="grid">
-      <div class="card">
-        <h3>Automatic, not unattended</h3>
-        <p>Every status change cascades its required side effects — queue
-        routing, document checklists, passport minting — but a human still
-        decides when to move the record forward. That's the pattern real
-        orgs use, and it's the one this teaches.</p>
+    <div class="split">
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="git-branch" size="20" %} The build log</h3>
+        <p>
+          A chronological account of how this actually got built — including the
+          decisions that were wrong, and the bugs that only surfaced because a test
+          was fixed properly instead of loosened.
+        </p>
+        <a class="btn" href="{{ '/build-log/' | relative_url }}">Read the build log {% include icon.html name="arrow-right" size="15" %}</a>
       </div>
-      <div class="card">
-        <h3>Declared vs. current</h3>
-        <p>What an applicant declared at submission is preserved even after
-        their identity record changes later — because a passport is a legal
-        instrument, not a live profile. A subtle data-modelling lesson most
-        tutorials skip entirely.</p>
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="target" size="20" %} The design</h3>
+        <p>
+          Personas, the user journey, the trigger catalogue, the access matrix and the
+          scenario design — the work that happened before the org was touched.
+        </p>
+        <a class="btn" href="{{ '/design/' | relative_url }}">See the design {% include icon.html name="arrow-right" size="15" %}</a>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="build">
-  <div class="wrap">
-    <span class="section-kicker">Where it stands</span>
-    <h2>The build so far</h2>
-    <p class="intro">
-      Everything below is deployed to a live Developer Edition org and
-      covered by an Apex test suite — not just designed on paper.
-    </p>
-    <div class="stats">
-      <div class="stat"><span class="num">17</span><span class="label">custom objects</span></div>
-      <div class="stat"><span class="num">9</span><span class="label">persona permission sets</span></div>
-      <div class="stat"><span class="num">4</span><span class="label">Lightning apps</span></div>
-      <div class="stat"><span class="num">234+</span><span class="label">passing tests</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="docs">
-  <div class="wrap">
-    <span class="section-kicker">Read more</span>
-    <h2>The write-ups</h2>
-    <p class="intro">
-      Deep detail lives in these documents, plus the lessons and build log on
-      this site.
-    </p>
-    <ul class="doc-list">
-      <li>
-        <a href="https://github.com/{{ site.repository }}/blob/main/PSK.md">PSK.md — the build guide</a>
-        <div class="desc">Object catalogue, security model, automation layer, and exactly what's built vs. pending.</div>
-      </li>
-      <li>
-        <a href="https://github.com/{{ site.repository }}/blob/main/CASE_STUDY.md">CASE_STUDY.md</a>
-        <div class="desc">The problem, the research approach, and what the system solves, persona by persona.</div>
-      </li>
-      <li>
-        <a href="https://github.com/{{ site.repository }}/blob/main/PERSONAS.md">PERSONAS.md</a>
-        <div class="desc">Every job in the system, from the applicant to the auditor, and a day in their life.</div>
-      </li>
-      <li>
-        <a href="https://github.com/{{ site.repository }}/blob/main/WORKFLOW.md">WORKFLOW.md</a>
-        <div class="desc">The 12-stage lifecycle, who owns each stage, and what's automatic vs. manual.</div>
-      </li>
-      <li>
-        <a href="https://github.com/{{ site.repository }}/blob/main/n8n.md">n8n.md</a>
-        <div class="desc">The integration roadmap — SMS/WhatsApp, payments, SLA alerts, AI document checks.</div>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<section id="cta">
-  <div class="wrap">
-    <div class="cta-band">
-      <h2>Ready to see how it's built?</h2>
-      <p>Read the lessons in order, or jump straight to the build log for the
-      full end-to-end story — what shipped, what broke, and how it got fixed.</p>
-      <div class="cta-row" style="justify-content:center;display:flex;">
-        <a class="primary" href="{{ '/lessons/' | relative_url }}">Start the lessons</a>
-        <a class="secondary" href="{{ '/build-log/' | relative_url }}">Read the build log</a>
-      </div>
-    </div>
+    {% include ad.html type="footer" %}
   </div>
 </section>

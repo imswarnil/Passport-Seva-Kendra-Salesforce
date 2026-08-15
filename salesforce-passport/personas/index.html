@@ -1,0 +1,121 @@
+---
+layout: default
+title: Personas
+description: >-
+  The nine people the Passport Seva Kendra build is for — what each one owns,
+  what each one is deliberately forbidden to do, and why one of them never logs in.
+permalink: /personas/
+---
+
+<section class="hero" style="padding-bottom: 26px;">
+  <div class="wrap">
+    <p class="eyebrow">{% include icon.html name="users" size="15" %} Nine personas</p>
+    <h1 style="max-width: 20ch;">Who this system is for</h1>
+    <p class="hero__lede" style="max-width: 70ch;">
+      A persona here is not a marketing exercise. It decides the permission sets, the
+      queues, the sharing rules, the apps and the page layouts — so getting it wrong
+      makes all five wrong downstream, spread across nine places in Setup. Which is
+      why it gets written down <em>before</em> the schema, not after.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 24px;">
+  <div class="wrap">
+    <div class="panel" data-reveal style="margin-bottom: 40px;">
+      <h3>{% include icon.html name="lock" size="20" %} Personas are permission sets, not profiles</h3>
+      <p style="margin: 0 0 12px;">
+        A user has exactly one profile, forever. So the moment one person does two jobs
+        — a small office where the same person works the counter <em>and</em> answers the
+        phone — a profile-per-persona design needs a ninth profile that is both. Then a
+        tenth. Every one of them a clone, and a clone stops being true the day you fix
+        something in the original.
+      </p>
+      <p style="margin: 0;">
+        So: one lean base profile, every persona an additive <b>permission set</b>, and
+        the double-hatted humans handled by <b>permission set groups</b> that
+        <em>compose</em> those sets rather than copying them. A profile is a job
+        description you can only have one of. A permission set is a hat.
+      </p>
+    </div>
+
+    <div class="personas">
+      {%- for p in site.data.personas -%}
+      <article class="persona" data-reveal style="--persona-accent: {{ p.accent }};">
+        <div class="persona__top">
+          <span class="persona__avatar">{{ p.initials }}</span>
+          <div>
+            <p class="persona__name">{{ p.name }}<span class="persona__age">, {{ p.age }}</span></p>
+            <p class="persona__role">{{ p.role }}</p>
+          </div>
+        </div>
+
+        <p class="persona__quote">&ldquo;{{ p.quote }}&rdquo;</p>
+
+        <div class="persona__meta">
+          <div class="persona__row">
+            {% include icon.html name="squares" size="15" %}
+            <span>{{ p.app }}</span>
+          </div>
+          <div class="persona__row">
+            {% include icon.html name="database" size="15" %}
+            <span><b>Owns:</b> {{ p.owns }}</span>
+          </div>
+          <div class="persona__row persona__row--can">
+            {% include icon.html name="check-circle" size="15" %}
+            <span>{{ p.can }}</span>
+          </div>
+          <div class="persona__row persona__row--cant">
+            {% include icon.html name="close" size="15" %}
+            <span>{{ p.cant }}</span>
+          </div>
+        </div>
+
+        <p class="persona__why">{{ p.why }}</p>
+      </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2>Write down what each persona <em>cannot</em> do</h2>
+      <p>
+        Most persona documents list capabilities. The refusals are more useful, for a
+        reason that only becomes obvious once you have debugged a security model.
+      </p>
+    </div>
+    <div class="split">
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="warning" size="20" %} The problem with only listing grants</h3>
+        <p style="margin:0;">
+          A permission you granted is visible in Setup. A permission you deliberately
+          <em>withheld</em> is invisible. Six months later nobody can tell the difference
+          between "we decided against this" and "we never got round to it" — and the
+          safe-looking move is always to grant it.
+        </p>
+      </div>
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="shield-check" size="20" %} The pattern underneath</h3>
+        <ul style="padding-left: 20px;">
+          <li>Whoever <b>declares</b> something cannot verify it</li>
+          <li>Whoever <b>verifies</b> cannot authorise</li>
+          <li>Whoever <b>authorises</b> cannot approve their own sensitive cases</li>
+          <li>Whoever <b>audits</b> cannot change anything</li>
+        </ul>
+        <p style="margin: 12px 0 0;">
+          That is separation of duties, and it is why the list has nine entries rather
+          than three. Each split exists because collapsing it would let one person
+          complete a sensitive action end to end with nobody else involved.
+        </p>
+      </div>
+    </div>
+    <p style="margin-top: 26px;">
+      <a class="btn" href="{{ '/lessons/00-personas/' | relative_url }}">
+        {% include icon.html name="graduation" size="16" %} Read the full lesson
+      </a>
+    </p>
+  </div>
+</section>

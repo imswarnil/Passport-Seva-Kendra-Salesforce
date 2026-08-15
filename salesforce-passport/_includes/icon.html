@@ -1,0 +1,176 @@
+{%- comment -%}
+  Inline SVG icon set, Phosphor-style: 256 viewBox, stroke-based, 16 stroke
+  weight, round caps and joins, no fill. Drawn inline rather than loaded from a
+  sprite or a CDN so that every icon inherits `currentColor` and works with no
+  network request and no build step.
+
+  Usage:  {% include icon.html name="database" %}
+          {% include icon.html name="flask" size="32" class="lesson-icon" %}
+{%- endcomment -%}
+{%- assign s = include.size | default: 24 -%}
+<svg class="icon {{ include.class }}" width="{{ s }}" height="{{ s }}" viewBox="0 0 256 256"
+     fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"
+     stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- case include.name -%}
+
+{%- when 'compass' -%}
+  <circle cx="128" cy="128" r="96"/>
+  <path d="M172 84l-28 60-60 28 28-60z"/>
+
+{%- when 'users' -%}
+  <circle cx="104" cy="96" r="40"/>
+  <path d="M24 208c12-32 42-52 80-52s68 20 80 52"/>
+  <circle cx="196" cy="108" r="28"/>
+  <path d="M196 156c24 4 40 22 48 42"/>
+
+{%- when 'flow' -%}
+  <circle cx="56" cy="64" r="28"/>
+  <circle cx="200" cy="64" r="28"/>
+  <circle cx="128" cy="192" r="28"/>
+  <path d="M84 64h88"/>
+  <path d="M74 89l38 78"/>
+  <path d="M182 89l-38 78"/>
+
+{%- when 'squares' -%}
+  <rect x="24" y="24" width="88" height="88" rx="16"/>
+  <rect x="144" y="24" width="88" height="88" rx="16"/>
+  <rect x="24" y="144" width="88" height="88" rx="16"/>
+  <rect x="144" y="144" width="88" height="88" rx="16"/>
+
+{%- when 'database' -%}
+  <ellipse cx="128" cy="72" rx="88" ry="32"/>
+  <path d="M40 72v112c0 17.7 39.4 32 88 32s88-14.3 88-32V72"/>
+  <path d="M216 128c0 17.7-39.4 32-88 32s-88-14.3-88-32"/>
+
+{%- when 'function' -%}
+  <path d="M100 208V80a32 32 0 0 1 32-32h20"/>
+  <path d="M72 120h84"/>
+  <path d="M176 152l40 48"/>
+  <path d="M216 152l-40 48"/>
+
+{%- when 'shield-check' -%}
+  <path d="M40 56v64c0 74 62 100 84 108a12 12 0 0 0 8 0c22-8 84-34 84-108V56a8 8 0 0 0-8-8H48a8 8 0 0 0-8 8Z"/>
+  <path d="M96 128l24 24 48-48"/>
+
+{%- when 'lock' -%}
+  <rect x="40" y="88" width="176" height="128" rx="12"/>
+  <path d="M92 88V56a36 36 0 0 1 72 0v32"/>
+  <circle cx="128" cy="148" r="12"/>
+
+{%- when 'lightning' -%}
+  <path d="M152 24 48 148h64l-8 84 104-124h-64z"/>
+
+{%- when 'code' -%}
+  <path d="M64 88 24 128l40 40"/>
+  <path d="M192 88l40 40-40 40"/>
+  <path d="M160 40 96 216"/>
+
+{%- when 'sliders' -%}
+  <path d="M40 80h176"/><circle cx="112" cy="80" r="20"/>
+  <path d="M40 128h176"/><circle cx="176" cy="128" r="20"/>
+  <path d="M40 176h176"/><circle cx="88" cy="176" r="20"/>
+
+{%- when 'flask' -%}
+  <path d="M96 32v64L34 200a16 16 0 0 0 14 24h160a16 16 0 0 0 14-24l-62-104V32"/>
+  <path d="M80 32h96"/>
+  <path d="M68 152h120"/>
+
+{%- when 'book' -%}
+  <path d="M32 208V56a24 24 0 0 1 24-24h152v176H56a24 24 0 0 0-24 24Z"/>
+  <path d="M56 208h152"/>
+
+{%- when 'target' -%}
+  <circle cx="128" cy="128" r="96"/>
+  <circle cx="128" cy="128" r="56"/>
+  <circle cx="128" cy="128" r="16"/>
+
+{%- when 'check-circle' -%}
+  <circle cx="128" cy="128" r="96"/>
+  <path d="M88 132l28 28 52-60"/>
+
+{%- when 'warning' -%}
+  <path d="M114 40 26 192a16 16 0 0 0 14 24h176a16 16 0 0 0 14-24L142 40a16 16 0 0 0-28 0Z"/>
+  <path d="M128 104v40"/>
+  <circle cx="128" cy="180" r="6" fill="currentColor" stroke="none"/>
+
+{%- when 'clock' -%}
+  <circle cx="128" cy="128" r="96"/>
+  <path d="M128 72v56l40 24"/>
+
+{%- when 'list' -%}
+  <path d="M96 64h120"/><path d="M96 128h120"/><path d="M96 192h120"/>
+  <circle cx="48" cy="64" r="8" fill="currentColor" stroke="none"/>
+  <circle cx="48" cy="128" r="8" fill="currentColor" stroke="none"/>
+  <circle cx="48" cy="192" r="8" fill="currentColor" stroke="none"/>
+
+{%- when 'arrow-left' -%}
+  <path d="M216 128H40"/><path d="M104 64l-64 64 64 64"/>
+
+{%- when 'arrow-right' -%}
+  <path d="M40 128h176"/><path d="M152 64l64 64-64 64"/>
+
+{%- when 'arrow-up-right' -%}
+  <path d="M72 184 184 72"/><path d="M96 72h88v88"/>
+
+{%- when 'menu' -%}
+  <path d="M40 72h176"/><path d="M40 128h176"/><path d="M40 184h176"/>
+
+{%- when 'close' -%}
+  <path d="M64 64l128 128"/><path d="M192 64L64 192"/>
+
+{%- when 'passport' -%}
+  <rect x="48" y="24" width="160" height="208" rx="16"/>
+  <circle cx="128" cy="108" r="40"/>
+  <path d="M96 180h64"/>
+
+{%- when 'house' -%}
+  <path d="M40 216V112l88-72 88 72v104a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8Z"/>
+  <path d="M100 224v-60h56v60"/>
+
+{%- when 'graduation' -%}
+  <path d="M24 96 128 48l104 48-104 48Z"/>
+  <path d="M64 118v50c0 14 29 26 64 26s64-12 64-26v-50"/>
+  <path d="M224 101v54"/>
+
+{%- when 'sun' -%}
+  <circle cx="128" cy="128" r="52"/>
+  <path d="M128 36V16"/><path d="M128 240v-20"/>
+  <path d="M36 128H16"/><path d="M240 128h-20"/>
+  <path d="M63 63 49 49"/><path d="M207 207l-14-14"/>
+  <path d="M63 193l-14 14"/><path d="M207 49l-14 14"/>
+
+{%- when 'moon' -%}
+  <path d="M216 148A88 88 0 0 1 108 40a88 88 0 1 0 108 108Z"/>
+
+{%- when 'image' -%}
+  <rect x="32" y="48" width="192" height="160" rx="12"/>
+  <path d="M32 176l52-52a12 12 0 0 1 17 0l43 43"/>
+  <path d="M136 159l31-31a12 12 0 0 1 17 0l40 40"/>
+  <circle cx="164" cy="94" r="14"/>
+
+{%- when 'stack' -%}
+  <path d="M128 32 24 84l104 52 104-52Z"/>
+  <path d="M24 128l104 52 104-52"/>
+  <path d="M24 172l104 52 104-52"/>
+
+{%- when 'rocket' -%}
+  <path d="M96 200c-24 24-64 16-64 16s-8-40 16-64"/>
+  <path d="M152 168l-56-56c24-64 72-88 128-88 0 56-24 104-72 144Z"/>
+  <circle cx="156" cy="100" r="16"/>
+
+{%- when 'sparkle' -%}
+  <path d="M96 32 118 90l58 22-58 22-22 58-22-58-58-22 58-22Z"/>
+  <path d="M188 128l12 32 32 12-32 12-12 32-12-32-32-12 32-12Z"/>
+
+{%- when 'git-branch' -%}
+  <circle cx="72" cy="56" r="24"/>
+  <circle cx="72" cy="200" r="24"/>
+  <circle cx="184" cy="104" r="24"/>
+  <path d="M72 80v96"/>
+  <path d="M184 128c0 40-32 48-64 48"/>
+
+{%- else -%}
+  <circle cx="128" cy="128" r="96"/>
+
+{%- endcase -%}
+</svg>

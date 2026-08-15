@@ -1,42 +1,128 @@
 ---
-layout: default
+layout: base
 ---
-<div class="prose lesson">
-  <span class="lesson-kicker">Lesson {{ page.number }} of {{ site.lessons.size }} · {{ page.concept }}</span>
-  <h1>{{ page.title }}</h1>
+{%- comment -%} Locate this lesson in the curriculum, and work out prev/next
+across module boundaries so navigation is continuous through the whole course.
+`concat` flattens the per-module lesson arrays into one ordered list; the
+module-level facts (accent, title, number) are picked up in a second pass,
+because Liquid has no way to merge them onto each row. {%- endcomment -%}
+{%- assign flat = "" | split: "" -%}
+{%- for m in site.data.curriculum -%}
+  {%- assign flat = flat | concat: m.lessons -%}
+{%- endfor -%}
+{%- assign pos = 0 -%}
+{%- for r in flat -%}{%- if r.slug == page.slug -%}{%- assign pos = forloop.index0 -%}{%- endif -%}{%- endfor -%}
+{%- assign me = flat[pos] -%}
 
-  {% if page.you_will_learn %}
-  <div class="lesson-you-will-learn">
-    <p>You'll learn</p>
-    <ul>
-      {% for item in page.you_will_learn %}
-      <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
+{%- assign mod_number = 0 -%}{%- assign mod_title = "" -%}{%- assign mod_id = "" -%}
+{%- assign accent = site.brand.navy -%}{%- assign index_in_module = 1 -%}
+{%- for m in site.data.curriculum -%}
+  {%- for l in m.lessons -%}
+    {%- if l.slug == page.slug -%}
+      {%- assign mod_number = m.number -%}{%- assign mod_title = m.title -%}
+      {%- assign mod_id = m.id -%}{%- assign accent = m.accent -%}
+      {%- assign index_in_module = forloop.index -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
 
-  {{ content }}
+<a class="skip-link" href="#lesson-body">Skip to lesson</a>
 
-  {% assign sorted = site.lessons | sort: 'number' %}
-  {% assign idx = 0 %}
-  {% for l in sorted %}
-    {% if l.url == page.url %}{% assign idx = forloop.index0 %}{% endif %}
-  {% endfor %}
-  <div class="lesson-nav">
-    {% assign prev_idx = idx | minus: 1 %}
-    {% if idx > 0 %}
-      {% assign prev = sorted[prev_idx] %}
-      <a href="{{ prev.url | relative_url }}">&larr; {{ prev.title }}</a>
-    {% else %}
-      <a href="{{ '/lessons/' | relative_url }}">&larr; All lessons</a>
-    {% endif %}
-    {% assign next_idx = idx | plus: 1 %}
-    {% if next_idx < sorted.size %}
-      {% assign next = sorted[next_idx] %}
-      <a href="{{ next.url | relative_url }}">{{ next.title }} &rarr;</a>
-    {% else %}
-      <a href="{{ '/lessons/' | relative_url }}">All lessons &rarr;</a>
-    {% endif %}
+<div class="course" style="--accent: {{ accent }};">
+  {% include sidebar.html %}
+  <div class="course__scrim" data-sidebar-close hidden></div>
+
+  <div class="course__main">
+    <header class="course__bar">
+      <button class="course__menu" type="button" data-sidebar-open aria-label="Open course navigation" aria-controls="course-sidebar">
+        {% include icon.html name="menu" size="20" %}
+      </button>
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="{{ '/lessons/' | relative_url }}">Course</a>
+        <span aria-hidden="true">/</span>
+        <span>Module {{ mod_number }} — {{ mod_title }}</span>
+      </nav>
+      <div class="course__progress" aria-label="Lesson {{ pos | plus: 1 }} of {{ flat.size }}">
+        <span>{{ pos | plus: 1 }} / {{ flat.size }}</span>
+        <span class="progressbar"><i style="width: {{ pos | plus: 1 | times: 100 | divided_by: flat.size }}%"></i></span>
+      </div>
+    </header>
+
+    <article class="lesson">
+      <div class="lesson__head">
+        <div class="lesson__head-text">
+          <p class="lesson__kicker">
+            {% include icon.html name=me.icon size="16" %}
+            Lesson {{ mod_number }}.{{ index_in_module }}
+            <span aria-hidden="true">·</span> {{ me.concept }}
+            <span aria-hidden="true">·</span> {{ me.minutes }} min read
+          </p>
+          <h1>{{ page.title }}</h1>
+          {% if page.description %}<p class="lesson__standfirst">{{ page.description }}</p>{% endif %}
+        </div>
+        {% include thumb.html icon=me.icon accent=accent label=mod_number ratio="square" %}
+      </div>
+
+      {% if page.you_will_learn %}
+      <section class="objectives" aria-labelledby="objectives-h">
+        <h2 class="objectives__title" id="objectives-h">What you'll learn</h2>
+        <ol class="objectives__list">
+          {% for item in page.you_will_learn %}
+          {%- comment -%} No data-reveal here: these sit above the fold, and
+          animating them in leaves a visible gap while the page settles. {%- endcomment -%}
+          <li>
+            <span class="objectives__num">{{ forloop.index }}</span>
+            <span>{{ item }}</span>
+          </li>
+          {% endfor %}
+        </ol>
+      </section>
+      {% endif %}
+
+      <div class="lesson__cols">
+        <div class="lesson__body prose" id="lesson-body">
+          {% include content-ads.html content=content %}
+        </div>
+
+        <div class="lesson__aside">
+          <nav class="toc" aria-labelledby="toc-h" data-toc>
+            <p class="toc__title" id="toc-h">{% include icon.html name="list" size="16" %} On this page</p>
+            <ol class="toc__list" data-toc-list></ol>
+          </nav>
+          {% include ad.html type="sidebar" %}
+        </div>
+      </div>
+
+      {% include ad.html type="display" %}
+
+      <nav class="pager" aria-label="Lesson navigation">
+        {%- assign p = pos | minus: 1 -%}
+        {%- if pos > 0 -%}
+          {%- assign prev = flat[p] -%}
+          <a class="pager__link pager__link--prev" href="{{ '/lessons/' | append: prev.slug | append: '/' | relative_url }}">
+            {% include icon.html name="arrow-left" size="18" %}
+            <span><em>Previous</em>{{ prev.title }}</span>
+          </a>
+        {%- else -%}
+          <a class="pager__link pager__link--prev" href="{{ '/lessons/' | relative_url }}">
+            {% include icon.html name="arrow-left" size="18" %}
+            <span><em>Back to</em>Course overview</span>
+          </a>
+        {%- endif -%}
+        {%- assign n = pos | plus: 1 -%}
+        {%- if n < flat.size -%}
+          {%- assign next = flat[n] -%}
+          <a class="pager__link pager__link--next" href="{{ '/lessons/' | append: next.slug | append: '/' | relative_url }}">
+            <span><em>Next</em>{{ next.title }}</span>
+            {% include icon.html name="arrow-right" size="18" %}
+          </a>
+        {%- else -%}
+          <a class="pager__link pager__link--next" href="{{ '/lessons/' | relative_url }}">
+            <span><em>Finished</em>Back to the course</span>
+            {% include icon.html name="check-circle" size="18" %}
+          </a>
+        {%- endif -%}
+      </nav>
+    </article>
   </div>
 </div>

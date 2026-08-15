@@ -1,0 +1,129 @@
+# The eight personas. Source of truth is JOURNEYS.md in the repository root;
+# this file is the presentation copy of it.
+
+- name: Ramesh Iyer
+  initials: RI
+  age: 34
+  role: Applicant — no login
+  app: Never signs in
+  accent: "#6B7280"
+  quote: I have a flight in three weeks. I just want to know where my file actually is.
+  owns: Nothing — everything is done for him at a counter
+  can: Ask at a counter, or phone the help desk
+  cant: Log in at all — there is no citizen portal, deliberately
+  why: >-
+    He is the reason every other decision has a test. "What does this field change
+    for Ramesh?" is a much better question than "would this be useful?"
+
+- name: Priya Deshmukh
+  initials: PD
+  age: 27
+  role: Front Office Officer
+  app: App 1 · Application Management
+  accent: "#1F4E79"
+  quote: I need to save a half-finished form while the applicant hunts for a document.
+  owns: Citizens and applications in Draft
+  can: Create citizens, start applications, submit, record the fee
+  cant: Select the Diplomatic record type, delete an application, or see any police verification
+  why: >-
+    Every validation rule is gated on Status ≠ Draft precisely so her form always
+    saves. That one convention is the difference between a system people use and
+    one they work around.
+
+- name: Anjali Nair
+  initials: AN
+  age: 31
+  role: Document Verification Officer
+  app: App 1 · Application Management
+  accent: "#7A5C1E"
+  quote: If I flag a problem, it has to say which document and why — not just "there's an issue".
+  owns: Document checklist items
+  can: Mark documents received and verified, raise and resolve objections
+  cant: Create or edit an application — read-only on the declaration she is checking
+  why: >-
+    The person checking the work cannot change the work. An objection is raised on
+    a specific document, so a roll-up on the parent blocks the advance automatically.
+
+- name: Kavya Menon
+  initials: KM
+  age: 25
+  role: Help Desk Agent
+  app: App 2 · Support
+  accent: "#4A3B6B"
+  quote: Half my calls are "where is my file" and the other half turn into new applications.
+  owns: Cases
+  can: Log every enquiry, answer from the record, spawn a re-issue from a name-change request
+  cant: Verify documents, grant, or despatch
+  why: >-
+    Her app is built on the standard Case object, which is what unlocks assignment
+    rules, escalation, Email-to-Case and Omni-Channel without building any of it.
+
+- name: Suresh Patil
+  initials: SP
+  age: 42
+  role: Police Verification Officer
+  app: App 3 · Police Verification
+  accent: "#5B2333"
+  quote: Half my job is on a doorstep. I only need a list of addresses and two buttons.
+  owns: Police verification records
+  can: Claim from the queue, record Cleared or Adverse with a reason and severity
+  cant: Create applications, or see fulfilment and payment at all
+  why: >-
+    His object is a lookup, not a master-detail, so a police finding can never be
+    cascade-deleted by an application and outlives the file it belongs to.
+
+- name: Vikram Rao
+  initials: VR
+  age: 45
+  role: Granting Officer
+  app: App 4 · Authorization & Dispatch
+  accent: "#1A5E4A"
+  quote: I should not be able to grant a passport that was never paid for.
+  owns: Passport booklets
+  can: Authorise a clean file and mint the booklet
+  cant: Grant with an unpaid fee, an open objection, or an uncleared verification
+  why: >-
+    He is the persona the system argues with most, on purpose. Two validation rules
+    are hard stops, and a diplomatic grant additionally needs someone else to approve it.
+
+- name: Farhan Sheikh
+  initials: FS
+  age: 29
+  role: Fulfilment Officer
+  app: App 4 · Authorization & Dispatch
+  accent: "#7A3B1E"
+  quote: I never want to retype a delivery address from a file onto a courier label.
+  owns: Dispatch records
+  can: Print, QC-validate, courier and confirm delivery — four milestones, one record
+  cant: Create a booklet, or see citizens, checklists, verifications or the Aadhaar token
+  why: >-
+    The delivery address is a formula over the application, so the commonest
+    real-world fulfilment error — a transcription slip — is structurally impossible.
+
+- name: Meenal Kulkarni
+  initials: MK
+  age: 51
+  role: Regional Passport Officer
+  app: Oversight across all four
+  accent: "#1A2A5E"
+  quote: I should not have to be told to escalate. It should already be in front of me.
+  owns: Approvals and escalations
+  can: See everything in her office, and approve or reject diplomatic grants
+  cant: Hold modifyAllRecords — she cannot silently overwrite outside the sharing model
+  why: >-
+    Five criteria-based sharing rules route work to her automatically. Escalation is
+    a standing query, not an action someone has to remember to take.
+
+- name: Deepak Bhosle
+  initials: DB
+  age: 38
+  role: Audit & Compliance Officer
+  app: Read-only across all four
+  accent: "#374151"
+  quote: A trail written by the people being audited is not a trail.
+  owns: Nothing — and that is the point
+  can: Read every record and reconstruct any file's history from field history
+  cant: Create, edit or delete anything — not even to fix an obvious typo
+  why: >-
+    Compliance review and data correction are structurally separated. He is also
+    the only persona whose visibility is not gated by queue membership or sharing criteria.
