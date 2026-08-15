@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Diplomatic_Requires_Clearance_Level</fullName>
-    <active>true</active>
-    <description>Diplomatic and Official booklets are only issued against a stated clearance level. Enforced at the API level because record-type picklist subsetting does not bind integrations. Draft records remain freely saveable.</description>
-    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), OR( ISPICKVAL(Passport_Category__c, &quot;Diplomatic&quot;), ISPICKVAL(Passport_Category__c, &quot;Official&quot;) ), ISBLANK(TEXT(Clearance_Level__c)) )</errorConditionFormula>
-    <errorDisplayField>Clearance_Level__c</errorDisplayField>
-    <errorMessage>Select a Clearance Level before submitting a Diplomatic or Official passport application.</errorMessage>
-</ValidationRule>

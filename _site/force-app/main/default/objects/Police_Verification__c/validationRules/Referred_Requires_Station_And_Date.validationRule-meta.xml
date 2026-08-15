@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Referred_Requires_Station_And_Date</fullName>
-    <active>true</active>
-    <description>Once a PV is referred (and for every state after it), the station handling it and the referral date must be on the record. Not Initiated records stay freely saveable.</description>
-    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Not Initiated&quot;)), OR( ISBLANK(Police_Station__c), ISBLANK(Referred_Date__c) ) )</errorConditionFormula>
-    <errorDisplayField>Police_Station__c</errorDisplayField>
-    <errorMessage>Enter the Police Station and the Referred Date before moving police verification past Not Initiated.</errorMessage>
-</ValidationRule>

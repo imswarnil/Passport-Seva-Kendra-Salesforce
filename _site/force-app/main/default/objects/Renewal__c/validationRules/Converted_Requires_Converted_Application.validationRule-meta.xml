@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Converted_Requires_Converted_Application</fullName>
-    <active>true</active>
-    <description>Converted is the success outcome of a renewal campaign; it is only meaningful if it points at the application it produced.</description>
-    <errorConditionFormula>AND( ISPICKVAL(Outreach_Status__c, &quot;Converted&quot;), ISBLANK(Converted_Application__c) )</errorConditionFormula>
-    <errorDisplayField>Converted_Application__c</errorDisplayField>
-    <errorMessage>Link the new application in Converted Application before setting Outreach Status to Converted.</errorMessage>
-</ValidationRule>

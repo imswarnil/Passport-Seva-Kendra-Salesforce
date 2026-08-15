@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Consent_Requires_Alert_Mobile</fullName>
-    <active>true</active>
-    <description>Consent to be notified is worthless without a number to notify. Enforced on submit so a Draft can be part-filled in any order.</description>
-    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), Notification_Consent__c, ISBLANK(Mobile_For_Alerts__c) )</errorConditionFormula>
-    <errorDisplayField>Mobile_For_Alerts__c</errorDisplayField>
-    <errorMessage>Enter a Mobile For Alerts number, or uncheck Notification Consent.</errorMessage>
-</ValidationRule>

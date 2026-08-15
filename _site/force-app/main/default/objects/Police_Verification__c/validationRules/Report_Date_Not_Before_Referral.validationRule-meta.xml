@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Report_Date_Not_Before_Referral</fullName>
-    <active>true</active>
-    <description>A report cannot arrive before the case was referred to the station. Same-day is allowed.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Referred_Date__c)), NOT(ISBLANK(Report_Received_Date__c)), Report_Received_Date__c &lt; Referred_Date__c )</errorConditionFormula>
-    <errorDisplayField>Report_Received_Date__c</errorDisplayField>
-    <errorMessage>Report Received Date cannot be earlier than the Referred Date.</errorMessage>
-</ValidationRule>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Sent_Requires_Date_And_Recipient</fullName>
-    <active>true</active>
-    <description>A Sent or Delivered notification must record when it went out and to which number, otherwise the log cannot evidence that the applicant was informed. Queued and Failed rows stay saveable without them.</description>
-    <errorConditionFormula>AND( OR( ISPICKVAL(Status__c, &quot;Sent&quot;), ISPICKVAL(Status__c, &quot;Delivered&quot;) ), OR( ISBLANK(Sent_Date__c), ISBLANK(Recipient_Number__c) ) )</errorConditionFormula>
-    <errorDisplayField>Sent_Date__c</errorDisplayField>
-    <errorMessage>Enter both the Sent Date and the Recipient Number when logging a notification as Sent or Delivered.</errorMessage>
-</ValidationRule>

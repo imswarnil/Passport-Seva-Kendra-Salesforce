@@ -14,9 +14,14 @@ manifest/.*.json
 .vscode/
 *.swp
 
-# Jekyll (salesforce-passport/)
+# Jekyll (wherever it's built from -- salesforce-passport/ or repo root by mistake)
+_site/
 salesforce-passport/_site/
+.jekyll-cache/
 salesforce-passport/.jekyll-cache/
+.jekyll-metadata
 salesforce-passport/.jekyll-metadata
+.bundle/
 salesforce-passport/.bundle/
+vendor/
 salesforce-passport/vendor/

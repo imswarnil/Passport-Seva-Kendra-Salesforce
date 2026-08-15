@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Cannot_Relate_To_Self</fullName>
-    <active>true</active>
-    <description>Guards against a self-referencing relationship row, which would double-count the applicant in family/guardian traversals.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Related_Citizen__c)), Related_Citizen__c = Citizen__c )</errorConditionFormula>
-    <errorDisplayField>Related_Citizen__c</errorDisplayField>
-    <errorMessage>A citizen cannot be their own family member. Pick a different Related Citizen.</errorMessage>
-</ValidationRule>

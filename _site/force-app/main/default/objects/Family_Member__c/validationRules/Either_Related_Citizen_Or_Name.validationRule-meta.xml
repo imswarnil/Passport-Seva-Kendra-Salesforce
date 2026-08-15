@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Either_Related_Citizen_Or_Name</fullName>
-    <active>true</active>
-    <description>A family member is identified either by a link to an existing Citizen record or by a free-text name (for relatives with no PSK record). At least one is mandatory or the row is meaningless.</description>
-    <errorConditionFormula>AND( ISBLANK(Related_Citizen__c), ISBLANK(Member_Name__c) )</errorConditionFormula>
-    <errorDisplayField>Member_Name__c</errorDisplayField>
-    <errorMessage>Either link a Related Citizen or type a Member Name. A family member needs at least one of the two.</errorMessage>
-</ValidationRule>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>In_Transit_Requires_Tracking</fullName>
-    <active>true</active>
-    <description>Once the booklet has left the facility the applicant is told to track it; the tracking number must exist by then.</description>
-    <errorConditionFormula>AND( OR( ISPICKVAL(Status__c, &quot;In Transit&quot;), ISPICKVAL(Status__c, &quot;Out for Delivery&quot;) ), ISBLANK(Tracking_Number__c) )</errorConditionFormula>
-    <errorDisplayField>Tracking_Number__c</errorDisplayField>
-    <errorMessage>Enter the courier Tracking Number before moving the dispatch to In Transit or Out for Delivery.</errorMessage>
-</ValidationRule>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Statutory fee table. Drives Fee__c on the application so amounts are configuration rather than hard-coded Apex. Money fields are Number because custom metadata types do not support the Currency type.</description>
-    <label>Fee Matrix</label>
-    <pluralLabel>Fee Matrix</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>
