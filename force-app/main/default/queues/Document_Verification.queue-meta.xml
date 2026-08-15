@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>true</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>Document Verification</name>
+    <queueMembers>
+        <roleAndSubordinates>
+            <roleAndSubordinate>Document_Verification</roleAndSubordinate>
+        </roleAndSubordinates>
+        <users>
+            <user>admin@passportoffice.com</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Passport_Application__c</sobjectType>
+    </queueSobject>
+</Queue>

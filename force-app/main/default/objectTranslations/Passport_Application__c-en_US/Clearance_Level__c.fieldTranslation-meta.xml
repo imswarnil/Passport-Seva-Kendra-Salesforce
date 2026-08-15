@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Clearance Level --></label>
+    <name>Clearance_Level__c</name>
+    <picklistValues>
+        <masterLabel>Ambassador</masterLabel>
+        <translation><!-- Ambassador --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Consular</masterLabel>
+        <translation><!-- Consular --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Delegation</masterLabel>
+        <translation><!-- Delegation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Govt Deputation</masterLabel>
+        <translation><!-- Govt Deputation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Minister</masterLabel>
+        <translation><!-- Minister --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

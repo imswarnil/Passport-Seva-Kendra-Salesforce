@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Minor_Validity_Must_Be_5</fullName>
+    <active>true</active>
+    <description>Statutory rule: passports issued to minors carry 5-year validity, not 10. Enforced on submit so the fee calculation and the printed booklet agree. Draft records remain freely saveable.</description>
+    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), Applied_For_Minor__c, NOT(ISPICKVAL(Validity_Years__c, &quot;5&quot;)) )</errorConditionFormula>
+    <errorDisplayField>Validity_Years__c</errorDisplayField>
+    <errorMessage>A minor’s passport is valid for 5 years. Set Validity Years to 5.</errorMessage>
+</ValidationRule>

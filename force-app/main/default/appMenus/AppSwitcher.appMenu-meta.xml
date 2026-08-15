@@ -152,4 +152,8 @@
         <name>N8N</name>
         <type>ConnectedApp</type>
     </appMenuItems>
+    <appMenuItems>
+        <name>onboarding</name>
+        <type>Network</type>
+    </appMenuItems>
 </AppMenu>

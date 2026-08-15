@@ -4,8 +4,17 @@
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>Police Verification</name>
     <queueMembers>
+        <roleAndSubordinates>
+            <roleAndSubordinate>Police_Verification_Team</roleAndSubordinate>
+        </roleAndSubordinates>
         <users>
             <user>admin@passportoffice.com</user>
         </users>
     </queueMembers>
+    <queueSobject>
+        <sobjectType>Police_Verification__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Passport_Application__c</sobjectType>
+    </queueSobject>
 </Queue>

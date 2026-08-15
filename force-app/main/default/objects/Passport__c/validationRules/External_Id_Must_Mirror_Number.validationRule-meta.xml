@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Id_Must_Mirror_Number</fullName>
+    <active>true</active>
+    <description>External_Id__c deliberately mirrors the passport number because Salesforce cannot enforce uniqueness on the standard Name field. External_Id__c is the unique/external-id field, so this rule protects the invariant that makes it a valid key.</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(Name)), External_Id__c &lt;&gt; Name )</errorConditionFormula>
+    <errorDisplayField>External_Id__c</errorDisplayField>
+    <errorMessage>External Id must be identical to the Passport Number. Copy the passport number into External Id.</errorMessage>
+</ValidationRule>

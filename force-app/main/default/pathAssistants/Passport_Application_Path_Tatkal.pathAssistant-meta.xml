@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Passport_Application__c</entityName>
+    <fieldName>Status__c</fieldName>
+    <masterLabel>Passport Application Path - Tatkal</masterLabel>
+    <pathAssistantSteps>
+        <info>Tatkal application cancelled.</info>
+        <picklistValueName>Cancelled</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Tatkal passport delivered. Confirm total elapsed time against the 1-3 day SLA.</info>
+        <picklistValueName>Delivered</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Priority courier. Expected delivery 1-2 days.</info>
+        <picklistValueName>Dispatch</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Fast-track verification. Target: same day. Any missing document must be raised as an Objection within hours, not days.</info>
+        <picklistValueName>Document Verification</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Tatkal draft. Verification Certificate / Annexure F equivalent and 3 of the prescribed 15 documents are mandatory.</info>
+        <picklistValueName>Draft</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Grant within 1 working day of document verification. Risk flags must be cleared or dismissed first.</info>
+        <picklistValueName>Granting</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Fee plus Tatkal surcharge received. Document verification must complete within 24 hours.</info>
+        <picklistValueName>Paid</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Tatkal surcharge applies on top of the base fee. Payment must clear same day.</info>
+        <picklistValueName>Payment Pending</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Tatkal is Post-PV only - do not hold printing for PV. PV proceeds after the booklet is issued.</info>
+        <picklistValueName>Police Verification</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Priority print queue. Target turnaround under 24 hours.</info>
+        <picklistValueName>Printing</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Tatkal rejected. Applicant may re-apply under the normal scheme; surcharge is not refunded.</info>
+        <picklistValueName>Rejected</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Submitted under Tatkal. Total SLA is 1-3 working days from Paid - escalate immediately if any stage stalls.</info>
+        <picklistValueName>Submitted</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Tatkal</recordTypeName>
+</PathAssistant>

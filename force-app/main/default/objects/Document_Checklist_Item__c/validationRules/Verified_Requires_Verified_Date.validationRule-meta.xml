@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Verified_Requires_Verified_Date</fullName>
+    <active>true</active>
+    <description>Verification is the gate for the application leaving Document Verification; the date is needed for the audit trail.</description>
+    <errorConditionFormula>AND( ISPICKVAL(Status__c, &quot;Verified&quot;), ISBLANK(Verified_Date__c) )</errorConditionFormula>
+    <errorDisplayField>Verified_Date__c</errorDisplayField>
+    <errorMessage>Enter the Verified Date when marking a document as Verified.</errorMessage>
+</ValidationRule>

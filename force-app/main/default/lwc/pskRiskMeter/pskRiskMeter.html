@@ -1,0 +1,13 @@
+<template>
+    <template if:true={hasScore}>
+        <div class="psk-risk-meter">
+            <div class="psk-risk-meter__track">
+                <div class={bandClass} style={fillStyle}></div>
+            </div>
+            <p class="psk-risk-meter__caption">{score} / 100 &middot; {band} risk</p>
+        </div>
+    </template>
+    <template if:false={hasScore}>
+        <p class="psk-risk-meter__empty">Not scored yet</p>
+    </template>
+</template>

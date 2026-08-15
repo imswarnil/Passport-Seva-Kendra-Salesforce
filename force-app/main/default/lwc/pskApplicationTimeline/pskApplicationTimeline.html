@@ -1,0 +1,99 @@
+<template>
+    <lightning-card title="Application Timeline" icon-name="standard:activations" class="psk-card">
+        <div slot="actions" class="psk-tl__actions">
+            <lightning-button
+                label={sortLabel}
+                icon-name={sortIcon}
+                onclick={handleToggleSort}
+            ></lightning-button>
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                variant="border-filled"
+                alternative-text="Refresh timeline"
+                title="Refresh timeline"
+                onclick={handleRefresh}
+            ></lightning-button-icon>
+        </div>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={isLoading}>
+                <div class="psk-state" role="status" aria-live="polite">
+                    <lightning-spinner alternative-text="Loading timeline" size="small"></lightning-spinner>
+                    <p class="psk-state__text">Building the application timeline&hellip;</p>
+                </div>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="psk-state psk-state--error" role="alert">
+                    <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                    <p class="psk-state__text">{error}</p>
+                </div>
+            </template>
+
+            <template if:true={isEmpty}>
+                <div class="psk-state" role="status">
+                    <lightning-icon icon-name="utility:clock" size="small"></lightning-icon>
+                    <p class="psk-state__text">Nothing has happened on this application yet.</p>
+                </div>
+            </template>
+
+            <template if:true={hasEvents}>
+                <div class="psk-tl__filter">
+                    <lightning-combobox
+                        label="Filter timeline by event type"
+                        variant="label-hidden"
+                        options={typeOptions}
+                        value={selectedType}
+                        onchange={handleTypeChange}
+                        class="psk-tl__combobox"
+                    ></lightning-combobox>
+                    <span class="psk-tl__count">{countLabel}</span>
+                </div>
+
+                <ul class="psk-tl" aria-label="Application activity, chronological">
+                    <template for:each={visibleEvents} for:item="event">
+                        <li key={event.key} class="psk-tl__item">
+                            <span class={event.markerClass} aria-hidden="true">
+                                <lightning-icon icon-name={event.icon} size="x-small"></lightning-icon>
+                            </span>
+                            <div class="psk-tl__body">
+                                <p class="psk-tl__title">{event.title}</p>
+                                <template if:true={event.subtitle}>
+                                    <p class="psk-tl__subtitle">{event.subtitle}</p>
+                                </template>
+                                <p class="psk-tl__meta">
+                                    <span class="psk-tl__type">{event.type}</span>
+                                    <template if:true={event.timestamp}>
+                                        <span class="psk-tl__dot" aria-hidden="true">&middot;</span>
+                                        <lightning-formatted-date-time
+                                            value={event.timestamp}
+                                            year="numeric"
+                                            month="short"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                </p>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template if:true={isFilteredEmpty}>
+                <div class="psk-tl__filter">
+                    <lightning-combobox
+                        label="Filter timeline by event type"
+                        variant="label-hidden"
+                        options={typeOptions}
+                        value={selectedType}
+                        onchange={handleTypeChange}
+                        class="psk-tl__combobox"
+                    ></lightning-combobox>
+                </div>
+                <p class="psk-state__text slds-p-top_small">No events of this type.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>
