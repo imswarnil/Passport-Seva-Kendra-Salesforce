@@ -590,6 +590,53 @@ public with sharing class PSK_ApplicationService {
     }
 
     /**
+     * Copies PSK_Office__r.Region__c onto Region__c whenever the office is set
+     * and either Region__c is blank or the office lookup changed. This field
+     * exists purely so criteria-based sharing rules have something to match on:
+     * such rules cannot traverse a lookup (PSK_Office__r.Region__c is not a
+     * legal criteria field), so the region has to be denormalised onto the
+     * application itself. Bulk-safe: one query for every office referenced in
+     * the batch, no query-in-a-loop.
+     */
+    public static void applyRegionFromOffice(List<Passport_Application__c> apps,
+                                             Map<Id, Passport_Application__c> oldMap) {
+        Set<Id> officeIds = new Set<Id>();
+        for (Passport_Application__c app : apps) {
+            if (app.PSK_Office__c == null) {
+                continue;
+            }
+            if (needsRegionRefresh(app, oldMap)) {
+                officeIds.add(app.PSK_Office__c);
+            }
+        }
+        if (officeIds.isEmpty()) {
+            return;
+        }
+        Map<Id, PSK__c> offices = new Map<Id, PSK__c>([
+            SELECT Id, Region__c FROM PSK__c WHERE Id IN :officeIds
+        ]);
+
+        for (Passport_Application__c app : apps) {
+            if (app.PSK_Office__c == null || !needsRegionRefresh(app, oldMap)) {
+                continue;
+            }
+            PSK__c office = offices.get(app.PSK_Office__c);
+            if (office == null || String.isBlank(office.Region__c)) {
+                continue;
+            }
+            app.Region__c = office.Region__c;
+        }
+    }
+
+    private static Boolean needsRegionRefresh(Passport_Application__c app,
+                                               Map<Id, Passport_Application__c> oldMap) {
+        Id priorOffice = (oldMap != null && app.Id != null && oldMap.containsKey(app.Id))
+            ? oldMap.get(app.Id).PSK_Office__c : null;
+        Boolean officeChanged = app.PSK_Office__c != priorOffice;
+        return String.isBlank(app.Region__c) || officeChanged;
+    }
+
+    /**
      * Deterministic natural key for citizen de-duplication:
      * lower(first + last) + date of birth + mobile.
      */
