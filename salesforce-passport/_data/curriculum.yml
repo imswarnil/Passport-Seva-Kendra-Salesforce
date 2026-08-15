@@ -1,0 +1,151 @@
+# The course structure. The sidebar, the lesson index, the JSON-LD and the
+# prev/next navigation are all generated from this file — it is the single
+# source of truth for what the course contains and what order it runs in.
+#
+# Each lesson's `slug` must match a file in _lessons/ (without the .md).
+# Each `icon` must match an icon name in _includes/icon.html.
+
+- id: brief
+  number: 0
+  title: The Brief
+  tagline: What we are building, for whom, and why — before a single object exists
+  icon: compass
+  accent: "#1A2A5E"
+  summary: >-
+    Every build that goes wrong went wrong here. This module is the design work
+    that happens before the org is touched: the problem, the people, the journey
+    through the system, and the shape of the four apps that serve it.
+  lessons:
+    - slug: 00-the-problem
+      title: The Problem and the Assumptions
+      icon: compass
+      minutes: 9
+      concept: Solution design
+    - slug: 00-personas
+      title: Eight Personas, One of Whom Never Logs In
+      icon: users
+      minutes: 11
+      concept: Personas
+    - slug: 00-journey
+      title: The Journey — Draft to Delivered
+      icon: flow
+      minutes: 12
+      concept: Process design
+    - slug: 00-four-apps
+      title: Four Apps, One Lifecycle
+      icon: squares
+      minutes: 8
+      concept: App architecture
+
+- id: data
+  number: 1
+  title: The Data Model
+  tagline: Few objects, many fields — and knowing when that rule breaks
+  icon: database
+  accent: "#1F4E79"
+  summary: >-
+    The schema decisions that everything downstream inherits. Why a lifecycle
+    lives on one object, what a record type actually changes, and how to choose
+    between master-detail and lookup as a business call rather than a technical one.
+  lessons:
+    - slug: 01-data-modeling
+      title: "Data Modeling: Few Objects, Many Fields"
+      icon: database
+      minutes: 14
+      concept: Data modelling
+    - slug: 02-fields-and-formulas
+      title: "Fields & Formulas: Snapshot vs. Derived Data"
+      icon: function
+      minutes: 12
+      concept: Fields and formulas
+
+- id: quality
+  number: 2
+  title: Data Quality
+  tagline: Rules that gate a save without making the form unusable
+  icon: shield-check
+  accent: "#7A5C1E"
+  summary: >-
+    Validation that enforces on submit rather than on every keystroke, duplicate
+    rules on the identity that must not fork, and the PII discipline that is
+    load-bearing because the platform cannot enforce it for us.
+  lessons:
+    - slug: 03-validation-rules
+      title: "Validation Rules: Gate on Submit, Not on Draft"
+      icon: shield-check
+      minutes: 10
+      concept: Validation
+
+- id: security
+  number: 3
+  title: Security and Access
+  tagline: What you can do, and which records you can do it to
+  icon: lock
+  accent: "#5B2333"
+  summary: >-
+    Two independent gates that beginners collapse into one. Profiles and
+    permission sets versus org-wide defaults, roles and sharing — plus the
+    escalations that happen because a record matches criteria, not because
+    someone remembered.
+  lessons:
+    - slug: 04-security-model
+      title: "Security: Roles, Permission Sets, Sharing, and Least Privilege"
+      icon: lock
+      minutes: 15
+      concept: Security model
+
+- id: automation
+  number: 4
+  title: Automation
+  tagline: Configure before you code — and know exactly where that stops
+  icon: lightning
+  accent: "#1A5E4A"
+  summary: >-
+    The order of execution, all seven trigger contexts and what each one can do
+    that the others cannot, the handler pattern, and the approval process that is
+    the only hard human gate in the system.
+  lessons:
+    - slug: 06-automation-without-flow
+      title: "Automation Without Assignment Rules or Flow: Queue Routing and Approval Processes"
+      icon: lightning
+      minutes: 13
+      concept: Declarative automation
+    - slug: 05-apex-triggers-and-services
+      title: "Apex Triggers and the Service Layer Pattern"
+      icon: code
+      minutes: 16
+      concept: Apex
+
+- id: config
+  number: 5
+  title: Configuration as Data
+  tagline: Business rules that change without a code change
+  icon: sliders
+  accent: "#4A3B6B"
+  summary: >-
+    Fee tables and SLA targets live in custom metadata, not in Apex string
+    literals. Changing a fee becomes a deploy of a record, which is exactly the
+    point.
+  lessons:
+    - slug: 08-config-as-data
+      title: "Config as Data: Custom Metadata Types Instead of Hardcoded Constants"
+      icon: sliders
+      minutes: 11
+      concept: Custom metadata
+
+- id: testing
+  number: 6
+  title: Testing and Proof
+  tagline: Coverage is a deployment gate, not a quality bar
+  icon: flask
+  accent: "#7A3B1E"
+  summary: >-
+    Tests that assert outcomes a user would notice, bulk tests that catch the
+    failure single-record tests cannot see, persona tests that prove the security
+    model by what it refuses, and the narrated end-to-end run that ships as proof.
+  lessons:
+    - slug: 07-testing-apex
+      title: "Testing Apex: Bulk-Safe, Deterministic, No Org Dependency"
+      icon: flask
+      minutes: 14
+      concept: Testing

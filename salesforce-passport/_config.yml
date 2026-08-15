@@ -6,8 +6,11 @@ description: >-
   to end, instead of a pile of disconnected tutorials. Data modelling,
   security, automation, approvals, and UI, all in one place, with the real
   code and metadata that shipped it.
-url: ""
-baseurl: ""
+# Absolute URL is used by the JSON-LD in _includes/schema.html. Set this to the
+# real published origin before deploying, or the structured data will emit
+# relative URLs that search engines cannot resolve.
+url: "https://imswarnil.github.io"
+baseurl: "/Passport-Seva-Kendra-Salesforce"
 
 author:
   name: Swarnil Singhai
@@ -20,6 +23,34 @@ brand:
   navy_dark: "#101B42"
   gold: "#C9A227"
   paper: "#F7F5F0"
+
+# ---------------------------------------------------------------------------
+# Google AdSense
+#
+# Leave `client` blank and every ad slot renders a labelled PLACEHOLDER instead
+# of a real unit — so you can see the layout before you have an account, and no
+# AdSense script is loaded at all.
+#
+# To go live:
+#   1. Set `client` to your publisher ID, e.g. "ca-pub-1234567890123456".
+#   2. Create the ad units in AdSense and paste each slot ID below.
+#   3. Set `enabled: true`.
+#
+# `in_article.every_n_paragraphs` controls the automatic in-content ads: one is
+# injected after every Nth paragraph of a lesson, repeating down the page, with
+# `min_paragraphs` acting as a floor so short lessons get none at all.
+# ---------------------------------------------------------------------------
+adsense:
+  enabled: false
+  client: ""            # ca-pub-XXXXXXXXXXXXXXXX
+  slots:
+    in_article: ""      # in-article unit, injected between paragraphs
+    display: ""         # responsive display unit, used between page sections
+    sidebar: ""         # vertical unit for the course sidebar
+    footer: ""          # horizontal unit above the footer
+  in_article:
+    every_n_paragraphs: 6
+    min_paragraphs: 9
 
 markdown: kramdown
 kramdown:
@@ -55,3 +86,5 @@ exclude:
   - Gemfile.lock
   - README.md
   - vendor
+  - node_modules
+  - .jekyll-cache

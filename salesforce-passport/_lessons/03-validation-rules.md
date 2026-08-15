@@ -1,6 +1,8 @@
 ---
 number: 3
 title: "Validation Rules: Gate on Submit, Not on Draft"
+description: >-
+  Rules that enforce at the transition rather than on every keystroke — so a half-finished form always saves, and the gates still hold where they matter.
 concept: Validation Rules
 you_will_learn:
   - "Why validation rules should be gated by lifecycle stage instead of firing on every save"

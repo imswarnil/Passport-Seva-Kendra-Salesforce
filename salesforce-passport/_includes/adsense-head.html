@@ -1,0 +1,10 @@
+{%- comment -%}
+  The AdSense loader. Only emitted when ads are actually configured — a site
+  with no publisher id loads no third-party script at all, which keeps the
+  placeholder mode genuinely free of network requests.
+{%- endcomment -%}
+{%- if site.adsense.enabled and site.adsense.client and site.adsense.client != '' -%}
+<script async crossorigin="anonymous"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.adsense.client }}"></script>
+<meta name="google-adsense-account" content="{{ site.adsense.client }}">
+{%- endif -%}

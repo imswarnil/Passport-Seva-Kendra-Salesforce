@@ -1,6 +1,8 @@
 ---
 number: 6
 title: "Automation Without Assignment Rules or Flow: Queue Routing and Approval Processes"
+description: >-
+  Configure before you code — and knowing exactly where that stops. Queue routing, approval processes, and the order of execution that explains most automation bugs.
 concept: Declarative Automation
 you_will_learn:
   - "What a Queue actually is, and how it differs from a Public Group"

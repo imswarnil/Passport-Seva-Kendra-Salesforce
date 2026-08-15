@@ -1,0 +1,80 @@
+# "What gets built", grouped by the layer of the org it lives in.
+# Shown on the home page; each item names a concept the build teaches.
+
+- id: data-model
+  title: Data model
+  sub: 8 objects · ~135 fields
+  icon: database
+  accent: "#1F4E79"
+  items:
+    - "<b>One object for the whole lifecycle.</b> Draft to Delivered on <code>Passport_Application__c</code>, driven by a Status picklist — not one object per stage."
+    - "<b>Record types that subset picklists.</b> Five of them, and a sixth that got deleted because its subset was identical to another."
+    - "<b>Master-detail vs lookup, argued both ways.</b> Checklist items cascade; police verifications deliberately do not."
+    - "<b>Roll-up summaries</b> replacing checkboxes a human had to remember to tick."
+    - "<b>Snapshot a declaration, derive a fact.</b> The application freezes what was declared; the booklet derives everything from it."
+    - "<b>A self-lookup</b> chaining each re-issued booklet to the one it replaced."
+
+- id: automation
+  title: Automation
+  sub: triggers · flows · approvals
+  icon: lightning
+  accent: "#1A5E4A"
+  items:
+    - "<b>The order of execution</b>, and the four consequences that shape every design choice in the build."
+    - "<b>All seven trigger contexts</b>, each introduced by the one thing only it can do."
+    - "<b>A stage machine</b> that mints the checklist, the verification, the booklet and the dispatch on the right transitions."
+    - "<b>Idempotency guards</b> on every create — because a duplicate passport is not a bug report."
+    - "<b>An approval process</b>, because a validation rule can block but cannot record who decided."
+    - "<b>Before-save vs after-save flows</b>, and why putting the wrong logic in each costs you a DML."
+
+- id: security
+  title: Security &amp; sharing
+  sub: personas · OWD · sharing rules
+  icon: lock
+  accent: "#5B2333"
+  items:
+    - "<b>Two independent gates.</b> What you can do, versus which records you can do it to."
+    - "<b>Personas as permission sets</b> composed into groups — never as cloned profiles."
+    - "<b>Criteria-based sharing</b>, so escalation is a standing query rather than something to remember."
+    - "<b>The two things sharing rules cannot read</b> — formulas and lookups — and the stored field that works around both."
+    - "<b>Field-level security on PII</b>, configured separately from object access."
+    - "<b>Queues</b>, so ownership survives someone being on leave."
+
+- id: code
+  title: Apex &amp; services
+  sub: trigger → handler → service
+  icon: code
+  accent: "#4A3B6B"
+  items:
+    - "<b>One trigger per object</b>, containing no logic at all."
+    - "<b>The handler pattern</b>, and the four reasons it beats logic in the trigger body."
+    - "<b>Bulkification</b> — no SOQL or DML in a loop, ever, and a test that fails if you add one."
+    - "<b>Custom metadata in Apex</b>, so changing a fee is a deploy of a record, not a code change."
+    - "<b>Queueable, Batch and Scheduled</b> — one real use each, and why <code>@future</code> is deliberately unused."
+    - "<b><code>with sharing</code> and <code>USER_MODE</code></b>, so code respects the security model rather than bypassing it."
+
+- id: ui
+  title: UI &amp; apps
+  sub: 4 apps · LWC · Lightning pages
+  icon: squares
+  accent: "#7A5C1E"
+  items:
+    - "<b>An app is a navigation boundary, not a data boundary</b> — one record travels through all four."
+    - "<b>Dynamic Forms</b>, so guardian fields appear only when the applicant is a minor."
+    - "<b>Dynamic Actions</b>, so one record page serves five personas with different buttons."
+    - "<b>Path</b>, giving the lifecycle a stage bar with guidance at each step."
+    - "<b>Lightning Web Components</b> — wire vs imperative Apex, events, and Lightning Data Service."
+    - "<b>List views as work queues</b>, which is how an officer actually works a stream of records."
+
+- id: testing
+  title: Testing &amp; proof
+  sub: 5 layers · unattended E2E
+  icon: flask
+  accent: "#7A3B1E"
+  items:
+    - "<b>Tests that would fail if you deleted the code they cover</b> — the mutation-test instinct."
+    - "<b>Bulk tests at 200 records</b>, catching the failure single-record tests cannot see."
+    - "<b><code>System.runAs</code> tests</b> that prove the security model by what it <em>refuses</em>."
+    - "<b>A test data factory</b>, because a test that depends on org data passes locally and fails in a fresh org."
+    - "<b>Flow tests and Jest</b>, so declarative logic and components are covered too."
+    - "<b>A narrated end-to-end run</b> that drives the real org and publishes what it saw."

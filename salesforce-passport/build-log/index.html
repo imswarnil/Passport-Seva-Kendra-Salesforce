@@ -1,0 +1,332 @@
+---
+layout: default
+title: Build log
+description: >-
+  How the Passport Seva Kendra org actually got built, in order — from signing
+  up for a Developer Edition to the redesign that cut seventeen objects to eight.
+  Including the dead ends and the bugs.
+permalink: /build-log/
+---
+
+<section class="hero" style="padding-bottom: 26px;">
+  <div class="wrap">
+    <p class="eyebrow">{% include icon.html name="git-branch" size="15" %} 21 Jul &ndash; 15 Aug 2026</p>
+    <h1 style="max-width: 18ch;">The build log</h1>
+    <p class="hero__lede" style="max-width: 68ch;">
+      A chronological account of how this org got built, assembled from its own commit
+      history — which reads less like a changelog and more like a diary, because most
+      commits explain not just what changed but what broke first. The dead ends are
+      kept in on purpose. They are the part you actually learn from.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 20px;">
+  <div class="wrap">
+    <ol class="timeline">
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="sparkle" size="12" %}</span>
+        <span class="tl__phase">Before anything · Phase 0</span>
+        <h2>Deciding what to build</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} Mid-July 2026</p>
+        <p>
+          The goal was never "learn Salesforce features". It was to build one system
+          real enough that the features had to show up on their own — and then explain
+          it. A passport office turned out to be close to ideal:
+        </p>
+        <ul>
+          <li>A <b>long lifecycle</b> with genuine stage handoffs, so queues, sharing rules and approvals all have a real reason to exist.</li>
+          <li><b>Several distinct jobs</b> — counter, verification, police, granting, despatch — which is what makes personas meaningful rather than decorative.</li>
+          <li><b>Sensitive personal data</b>, which forces field-level security and PII discipline instead of leaving them as theory.</li>
+          <li>A process everyone has some intuition for, so the domain never gets in the way of the concept being taught.</li>
+        </ul>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="rocket" size="12" %}</span>
+        <span class="tl__phase">Environment</span>
+        <h2>Getting an org and a command line</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 21 July 2026</p>
+        <p>
+          Everything starts with a free <b>Developer Edition</b> org — a full-feature
+          Salesforce instance with small limits, which is the correct place to build
+          something like this. Signed up, set a My Domain, and made it the working org.
+        </p>
+        <p>
+          The important decision at this point is not a Salesforce one. It is choosing
+          to work from the <b>command line and Git</b> rather than clicking around in
+          Setup. Every object, field, rule and class in this build exists as XML in a
+          repository — which is what makes it reviewable, diffable, and possible to
+          rebuild from scratch.
+        </p>
+        <ul>
+          <li>Installed the Salesforce CLI (<code>sf</code>) and authorised the org as <code>psk-dev</code>.</li>
+          <li>Created an SFDX project, so metadata lives under <code>force-app/main/default/</code>.</li>
+          <li>Set the source API version and committed the empty skeleton before building anything.</li>
+        </ul>
+        <div class="finding">
+          <b>Worth knowing early</b>
+          Clicking in Setup and deploying from source are not two ways of doing the
+          same thing. Anything you click still has to be retrieved into the repo, or
+          your next deploy silently reverts it. Pick source-first and stay there.
+        </div>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="database" size="12" %}</span>
+        <span class="tl__phase">Data model</span>
+        <h2>One object, carrying the whole lifecycle</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 21 July 2026</p>
+        <p>
+          The build starts, deliberately, with a single object:
+          <code>Passport_Application__c</code> — 56 fields, six record types, one Status
+          picklist carrying Draft all the way to Delivered.
+        </p>
+        <p>
+          The instinct almost everyone has here is wrong, and it is worth naming:
+          "Draft is one thing, Submitted is another, so they should be different
+          objects." It sounds tidy. In practice it means copying every field between
+          objects at each stage, re-pointing every child record, and re-teaching every
+          report and permission set about another table. <b>An application is not three
+          kinds of thing — it is one thing moving through time.</b>
+        </p>
+        <p>
+          From there the model grew outward: offices, appointment slots, checklists,
+          objections, police verification, payments, and eventually identity and
+          fulfilment. Two objects were never in the plan and got added because the model
+          demanded them — <code>Citizen__c</code>, so the applicant is a golden identity
+          record rather than an Account, and <code>Family_Member__c</code> for the
+          guardian link a minor's application needs.
+        </p>
+        <div class="finding">
+          <b>The one deliberate duplication</b>
+          The application stores its own name, date of birth and address even though it
+          also has a citizen lookup. That is on purpose: a passport application is a
+          legal instrument, and if those were live formulas, a citizen fixing a typo
+          years later would silently rewrite what an already-granted application says
+          was declared. <b>Snapshot a declaration, derive a fact.</b>
+        </div>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="squares" size="12" %}</span>
+        <span class="tl__phase">UI</span>
+        <h2>An app you can actually open</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 22 July 2026</p>
+        <p>
+          A data model you can only see in Object Manager is hard to stay motivated by.
+          This step built the console app, a home dashboard backed by real Apex rather
+          than a static page, and the first demo data — so there was something to click.
+        </p>
+        <figure class="shot tl__shot">
+          <div class="shot__bar" aria-hidden="true">
+            <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+            <span class="shot__url">Application Management Console &mdash; home</span>
+          </div>
+          <img src="{{ '/assets/img/screenshots/home-dashboard.jpg' | relative_url }}"
+               alt="The console home page showing application counts per stage, SLA breaches and queue depth."
+               width="1568" height="707" loading="lazy" decoding="async">
+          <figcaption class="shot__cap">
+            <strong>The home dashboard.</strong> Stage counts, SLA breaches and queue
+            depth, all computed in Apex rather than hard-coded into a Lightning page.
+          </figcaption>
+        </figure>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="stack" size="12" %}</span>
+        <span class="tl__phase">Data model · vocabulary · config</span>
+        <h2>Identity, the end of the lifecycle, and config as data</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 30 July 2026</p>
+        <ul>
+          <li><b>Global value sets.</b> Thirteen of them, so "Maharashtra" is spelled the same way on every object that mentions a state.</li>
+          <li><b>The identity domain.</b> <code>Citizen__c</code> as the golden record — who a person is <em>now</em>, as opposed to what they declared then.</li>
+          <li><b>Closing the lifecycle.</b> <code>Passport__c</code>, <code>Print_Job__c</code> and <code>Dispatch__c</code>, so a granted application actually produces a booklet that gets posted.</li>
+          <li><b>Custom metadata types.</b> <code>Fee_Matrix__mdt</code> and <code>SLA_Config__mdt</code> — fee tables and SLA targets as deployable <em>records</em>, so changing a fee is a config deploy, not a code change.</li>
+          <li><b>Record types, 56 validation rules, and the sharing model.</b> The org stops being a set of tables and starts having opinions.</li>
+        </ul>
+        <p>
+          Then every layout got rebuilt and 45 quick actions wired up — which is where
+          the platform pushed back for the first time.
+        </p>
+        <div class="finding">
+          <b>Two non-obvious platform quirks</b>
+          <code>force:relatedListSingleContainer</code> rejects a <code>relatedListId</code>
+          at this org's API version, so those fall back to <code>relatedListContainer</code>.
+          And FlexiPage component identifiers must be unique <em>per page</em>, not per
+          region — which looks like a harmless duplicate ID until the deploy refuses it.
+        </div>
+        <figure class="shot tl__shot">
+          <div class="shot__bar" aria-hidden="true">
+            <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+            <span class="shot__url">Passport Application &mdash; record page</span>
+          </div>
+          <img src="{{ '/assets/img/screenshots/application-record.jpg' | relative_url }}"
+               alt="A passport application record page showing the status path, applicant detail sections and related lists."
+               width="1568" height="707" loading="lazy" decoding="async">
+          <figcaption class="shot__cap">
+            <strong>The record page.</strong> Path across the top, Dynamic Forms hiding
+            fields that don't apply, and a sidebar pulling in citizen, documents and
+            verification.
+          </figcaption>
+        </figure>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="code" size="12" %}</span>
+        <span class="tl__phase">Apex · the incident report</span>
+        <h2>The automation layer, and everything it broke</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 3 August 2026</p>
+        <p>
+          Four triggers and a dozen service classes. The commit that deployed them took
+          the test suite from <b>59% to 89% passing</b>, and getting there surfaced
+          problems that had nothing to do with business logic and everything to do with
+          how Salesforce actually deploys and enforces things.
+        </p>
+        <div class="finding">
+          <b>Finding 1 · Silent skips</b>
+          35 classes had no <code>.cls-meta.xml</code>, so the CLI silently skipped them
+          and only their <em>dependents</em> failed. The cascading "variable does not
+          exist" errors never once named the real cause.
+        </div>
+        <div class="finding">
+          <b>Finding 2 · Reserved words</b>
+          <code>number</code>, <code>limit</code> and <code>like</code> are reserved
+          identifiers in Apex.
+        </div>
+        <div class="finding">
+          <b>Finding 3 · Invisible fields</b>
+          Field permissions had been generated <em>before</em> the <code>External_Id__c</code>
+          fields existed, so those fields were invisible and <code>USER_MODE</code> DML
+          failed with "fields being inaccessible". A field can exist, compile and deploy
+          cleanly, and Apex will still refuse to touch it. The fix is not a code change
+          at all — it is regenerating field-level security.
+        </div>
+        <p>
+          A second pass took the suite to 188/188 green, and fixed six more real product
+          bugs found by fixing tests <em>properly</em> rather than loosening assertions
+          until they passed:
+        </p>
+        <ul>
+          <li>Every <code>AuraHandledException</code> reached the user as the literal string <b>"Script-thrown exception"</b>, because <code>getMessage()</code> returns exactly that unless <code>setMessage()</code> is also called. All 40+ throws now go through one helper.</li>
+          <li><code>cleanUp()</code> guarded a mass delete with <code>!=</code> on a String — which is <b>case-insensitive</b> in Apex, so the guard let the wrong value through.</li>
+          <li>Test factory external IDs collided, because Apex test methods run in <b>parallel</b> and the counter restarted per method.</li>
+        </ul>
+        <p>
+          That last one became the centrepiece of the
+          <a href="{{ '/lessons/07-testing-apex/' | relative_url }}">testing lesson</a> —
+          a textbook flaky test that only appears when Salesforce happens to schedule two
+          methods into overlapping transactions.
+        </p>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="lightning" size="12" %}</span>
+        <span class="tl__phase">Automation</span>
+        <h2>Making the org run itself</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 15 August 2026</p>
+        <p>
+          The difference between "an object with fields" and "a system": ownership routes
+          to the right queue the instant the status changes, the document checklist
+          generates itself on submit, and sensitive grants are gated behind a real
+          approval process.
+        </p>
+        <div class="finding">
+          <b>The approval that didn't approve properly</b>
+          The first version routed to a hardcoded admin user. Role-based approver
+          assignment turns out to be invalid in <code>ApprovalStep</code> metadata —
+          <code>NextOwnerType</code> has no <code>role</code> value — so approvals now
+          route to an <code>RPO_Approvals</code> <em>queue</em> whose members are the
+          Regional Passport Officer role and subordinates. Which is a better design
+          anyway: a named approver is a single point of failure.
+        </div>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="shield-check" size="12" %}</span>
+        <span class="tl__phase">Closing gaps</span>
+        <h2>Region sharing, reports, and a persona audit</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 15 August 2026</p>
+        <ul>
+          <li><b>Region-based sharing.</b> Criteria-based sharing can read neither a formula nor a lookup traversal, so the fix was not a smarter rule — it was a real <code>Region__c</code> text field, populated by trigger from the office. A field that duplicates data on purpose, because the platform made the obvious approach impossible.</li>
+          <li><b>The first reports.</b> Zero reports existed before this. Two custom report types, five reports and an operations dashboard.</li>
+          <li><b>A persona correctness audit.</b> Document Verification and Police Verification had been sharing one permission set despite being distinct personas. Split. PII field-level security had also drifted across four sets, letting officers edit declared PII they were never meant to touch.</li>
+        </ul>
+        <div class="finding">
+          <b>Two reporting quirks that cost real time</b>
+          Custom-object report types need a <code>__c</code> suffix and <code>$</code>
+          field separators at the metadata layer that never appear in the source file
+          names. And a row-limited tabular report simply cannot back a Table or Metric
+          dashboard tile — even after adding the row limit Salesforce asks for.
+        </div>
+        <figure class="shot tl__shot">
+          <div class="shot__bar" aria-hidden="true">
+            <span class="shot__dot"></span><span class="shot__dot"></span><span class="shot__dot"></span>
+            <span class="shot__url">Reports &mdash; Applications by Stage</span>
+          </div>
+          <img src="{{ '/assets/img/screenshots/report-example.jpg' | relative_url }}"
+               alt="A Salesforce summary report listing passport applications grouped by processing stage."
+               width="1568" height="707" loading="lazy" decoding="async">
+          <figcaption class="shot__cap">
+            <strong>The first reporting layer.</strong> Applications by stage, Tatkal in
+            progress, high risk, pending verifications, granted this month.
+          </figcaption>
+        </figure>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="book" size="12" %}</span>
+        <span class="tl__phase">This site</span>
+        <h2>Turning the build into a course</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 15 August 2026</p>
+        <p>
+          The site is meta on purpose: it teaches what building the org taught, using the
+          actual metadata as the material rather than invented examples. It reuses the
+          org's own navy and gold so the teaching material visibly belongs to the same
+          project as the build it describes.
+        </p>
+        <ul>
+          <li>An accidentally-committed <code>_site/</code> build directory had to be removed and <code>.gitignore</code> hardened against it happening again.</li>
+          <li>The homepage stats needed a deliberate honesty pass as the build kept growing underneath them.</li>
+        </ul>
+      </li>
+
+      <li class="tl" data-reveal>
+        <span class="tl__dot">{% include icon.html name="target" size="12" %}</span>
+        <span class="tl__phase">In progress</span>
+        <h2>The redesign: seventeen objects down to eight</h2>
+        <p class="tl__date">{% include icon.html name="clock" size="13" %} 15 August 2026 &middot; current</p>
+        <p>
+          The uncomfortable conclusion after all of the above: the build had optimised
+          for <b>coverage of the domain</b> when it should have optimised for
+          <b>coverage of the concepts</b>. Seventeen objects, ~250 fields, 62 validation
+          rules — faithful to a real passport office, and burying every interesting
+          Salesforce idea under administrative detail nobody exercised.
+        </p>
+        <ul>
+          <li>Ten objects cut, each folded into a survivor — payments become four fields, print jobs merge into dispatch, objections become a status on the document they object to.</li>
+          <li>Five apps become four, each named after a job someone actually does.</li>
+          <li>The Support app gets rebuilt on the <b>standard Case object</b>, which unlocks assignment rules, escalation and Email-to-Case for free.</li>
+          <li>The whole design written down first — personas, journeys, trigger catalogue, access matrix, scenarios — before a single object is touched.</li>
+        </ul>
+        <div class="finding">
+          <b>Recorded honestly</b>
+          The cut costs the only many-to-many junction object in the model, which is a
+          real concept the course is supposed to teach. That is written into the design
+          docs as an open item with a proposed remedy, rather than quietly dropped.
+          Every design decision costs something; the difference between a considered
+          design and an accidental one is that somebody wrote down what it cost.
+        </div>
+        <p style="margin-top: 18px;">
+          <a class="btn" href="{{ '/design/' | relative_url }}">
+            {% include icon.html name="target" size="15" %} Read the design documents
+          </a>
+        </p>
+      </li>
+
+    </ol>
+
+    {% include ad.html type="footer" %}
+  </div>
+</section>

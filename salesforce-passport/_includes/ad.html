@@ -1,0 +1,41 @@
+{%- comment -%}
+  One ad slot.
+
+    {% include ad.html type="in_article" %}
+    {% include ad.html type="display" %}
+    {% include ad.html type="sidebar" %}
+    {% include ad.html type="footer" %}
+
+  Renders a real AdSense unit when site.adsense.enabled is true AND both the
+  publisher id and that slot's id are set. Otherwise it renders a labelled
+  placeholder of the same dimensions, so the page layout is identical either
+  way and you can see the ad's footprint before going live.
+
+  Ads are always marked "Advertisement" — AdSense policy requires that paid
+  content is distinguishable from editorial, and it is the honest thing to do.
+{%- endcomment -%}
+{%- assign type = include.type | default: 'display' -%}
+{%- assign client = site.adsense.client -%}
+{%- assign slot = site.adsense.slots[type] -%}
+{%- assign live = false -%}
+{%- if site.adsense.enabled and client != '' and client and slot != '' and slot -%}
+  {%- assign live = true -%}
+{%- endif -%}
+
+<aside class="ad ad--{{ type }}" role="complementary" aria-label="Advertisement">
+  <span class="ad__label">Advertisement</span>
+  {%- if live %}
+  <ins class="adsbygoogle ad__unit"
+       style="display:block"
+       data-ad-client="{{ client }}"
+       data-ad-slot="{{ slot }}"
+       {% if type == 'in_article' %}data-ad-format="fluid" data-ad-layout="in-article"{%- elsif type == 'sidebar' %}data-ad-format="auto" data-full-width-responsive="false"{%- else %}data-ad-format="auto" data-full-width-responsive="true"{% endif %}></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  {%- else %}
+  <div class="ad__placeholder">
+    {% include icon.html name="image" size="20" %}
+    <span>Ad slot &middot; <code>{{ type }}</code></span>
+    <small>Set <code>adsense.client</code> and <code>adsense.slots.{{ type }}</code> in <code>_config.yml</code></small>
+  </div>
+  {%- endif %}
+</aside>

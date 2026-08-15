@@ -1,0 +1,71 @@
+{%- comment -%}
+  Course sidebar. Every module and lesson comes from _data/curriculum.yml, so
+  adding a lesson is a data edit, not a template edit. The current lesson is
+  marked with aria-current and its module is force-opened.
+{%- endcomment -%}
+{%- assign total = 0 -%}
+{%- for m in site.data.curriculum -%}{%- assign total = total | plus: m.lessons.size -%}{%- endfor -%}
+
+<aside class="sidebar" id="course-sidebar">
+  <div class="sidebar__head">
+    <a class="sidebar__brand" href="{{ '/' | relative_url }}">
+      <span class="brand__mark">{% include icon.html name="passport" size="16" %}</span>
+      <span>{{ site.title }}</span>
+    </a>
+    <span class="sidebar__tools">
+      {% include theme-toggle.html %}
+      <button class="sidebar__close" type="button" data-sidebar-close aria-label="Close navigation">
+        {% include icon.html name="close" size="20" %}
+      </button>
+    </span>
+  </div>
+
+  <div class="sidebar__meta">
+    <span>{{ site.data.curriculum.size }} modules</span>
+    <span aria-hidden="true">·</span>
+    <span>{{ total }} lessons</span>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Course contents">
+    {%- for m in site.data.curriculum -%}
+      {%- assign in_module = false -%}
+      {%- for l in m.lessons -%}
+        {%- if page.slug == l.slug -%}{%- assign in_module = true -%}{%- endif -%}
+      {%- endfor -%}
+
+      <details class="module" {% if in_module %}open{% endif %} style="--module-accent: {{ m.accent }};">
+        <summary class="module__summary">
+          <span class="module__icon">{% include icon.html name=m.icon size="18" %}</span>
+          <span class="module__text">
+            <span class="module__kicker">Module {{ m.number }}</span>
+            <span class="module__title">{{ m.title }}</span>
+          </span>
+          <span class="module__chevron" aria-hidden="true">{% include icon.html name="arrow-right" size="14" %}</span>
+        </summary>
+        <ol class="module__lessons">
+          {%- for l in m.lessons -%}
+            {%- assign url = '/lessons/' | append: l.slug | append: '/' -%}
+            <li>
+              <a class="lesson-link{% if page.slug == l.slug %} is-current{% endif %}"
+                 href="{{ url | relative_url }}"
+                 {% if page.slug == l.slug %}aria-current="page"{% endif %}>
+                <span class="lesson-link__num">{{ m.number }}.{{ forloop.index }}</span>
+                <span class="lesson-link__title">{{ l.title }}</span>
+                <span class="lesson-link__time">{{ l.minutes }}m</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ol>
+      </details>
+    {%- endfor -%}
+  </nav>
+
+  <div class="sidebar__foot">
+    <a href="{{ '/' | relative_url }}">{% include icon.html name="house" size="16" %} Home</a>
+    <a href="{{ '/lessons/' | relative_url }}">{% include icon.html name="list" size="16" %} All lessons</a>
+    <a href="{{ '/personas/' | relative_url }}">{% include icon.html name="users" size="16" %} Personas</a>
+    <a href="{{ '/build-log/' | relative_url }}">{% include icon.html name="git-branch" size="16" %} Build log</a>
+    <a href="{{ '/design/' | relative_url }}">{% include icon.html name="target" size="16" %} Design</a>
+    <a href="https://github.com/{{ site.repository }}">{% include icon.html name="arrow-up-right" size="16" %} Source</a>
+  </div>
+</aside>

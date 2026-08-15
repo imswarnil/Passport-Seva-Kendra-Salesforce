@@ -15,6 +15,27 @@ permalink: /design/
       share one palette on purpose, not by coincidence.
     </p>
 
+    <h2>The design documents</h2>
+    <p>
+      Before the org was rebuilt, the solution was designed on paper. These eight
+      documents live in the repository root and are the authority for what the
+      build is becoming — the course lessons explain them, they do not replace them.
+    </p>
+    <div class="grid">
+      {%- for d in site.data.design_docs -%}
+        <div class="card">
+          <h3 style="margin-top:0;">{{ d.title }}</h3>
+          <p style="font-size:15px;margin:0 0 12px;">{{ d.blurb }}</p>
+          <p style="margin:0;"><a href="https://github.com/{{ site.repository }}/blob/main/{{ d.file }}"><code>{{ d.file }}</code></a></p>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <p class="pull-quote">
+      A field exists only if something reads it — an automation, a layout, a
+      validation rule, a report, or a formula. “Might be useful later” is not a reader.
+    </p>
+
     <h2>Color</h2>
     <p>
       The Salesforce app's <code>app-meta.xml</code> sets its Lightning App
