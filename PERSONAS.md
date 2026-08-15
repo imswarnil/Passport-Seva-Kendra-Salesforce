@@ -64,9 +64,9 @@ Ramesh never logs into anything. But because the Front Office Officer works him 
 
 ## 3. Document Verification Officer
 
-**Anjali Nair, 31 — verification desk, `Document_Verification` role**
+**Anjali Nair, 31 — verification desk, `Document_Verification` role, `PSK_Document_Verification_Officer` permission set**
 
-A structural note on this persona, stated plainly rather than glossed over: PSK.md §5.2 lists Document Verification Officer as its own row with its own role (`Document_Verification`), separate from Police Verification. In the deployed permission sets, however, there is no dedicated `PSK_Document_Verification` permission set — document verification and police verification currently share one permission set, `PSK_Verification_Officer` ("Police verification and document verification: owns Police Verification, Objections and Risk Flags; reads/updates applications and checklists"). Anjali's role in the hierarchy is distinct, but until the permission sets are split, she is assigned the same `PSK_Verification_Officer` set as the Police Verification Officer. That's worth being upfront about — it's exactly the kind of gap this project's [CASE_STUDY.md](CASE_STUDY.md) is honest about.
+PSK.md §5.2 lists Document Verification Officer as its own row with its own role (`Document_Verification`), separate from Police Verification, and the permission sets now match that: Anjali is assigned a dedicated `PSK_Document_Verification_Officer` set (full CRUD on `Document_Checklist_Item__c` and `Objection__c`, read-only on `Passport_Application__c` and `Citizen__c`), split out from the combined `PSK_Verification_Officer` set that used to cover both her role and the Police Verification Officer's.
 
 **Goals**
 - Clear the `Document_Verification` queue without letting files sit unattended.
@@ -78,12 +78,12 @@ A structural note on this persona, stated plainly rather than glossed over: PSK.
 - Objections raised verbally at the counter with no written trail, so a second officer had no way to know a document had already been flagged as missing.
 - No way to see the full document status per applicant at a glance — every checklist item was a separate scrap of paper.
 
-**Day in the life:** Anjali works from the `Document_Verification` queue, picking up applications one `Document_Checklist_Item__c` at a time — these rows exist because they're auto-generated the moment an application is submitted, not typed up by hand. As physical documents arrive she presses **Mark Received** on each item, then **Mark Verified** once she's checked it against the applicant's declared details on the parent application. If something's wrong — an address proof that doesn't match `Address_Line1__c`, a photo that fails the format check — she uses **New Objection** on the application (full create/edit/delete rights on `Objection__c`) and, once the applicant resolves it, **Resolve Objection**. She has full CRUD on `Police_Verification__c` too under the shared permission set, plus create/edit on `Risk_Flag__c` — so if a document looks fraudulent rather than just incomplete, she can raise a risk flag directly rather than waiting for someone else to notice.
+**Day in the life:** Anjali works from the `Document_Verification` queue, picking up applications one `Document_Checklist_Item__c` at a time — these rows exist because they're auto-generated the moment an application is submitted, not typed up by hand. As physical documents arrive she presses **Mark Received** on each item, then **Mark Verified** once she's checked it against the applicant's declared details on the parent application. If something's wrong — an address proof that doesn't match `Address_Line1__c`, a photo that fails the format check — she uses **New Objection** on the application (full create/edit/delete rights on `Objection__c`) and, once the applicant resolves it, **Resolve Objection**. Her `PSK_Document_Verification_Officer` permission set has no access to `Police_Verification__c` or `Risk_Flag__c` at all — those stayed with the Police Verification Officer's `PSK_Verification_Officer` set when the two personas' permissions were split, so a document-only issue that looks like fraud gets escalated rather than flagged by her directly.
 
 **What she's explicitly not allowed to see or do**
-- Cannot create new `Passport_Application__c` records — object permission is read/edit only, no create, no delete. She works applications that already exist; she doesn't originate them.
+- Cannot create or edit `Passport_Application__c` records — object permission is read-only, no create, no edit, no delete. She reads the application to check declared details against submitted documents; she doesn't originate or modify it.
 - No object permission at all on `Print_Job__c`, `Dispatch__c`, `Payment__c`, or `Appointment__c` — those belong to other stages.
-- `Citizen__c.Aadhaar_Token__c` is field-level readable but not editable in the shared `PSK_Verification_Officer` set — she can see that Aadhaar was tokenized, she cannot rewrite the token.
+- `Citizen__c.Aadhaar_Token__c` is field-level readable but not editable in her `PSK_Document_Verification_Officer` set — she can see that Aadhaar was tokenized, she cannot rewrite the token.
 - No `viewAllRecords` on anything — she sees what's shared to her role/queue, not the whole org's applications.
 
 **Success looks like:** every checklist item on a file is either Verified or has a specific, resolvable Objection attached — never a silent gap.
@@ -110,7 +110,7 @@ This persona is deliberately half system-based and half field-based: the actual 
 
 **What he's explicitly not allowed to see or do**
 - No create rights on `Passport_Application__c` — read and edit only. He updates status-adjacent fields on the file he's assigned, he doesn't originate applications.
-- `Citizen__c.Aadhaar_Token__c` is readable, not editable, under his shared permission set — he confirms identity, he doesn't touch the token.
+- `Citizen__c.Aadhaar_Token__c` is readable, not editable, under his `PSK_Verification_Officer` set — he confirms identity, he doesn't touch the token.
 - No object permission on `Print_Job__c`, `Dispatch__c`, or `Payment__c` at all — fulfilment and money are outside his lane entirely.
 - No `viewAllRecords` — the `Adverse_To_Managers` sharing rule exists specifically because an Adverse outcome needs to escalate to `PSK_Managers`; Suresh doesn't get blanket visibility into other officers' cases himself.
 

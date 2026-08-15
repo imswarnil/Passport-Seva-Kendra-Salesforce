@@ -5,6 +5,8 @@
  *  - stamp Submitted_Date__c / Stage_Entered_Date__c / Granted_Date__c
  *  - copy snapshot fields from the linked Citizen__c, but ONLY when blank, so the
  *    as-submitted snapshot is never overwritten by later citizen edits
+ *  - denormalise PSK_Office__r.Region__c onto Region__c so criteria-based
+ *    sharing rules (which cannot traverse a lookup) have something to match on
  *  - reverse-create or match a Citizen__c when an application arrives without one
  *    (this is what keeps the pskHomeDashboard inline quick-create working)
  *  - compute Fee__c from Fee_Matrix__mdt
@@ -24,6 +26,7 @@ public with sharing class PassportApplicationTriggerHandler {
         }
         PSK_ApplicationService.ensureCitizens(newList);
         PSK_ApplicationService.copyFromCitizenWhenBlank(newList);
+        PSK_ApplicationService.applyRegionFromOffice(newList, null);
         stampDates(newList, null);
         PSK_ApplicationService.applyFees(newList, null);
         applyDefaults(newList);
@@ -38,6 +41,7 @@ public with sharing class PassportApplicationTriggerHandler {
             return;
         }
         PSK_ApplicationService.copyFromCitizenWhenBlank(newList);
+        PSK_ApplicationService.applyRegionFromOffice(newList, oldMap);
         stampDates(newList, oldMap);
         PSK_ApplicationService.applyFees(newList, oldMap);
         applyDefaults(newList);

@@ -239,6 +239,53 @@ private class PassportApplicationTriggerHandlerTest {
         ].City__c, 'Moving the citizen must not retro-edit the submitted application');
     }
 
+    // --------------------------------------------------------------- Region copy
+
+    @IsTest
+    static void testRegionCopiedFromOfficeOnInsert() {
+        PSK__c office = PSK_TestDataFactory.createOffice();   // Region__c = 'West'
+
+        Passport_Application__c app = PSK_TestDataFactory.buildApplication(
+            PSK_Constants.STATUS_DRAFT);
+        app.PSK_Office__c = office.Id;
+
+        Test.startTest();
+        insert app;
+        Test.stopTest();
+
+        Passport_Application__c saved = [
+            SELECT Region__c FROM Passport_Application__c WHERE Id = :app.Id
+        ];
+        System.assertEquals('West', saved.Region__c,
+            'Region__c must be copied from the linked office so criteria-based '
+            + 'sharing has a real field to match on');
+    }
+
+    @IsTest
+    static void testRegionUpdatedWhenOfficeChanges() {
+        PSK__c officeWest = PSK_TestDataFactory.createOffice();   // Region__c = 'West'
+        PSK__c officeNorth = PSK_TestDataFactory.buildOffice();
+        officeNorth.Region__c = 'North';
+        insert officeNorth;
+
+        Passport_Application__c app = PSK_TestDataFactory.buildApplication(
+            PSK_Constants.STATUS_DRAFT);
+        app.PSK_Office__c = officeWest.Id;
+        insert app;
+        System.assertEquals('West', [
+            SELECT Region__c FROM Passport_Application__c WHERE Id = :app.Id
+        ].Region__c);
+
+        Test.startTest();
+        app.PSK_Office__c = officeNorth.Id;
+        update app;
+        Test.stopTest();
+
+        System.assertEquals('North', [
+            SELECT Region__c FROM Passport_Application__c WHERE Id = :app.Id
+        ].Region__c, 'Changing the office must refresh Region__c to match');
+    }
+
     // ------------------------------------------------------------------ Fee stamp
 
     @IsTest

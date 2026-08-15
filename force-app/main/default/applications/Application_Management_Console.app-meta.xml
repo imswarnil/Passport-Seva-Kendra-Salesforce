@@ -57,6 +57,7 @@
     <tabs>Renewal__c</tabs>
     <tabs>Notification_Log__c</tabs>
     <tabs>Family_Member__c</tabs>
+    <tabs>Visa_Application__c</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
