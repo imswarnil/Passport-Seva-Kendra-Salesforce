@@ -17,14 +17,23 @@
         <criteriaItems>
             <column>Passport_Application__c$Risk_Score__c</column>
             <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
             <operator>greaterThan</operator>
             <value>70</value>
         </criteriaItems>
     </filter>
     <format>Tabular</format>
     <name>High Risk Applications</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>Passport_Applications_with_Details__c</reportType>
+    <rowLimit>10</rowLimit>
+    <scope>user</scope>
     <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
     <sortColumn>Passport_Application__c$Risk_Score__c</sortColumn>
     <sortOrder>Desc</sortOrder>
     <timeFrameFilter>

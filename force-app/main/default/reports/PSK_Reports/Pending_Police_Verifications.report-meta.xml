@@ -30,6 +30,7 @@
     <format>Tabular</format>
     <name>Pending Police Verifications</name>
     <reportType>Police_Verifications_with_Application__c</reportType>
+    <rowLimit>25</rowLimit>
     <showDetails>true</showDetails>
     <sortColumn>Police_Verification__c$Referred_Date__c</sortColumn>
     <sortOrder>Asc</sortOrder>

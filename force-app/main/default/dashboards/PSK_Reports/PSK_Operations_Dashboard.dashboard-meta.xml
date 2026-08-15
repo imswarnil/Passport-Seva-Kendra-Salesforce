@@ -4,7 +4,7 @@
     <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
     <backgroundStartColor>#FFFFFF</backgroundStartColor>
     <dashboardType>LoggedInUser</dashboardType>
-    <description>Operational overview of passport applications: stage distribution, high-risk applications, pending police verifications, and passports granted this month.</description>
+    <description>Operational overview: stage distribution and passports granted this month. High Risk Applications and Pending Police Verifications are separate reports in the PSK Reports folder.</description>
     <folderName>PSK_Reports</folderName>
     <leftSection>
         <columnSize>Wide</columnSize>
@@ -16,25 +16,9 @@
             <report>PSK_Reports/Applications_by_Stage</report>
             <title>Applications by Stage</title>
         </components>
-        <components>
-            <componentType>Table</componentType>
-            <indicatorHighColor>#00A1E0</indicatorHighColor>
-            <indicatorLowColor>#00A1E0</indicatorLowColor>
-            <indicatorMiddleColor>#00A1E0</indicatorMiddleColor>
-            <report>PSK_Reports/Pending_Police_Verifications</report>
-            <title>Pending Police Verifications</title>
-        </components>
     </leftSection>
     <middleSection>
         <columnSize>Medium</columnSize>
-        <components>
-            <componentType>Metric</componentType>
-            <indicatorHighColor>#D9534F</indicatorHighColor>
-            <indicatorLowColor>#D9534F</indicatorLowColor>
-            <indicatorMiddleColor>#D9534F</indicatorMiddleColor>
-            <report>PSK_Reports/High_Risk_Applications</report>
-            <title>High Risk Applications</title>
-        </components>
         <components>
             <componentType>Metric</componentType>
             <indicatorHighColor>#5CB85C</indicatorHighColor>
