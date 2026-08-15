@@ -164,6 +164,8 @@ DEPENDENCIES
   jekyll (~> 4.3)
   jekyll-seo-tag
   jekyll-sitemap
+  kramdown-parser-gfm
+  rouge
   webrick
 
 CHECKSUMS
