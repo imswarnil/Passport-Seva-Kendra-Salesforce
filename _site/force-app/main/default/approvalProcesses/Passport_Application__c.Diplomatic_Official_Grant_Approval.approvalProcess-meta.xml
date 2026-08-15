@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Passport_Application__c.Diplomatic_Official_Grant_Approval</fullName>
+    <label>Diplomatic/Official Grant Approval</label>
+    <active>true</active>
+    <description>Gates granting a Diplomatic or Official passport behind sign-off from a Regional Passport Officer. Auto-submitted by PSK_ApplicationActionsController.advance() the moment the application enters Granting; Diplomatic_Official_Requires_Approval then blocks the record from reaching Printing until this clears Approved.</description>
+    <allowRecall>true</allowRecall>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Passport_Application__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Diplomatic_Official</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Passport_Application__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Granting</value>
+        </criteriaItems>
+        <booleanFilter>1 AND 2</booleanFilter>
+    </entryCriteria>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>role</type>
+        <submitter>Granting_Officers</submitter>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>role</type>
+        <submitter>Passport_Office_Manager</submitter>
+    </allowedSubmitters>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+    <approvalStep>
+        <label>Regional Passport Officer Sign-off</label>
+        <name>Regional_Passport_Officer_Sign_off</name>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>queue</type>
+                <name>RPO_Approvals</name>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+    </approvalStep>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Status_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalRejectionActions>
+        <action>
+            <name>Approval_Status_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Send_Back_To_Document_Verification</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <initialSubmissionActions>
+        <action>
+            <name>Approval_Status_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <recallActions>
+        <action>
+            <name>Approval_Status_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+</ApprovalProcess>

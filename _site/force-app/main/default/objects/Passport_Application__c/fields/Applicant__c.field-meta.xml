@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Applicant__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Superseded by the Citizen lookup. Retained for the Account-based agent or institution use case; do not use it for individual applicants. Not deleted because that would destroy existing data and free the API name only after 15 days.</description>
+    <inlineHelpText>Legacy field. Use Citizen for the individual applicant.</inlineHelpText>
+    <label>Applicant Account (Legacy)</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Passport Applications</relationshipLabel>
+    <relationshipName>Passport_Applications</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

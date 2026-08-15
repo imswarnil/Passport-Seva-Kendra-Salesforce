@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Police Verification Type --></label>
+    <name>Police_Verification_Type__c</name>
+    <picklistValues>
+        <masterLabel>No PV</masterLabel>
+        <translation><!-- No PV --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Post-PV</masterLabel>
+        <translation><!-- Post-PV --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pre-PV</masterLabel>
+        <translation><!-- Pre-PV --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

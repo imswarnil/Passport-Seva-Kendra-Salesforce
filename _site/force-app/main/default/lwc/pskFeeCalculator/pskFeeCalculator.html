@@ -1,0 +1,128 @@
+<template>
+    <lightning-card title="Fee Derivation" icon-name="standard:currency" class="psk-card">
+        <lightning-button
+            slot="actions"
+            label="Recalculate"
+            icon-name="utility:refresh"
+            variant="brand"
+            class="psk-button-gold"
+            disabled={recalculateDisabled}
+            onclick={handleRecalculate}
+        ></lightning-button>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={isLoading}>
+                <div class="psk-state" role="status" aria-live="polite">
+                    <lightning-spinner alternative-text="Calculating fee" size="small"></lightning-spinner>
+                    <p class="psk-state__text">Deriving the fee from the Fee Matrix&hellip;</p>
+                </div>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="psk-state psk-state--error" role="alert">
+                    <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                    <p class="psk-state__text">{error}</p>
+                </div>
+            </template>
+
+            <template if:true={isEmpty}>
+                <div class="psk-state" role="status">
+                    <lightning-icon icon-name="utility:warning" variant="warning" size="small"></lightning-icon>
+                    <p class="psk-state__text">
+                        No active Fee Matrix row matches this application&rsquo;s type, validity and booklet size.
+                    </p>
+                </div>
+            </template>
+
+            <template if:true={showBreakdown}>
+                <dl class="psk-fee-context" aria-label="Fee Matrix inputs">
+                    <div class="psk-fee-context__item">
+                        <dt>Application type</dt>
+                        <dd>{applicationType}</dd>
+                    </div>
+                    <div class="psk-fee-context__item">
+                        <dt>Validity</dt>
+                        <dd>{validityYears} yr</dd>
+                    </div>
+                    <div class="psk-fee-context__item">
+                        <dt>Booklet</dt>
+                        <dd>{bookletPages} pages</dd>
+                    </div>
+                    <div class="psk-fee-context__item">
+                        <dt>Payment</dt>
+                        <dd>{paymentStatus}</dd>
+                    </div>
+                </dl>
+
+                <table class="psk-fee-table">
+                    <caption class="slds-assistive-text">Fee derivation from the Fee Matrix</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Component</th>
+                            <th scope="col" class="psk-fee-table__amount">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Base fee</th>
+                            <td class="psk-fee-table__amount">
+                                <lightning-formatted-number
+                                    value={baseFee}
+                                    format-style="currency"
+                                    currency-code="INR"
+                                ></lightning-formatted-number>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Tatkal surcharge
+                                <template if:false={isTatkal}>
+                                    <span class="psk-fee-table__note">(not applicable)</span>
+                                </template>
+                            </th>
+                            <td class="psk-fee-table__amount">
+                                <lightning-formatted-number
+                                    value={tatkalSurcharge}
+                                    format-style="currency"
+                                    currency-code="INR"
+                                ></lightning-formatted-number>
+                            </td>
+                        </tr>
+                        <template if:true={hasBookletFee}>
+                            <tr>
+                                <th scope="row">Additional booklet fee</th>
+                                <td class="psk-fee-table__amount">
+                                    <lightning-formatted-number
+                                        value={additionalBookletFee}
+                                        format-style="currency"
+                                        currency-code="INR"
+                                    ></lightning-formatted-number>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    <tfoot>
+                        <tr class="psk-fee-table__total">
+                            <th scope="row">Total payable</th>
+                            <td class="psk-fee-table__amount">
+                                <lightning-formatted-number
+                                    value={totalFee}
+                                    format-style="currency"
+                                    currency-code="INR"
+                                ></lightning-formatted-number>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <template if:true={isTatkal}>
+                    <p class="psk-fee-flag">Tatkal &mdash; expedited processing surcharge applied</p>
+                </template>
+
+                <template if:true={isOutOfSync}>
+                    <p class="psk-fee-warning" role="alert">{syncMessage}</p>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

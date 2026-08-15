@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pincode_Format</fullName>
+    <active>true</active>
+    <description>Format check only - fires when Pincode is populated but is not 6 digits. A blank Pincode is always allowed.</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(Pincode__c)), NOT(REGEX(Pincode__c, &quot;^[1-9][0-9]{5}$&quot;)) )</errorConditionFormula>
+    <errorDisplayField>Pincode__c</errorDisplayField>
+    <errorMessage>Enter a 6-digit pincode that does not start with 0.</errorMessage>
+</ValidationRule>

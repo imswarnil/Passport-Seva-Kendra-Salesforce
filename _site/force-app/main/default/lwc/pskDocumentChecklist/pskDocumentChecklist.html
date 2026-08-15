@@ -1,0 +1,94 @@
+<template>
+    <lightning-card title="Document Checklist" icon-name="standard:document" class="psk-card">
+        <lightning-button
+            slot="actions"
+            label="Seed Standard Documents"
+            icon-name="utility:add"
+            disabled={seedDisabled}
+            onclick={handleSeed}
+        ></lightning-button>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={isLoading}>
+                <div class="psk-state" role="status" aria-live="polite">
+                    <lightning-spinner alternative-text="Loading document checklist" size="small"></lightning-spinner>
+                    <p class="psk-state__text">Loading document checklist&hellip;</p>
+                </div>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="psk-state psk-state--error" role="alert">
+                    <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                    <p class="psk-state__text">{error}</p>
+                </div>
+            </template>
+
+            <template if:true={isEmpty}>
+                <div class="psk-state" role="status">
+                    <lightning-icon icon-name="utility:file" size="small"></lightning-icon>
+                    <p class="psk-state__text">
+                        No checklist items yet. Use <strong>Seed Standard Documents</strong> to create the standard set
+                        for this application category.
+                    </p>
+                </div>
+            </template>
+
+            <template if:true={hasRows}>
+                <div class="psk-progress" role="group" aria-label="Mandatory document progress">
+                    <div
+                        class="psk-progress__track"
+                        role="progressbar"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow={progressPercent}
+                        aria-label={progressLabel}
+                    >
+                        <div class="psk-progress__fill" style={progressStyle}></div>
+                    </div>
+                    <div class="psk-progress__meta">
+                        <span class="psk-progress__label">{progressLabel}</span>
+                        <template if:true={isComplete}>
+                            <span class="psk-badge psk-badge--success">Complete</span>
+                        </template>
+                    </div>
+                    <template if:true={hasRejected}>
+                        <p class="psk-progress__warning">{rejectedLabel}</p>
+                    </template>
+                </div>
+
+                <ul class="psk-doc-list">
+                    <template for:each={rows} for:item="row">
+                        <li key={row.key} class={row.rowClass}>
+                            <div class="psk-doc-row__main">
+                                <p class="psk-doc-row__type">
+                                    {row.documentType}
+                                    <template if:true={row.mandatory}>
+                                        <abbr class="psk-doc-row__req" title="Mandatory document">*</abbr>
+                                    </template>
+                                </p>
+                                <span class={row.badgeClass}>{row.status}</span>
+                                <template if:true={row.isRejected}>
+                                    <p class="psk-doc-row__reason">{row.rejectionReason}</p>
+                                </template>
+                                <template if:true={row.notes}>
+                                    <p class="psk-doc-row__notes">{row.notes}</p>
+                                </template>
+                            </div>
+                            <div class="psk-doc-row__control">
+                                <lightning-combobox
+                                    label={row.comboboxLabel}
+                                    variant="label-hidden"
+                                    data-id={row.id}
+                                    options={statusOptions}
+                                    value={row.status}
+                                    disabled={row.isBusy}
+                                    onchange={handleStatusChange}
+                                ></lightning-combobox>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+        </div>
+    </lightning-card>
+</template>

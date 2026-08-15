@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningExperienceTheme xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultBrandingSet>LEXTHEMINGSalesforcePassport</defaultBrandingSet>
+    <description>Official Passport Seva Kendra theme — navy and gold passport-document branding for a unified, accessible citizen-services experience across the org.</description>
+    <designSystemVersion>SLDS_v1</designSystemVersion>
+    <isDarkModeEnabled>false</isDarkModeEnabled>
+    <masterLabel>Passport Seva Kendra</masterLabel>
+    <shouldOverrideLoadingImage>false</shouldOverrideLoadingImage>
+</LightningExperienceTheme>

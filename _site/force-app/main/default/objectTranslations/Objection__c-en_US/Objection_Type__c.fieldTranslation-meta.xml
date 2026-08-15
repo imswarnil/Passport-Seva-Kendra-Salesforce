@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Objection Type --></label>
+    <name>Objection_Type__c</name>
+    <picklistValues>
+        <masterLabel>Address Mismatch</masterLabel>
+        <translation><!-- Address Mismatch --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Court Order</masterLabel>
+        <translation><!-- Court Order --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Document Discrepancy</masterLabel>
+        <translation><!-- Document Discrepancy --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Name Mismatch</masterLabel>
+        <translation><!-- Name Mismatch --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other</masterLabel>
+        <translation><!-- Other --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Police Verification Adverse</masterLabel>
+        <translation><!-- Police Verification Adverse --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

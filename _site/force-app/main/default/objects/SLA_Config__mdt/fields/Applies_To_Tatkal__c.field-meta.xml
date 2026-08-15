@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Applies_To_Tatkal__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When true this row is the Tatkal variant and overrides the standard row.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Applies To Tatkal</label>
+    <type>Checkbox</type>
+</CustomField>

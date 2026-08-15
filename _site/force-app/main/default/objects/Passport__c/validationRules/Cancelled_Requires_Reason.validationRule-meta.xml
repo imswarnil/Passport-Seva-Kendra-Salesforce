@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cancelled_Requires_Reason</fullName>
+    <active>true</active>
+    <description>Taking a booklet out of circulation is an auditable act; the reason must be recorded on the passport itself.</description>
+    <errorConditionFormula>AND( OR( ISPICKVAL(Status__c, &quot;Cancelled&quot;), ISPICKVAL(Status__c, &quot;Lost&quot;), ISPICKVAL(Status__c, &quot;Surrendered&quot;) ), ISBLANK(TEXT(Cancellation_Reason__c)) )</errorConditionFormula>
+    <errorDisplayField>Cancellation_Reason__c</errorDisplayField>
+    <errorMessage>Select a Cancellation Reason when the passport status is Cancelled, Lost or Surrendered.</errorMessage>
+</ValidationRule>
