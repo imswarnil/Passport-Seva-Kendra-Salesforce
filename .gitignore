@@ -13,3 +13,10 @@ manifest/.*.json
 .idea/
 .vscode/
 *.swp
+
+# Jekyll (salesforce-passport/)
+salesforce-passport/_site/
+salesforce-passport/.jekyll-cache/
+salesforce-passport/.jekyll-metadata
+salesforce-passport/.bundle/
+salesforce-passport/vendor/

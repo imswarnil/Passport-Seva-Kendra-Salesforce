@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Citizen_Compact</fullName>
+    <fields>Name</fields>
+    <fields>KYC_Status__c</fields>
+    <fields>Mobile__c</fields>
+    <fields>Age__c</fields>
+    <fields>Is_Blacklisted__c</fields>
+    <label>Citizen Compact</label>
+</CompactLayout>

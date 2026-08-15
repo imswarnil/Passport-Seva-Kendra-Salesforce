@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Citizen_Required_On_Submit</fullName>
+    <active>true</active>
+    <description>Every submitted application must be tied to a Citizen record. Shipped inactive and activated after backfillCitizens() stamped the pre-existing applications, since activating it first would have blocked every edit to them.</description>
+    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), ISBLANK(Citizen__c) )</errorConditionFormula>
+    <errorDisplayField>Citizen__c</errorDisplayField>
+    <errorMessage>Link the applicant’s Citizen record before submitting this application.</errorMessage>
+</ValidationRule>

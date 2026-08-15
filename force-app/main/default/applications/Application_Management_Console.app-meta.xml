@@ -13,7 +13,7 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
-    <label>Application Management Console</label>
+    <label>Passport Seva Console</label>
     <navType>Standard</navType>
     <profileActionOverrides>
         <actionName>Tab</actionName>
@@ -23,8 +23,43 @@
         <type>Flexipage</type>
         <profile>Admin</profile>
     </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>Tab</actionName>
+        <content>App_Home</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Standard</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>Tab</actionName>
+        <content>App_Home</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>StandardAul</profile>
+    </profileActionOverrides>
     <setupExperience>all</setupExperience>
     <tabs>standard-home</tabs>
+    <tabs>Passport_Application__c</tabs>
+    <tabs>Citizen__c</tabs>
+    <tabs>Passport__c</tabs>
+    <tabs>PSK__c</tabs>
+    <tabs>Slot__c</tabs>
+    <tabs>Appointment__c</tabs>
+    <tabs>Document_Checklist_Item__c</tabs>
+    <tabs>Police_Verification__c</tabs>
+    <tabs>Payment__c</tabs>
+    <tabs>Objection__c</tabs>
+    <tabs>Print_Job__c</tabs>
+    <tabs>Dispatch__c</tabs>
+    <tabs>Risk_Flag__c</tabs>
+    <tabs>Renewal__c</tabs>
+    <tabs>Notification_Log__c</tabs>
+    <tabs>Family_Member__c</tabs>
+    <tabs>Visa_Application__c</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Passport_Application_Management_UtilityBar</utilityBar>
 </CustomApplication>

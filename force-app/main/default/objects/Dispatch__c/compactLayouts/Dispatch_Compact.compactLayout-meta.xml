@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dispatch_Compact</fullName>
+    <fields>Name</fields>
+    <fields>Status__c</fields>
+    <fields>Courier_Partner__c</fields>
+    <fields>Tracking_Number__c</fields>
+    <fields>Delivered_Date__c</fields>
+    <label>Dispatch Compact</label>
+</CompactLayout>

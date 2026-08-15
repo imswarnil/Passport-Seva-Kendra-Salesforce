@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Passport_Application__c</entityName>
+    <fieldName>Status__c</fieldName>
+    <masterLabel>Passport Application Path - Minor</masterLabel>
+    <pathAssistantSteps>
+        <info>Minor application cancelled by the guardian.</info>
+        <picklistValueName>Cancelled</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Minor passport delivered to the guardian. Terminal state.</info>
+        <picklistValueName>Delivered</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Dispatch to the guardian's address on record. Received By must name an adult.</info>
+        <picklistValueName>Dispatch</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Verify birth certificate, both parents' passports/ID, and the Guardian Consent declaration. Do not proceed without both-parent consent.</info>
+        <picklistValueName>Document Verification</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Minor draft (under 18). Applied For Minor must be checked and Guardian Name captured. Validity is 5 years, 36-page booklet only.</info>
+        <picklistValueName>Draft</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Grant only with Guardian Consent recorded as true and both parents' details on file.</info>
+        <picklistValueName>Granting</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Fee received. Proceed to document verification.</info>
+        <picklistValueName>Paid</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Minor fee (5-year, 36-page) applies. Guardian normally pays.</info>
+        <picklistValueName>Payment Pending</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Minors are No PV where at least one parent holds a valid passport. Refer to police only if that condition fails.</info>
+        <picklistValueName>Police Verification</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>5-year, 36-page minor booklet queued for printing.</info>
+        <picklistValueName>Printing</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Rejected - most commonly missing or disputed parental consent.</info>
+        <picklistValueName>Rejected</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>Submitted for a minor. Annexure D consent signed by BOTH parents is mandatory; Annexure C only where one parent is unavailable.</info>
+        <picklistValueName>Submitted</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Minor</recordTypeName>
+</PathAssistant>

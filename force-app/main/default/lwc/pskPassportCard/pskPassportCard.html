@@ -1,0 +1,166 @@
+<template>
+    <div class="psk-passport">
+        <template if:true={isLoading}>
+            <div class="psk-state" role="status" aria-live="polite">
+                <lightning-spinner alternative-text="Loading passport" size="small"></lightning-spinner>
+                <p class="psk-state__text">Loading passport&hellip;</p>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="psk-state psk-state--error" role="alert">
+                <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                <p class="psk-state__text">{recordError}</p>
+            </div>
+        </template>
+
+        <template if:true={showCard}>
+            <article class="psk-booklet" aria-label="Passport booklet summary">
+                <header class="psk-booklet__head">
+                    <div class="psk-booklet__crest" aria-hidden="true">
+                        <svg viewBox="0 0 40 40" width="34" height="34" focusable="false">
+                            <circle cx="20" cy="20" r="19" fill="none" stroke="#c9a227" stroke-width="1.5" />
+                            <path
+                                d="M20 6 L23 15 L32 15 L25 20 L28 29 L20 24 L12 29 L15 20 L8 15 L17 15 Z"
+                                fill="#c9a227"
+                            />
+                        </svg>
+                    </div>
+                    <div class="psk-booklet__titles">
+                        <p class="psk-booklet__eyebrow">Republic of India &middot; Passport</p>
+                        <h2 class="psk-booklet__number">{passportNumber}</h2>
+                        <p class="psk-booklet__holder">{holderName}</p>
+                    </div>
+                    <span class={statusBadgeClass}>{status}</span>
+                </header>
+
+                <div class="psk-booklet__body">
+                    <dl class="psk-booklet__grid">
+                        <div class="psk-booklet__cell">
+                            <dt>Date of issue</dt>
+                            <dd>
+                                <template if:true={dateOfIssue}>
+                                    <lightning-formatted-date-time
+                                        value={dateOfIssue}
+                                        year="numeric"
+                                        month="short"
+                                        day="2-digit"
+                                        time-zone="UTC"
+                                    ></lightning-formatted-date-time>
+                                </template>
+                                <template if:false={dateOfIssue}>&mdash;</template>
+                            </dd>
+                        </div>
+                        <div class="psk-booklet__cell">
+                            <dt>Date of expiry</dt>
+                            <dd>
+                                <template if:true={dateOfExpiry}>
+                                    <lightning-formatted-date-time
+                                        value={dateOfExpiry}
+                                        year="numeric"
+                                        month="short"
+                                        day="2-digit"
+                                        time-zone="UTC"
+                                    ></lightning-formatted-date-time>
+                                </template>
+                                <template if:false={dateOfExpiry}>&mdash;</template>
+                            </dd>
+                        </div>
+                        <div class="psk-booklet__cell">
+                            <dt>Category</dt>
+                            <dd>{category}</dd>
+                        </div>
+                        <div class="psk-booklet__cell">
+                            <dt>Place of issue</dt>
+                            <dd>{placeOfIssue}</dd>
+                        </div>
+                        <div class="psk-booklet__cell">
+                            <dt>Booklet</dt>
+                            <dd>{bookletPages} pages</dd>
+                        </div>
+                        <div class="psk-booklet__cell">
+                            <dt>ECR status</dt>
+                            <dd>{ecrStatus}</dd>
+                        </div>
+                        <div class="psk-booklet__cell">
+                            <dt>File number</dt>
+                            <dd>{fileNumber}</dd>
+                        </div>
+                    </dl>
+
+                    <div class="psk-ring-wrap">
+                        <svg
+                            class="psk-ring"
+                            viewBox="0 0 100 100"
+                            width="112"
+                            height="112"
+                            role="img"
+                            aria-label={ringAriaLabel}
+                        >
+                            <circle class="psk-ring__track" cx="50" cy="50" r="42"></circle>
+                            <circle
+                                class={ringClass}
+                                cx="50"
+                                cy="50"
+                                r="42"
+                                stroke-dasharray={ringCircumference}
+                                stroke-dashoffset={ringDashOffset}
+                            ></circle>
+                        </svg>
+                        <div class="psk-ring__label" aria-hidden="true">
+                            <span class="psk-ring__value-text">{ringHeadline}</span>
+                            <span class="psk-ring__caption">{ringCaption}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <template if:true={showExpiryNotice}>
+                    <p class={expiryNoticeClass} role="status">{expiryNotice}</p>
+                </template>
+            </article>
+
+            <lightning-card title="Re-issue Chain" icon-name="standard:hierarchy" class="psk-chain-card">
+                <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                    <template if:true={hasChain}>
+                        <ol class="psk-chain">
+                            <template for:each={chain} for:item="link">
+                                <li key={link.key} class="psk-chain__item">
+                                    <button
+                                        type="button"
+                                        class="psk-chain__link"
+                                        data-id={link.id}
+                                        onclick={handleOpenChainLink}
+                                    >
+                                        {link.number}
+                                    </button>
+                                    <template if:true={link.status}>
+                                        <span class="psk-chain__status">{link.status}</span>
+                                    </template>
+                                    <template if:true={link.issued}>
+                                        <span class="psk-chain__date">
+                                            <lightning-formatted-date-time
+                                                value={link.issued}
+                                                year="numeric"
+                                                month="short"
+                                                day="2-digit"
+                                                time-zone="UTC"
+                                            ></lightning-formatted-date-time>
+                                        </span>
+                                    </template>
+                                </li>
+                            </template>
+                        </ol>
+                    </template>
+                    <template if:false={hasChain}>
+                        <p class="psk-state__text">
+                            This is a first-issue booklet &mdash; there is no earlier passport in the chain.
+                        </p>
+                    </template>
+                    <template if:true={detailError}>
+                        <p class="psk-chain__warning">{detailError}</p>
+                    </template>
+                </div>
+            </lightning-card>
+        </template>
+    </div>
+</template>

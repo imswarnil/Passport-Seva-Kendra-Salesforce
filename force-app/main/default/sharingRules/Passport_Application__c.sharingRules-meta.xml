@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Tatkal_To_Managers</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Tatkal (expedited) applications need manager oversight to hit the SLA.</description>
+        <label>Tatkal To Managers</label>
+        <sharedTo>
+            <group>PSK_Managers</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Tatkal__c</field>
+            <operation>equals</operation>
+            <value>true</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>High_Risk_To_Verification</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>High risk-score applications become readable by the verification hierarchy.</description>
+        <label>High Risk To Verification</label>
+        <sharedTo>
+            <roleAndSubordinates>Police_Verification_Team</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>Risk_Score__c</field>
+            <operation>greaterThan</operation>
+            <value>70</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Diplomatic_To_RPO</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Diplomatic and Official category applications are handled by the RPO.</description>
+        <label>Diplomatic To RPO</label>
+        <sharedTo>
+            <role>Regional_Passport_Officer</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Passport_Category__c</field>
+            <operation>equals</operation>
+            <value>Diplomatic,Official</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Granting_Stage_To_Granting_Officers</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Applications at granting stage are editable by granting officers.</description>
+        <label>Granting Stage To Granting Officers</label>
+        <sharedTo>
+            <role>Granting_Officers</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Granting,Printing</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Fulfilment_Stage_To_Fulfilment</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Applications in printing/dispatch/delivered are editable by the fulfilment team.</description>
+        <label>Fulfilment Stage To Fulfilment</label>
+        <sharedTo>
+            <role>Fulfilment_Team</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Printing,Dispatch,Delivered</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>North_Region_To_Region_Group</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Region-based sharing: applications whose denormalised Region__c is North become editable by the North regional group. Region__c is populated by PSK_ApplicationService.applyRegionFromOffice since criteria-based sharing cannot traverse PSK_Office__r.Region__c.</description>
+        <label>North Region To Region Group</label>
+        <sharedTo>
+            <group>PSK_Region_North</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>North</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>South_Region_To_Region_Group</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Region-based sharing: applications whose denormalised Region__c is South become editable by the South regional group. Region__c is populated by PSK_ApplicationService.applyRegionFromOffice since criteria-based sharing cannot traverse PSK_Office__r.Region__c.</description>
+        <label>South Region To Region Group</label>
+        <sharedTo>
+            <group>PSK_Region_South</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>South</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>East_Region_To_Region_Group</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Region-based sharing: applications whose denormalised Region__c is East become editable by the East regional group. Region__c is populated by PSK_ApplicationService.applyRegionFromOffice since criteria-based sharing cannot traverse PSK_Office__r.Region__c.</description>
+        <label>East Region To Region Group</label>
+        <sharedTo>
+            <group>PSK_Region_East</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>East</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>West_Region_To_Region_Group</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Region-based sharing: applications whose denormalised Region__c is West become editable by the West regional group. Region__c is populated by PSK_ApplicationService.applyRegionFromOffice since criteria-based sharing cannot traverse PSK_Office__r.Region__c.</description>
+        <label>West Region To Region Group</label>
+        <sharedTo>
+            <group>PSK_Region_West</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>West</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Central_Region_To_Region_Group</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Region-based sharing: applications whose denormalised Region__c is Central become editable by the Central regional group. Region__c is populated by PSK_ApplicationService.applyRegionFromOffice since criteria-based sharing cannot traverse PSK_Office__r.Region__c.</description>
+        <label>Central Region To Region Group</label>
+        <sharedTo>
+            <group>PSK_Region_Central</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>Central</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>North_East_Region_To_Region_Group</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Region-based sharing: applications whose denormalised Region__c is North East become editable by the North East regional group. Region__c is populated by PSK_ApplicationService.applyRegionFromOffice since criteria-based sharing cannot traverse PSK_Office__r.Region__c.</description>
+        <label>North East Region To Region Group</label>
+        <sharedTo>
+            <group>PSK_Region_North_East</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>North East</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>
