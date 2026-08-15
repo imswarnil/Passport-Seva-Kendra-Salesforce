@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Capacity_Must_Be_Positive</fullName>
-    <active>true</active>
-    <description>Zero or negative capacity would make the slot permanently unbookable in a way that looks like a data error; Is_Available__c is the intended way to close a slot.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Capacity__c)), Capacity__c &lt;= 0 )</errorConditionFormula>
-    <errorDisplayField>Capacity__c</errorDisplayField>
-    <errorMessage>Capacity must be at least 1. To close a slot, uncheck Is Available instead of setting capacity to zero.</errorMessage>
-</ValidationRule>

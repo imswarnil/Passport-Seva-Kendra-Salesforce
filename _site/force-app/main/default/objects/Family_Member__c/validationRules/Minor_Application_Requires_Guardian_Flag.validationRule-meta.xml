@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Minor_Application_Requires_Guardian_Flag</fullName>
-    <active>true</active>
-    <description>Minor_Application__c exists to record who consented on behalf of a minor. Linking a non-guardian relative there would misattribute legal consent.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Minor_Application__c)), NOT(Is_Guardian__c) )</errorConditionFormula>
-    <errorDisplayField>Is_Guardian__c</errorDisplayField>
-    <errorMessage>Only a guardian can be linked to a Minor Application. Check Is Guardian, or clear the Minor Application lookup.</errorMessage>
-</ValidationRule>

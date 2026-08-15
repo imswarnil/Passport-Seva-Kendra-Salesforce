@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Verified_KYC_Requires_Aadhaar</fullName>
-    <active>true</active>
-    <description>Aadhaar verification is the evidence behind a Verified KYC status; the two must not disagree.</description>
-    <errorConditionFormula>AND( ISPICKVAL(KYC_Status__c, &quot;Verified&quot;), NOT(Aadhaar_Verified__c) )</errorConditionFormula>
-    <errorDisplayField>KYC_Status__c</errorDisplayField>
-    <errorMessage>KYC cannot be set to Verified until Aadhaar Verified is checked. Complete Aadhaar verification first.</errorMessage>
-</ValidationRule>

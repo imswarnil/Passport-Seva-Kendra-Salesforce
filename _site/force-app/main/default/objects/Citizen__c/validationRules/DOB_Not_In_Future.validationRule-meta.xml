@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>DOB_Not_In_Future</fullName>
-    <active>true</active>
-    <description>A citizen cannot be born in the future. Age__c and Is_Minor__c are derived from this field, so a future DOB corrupts every downstream minor/guardian rule.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Date_of_Birth__c)), Date_of_Birth__c &gt; TODAY() )</errorConditionFormula>
-    <errorDisplayField>Date_of_Birth__c</errorDisplayField>
-    <errorMessage>Date of Birth cannot be in the future. Enter the citizen’s actual date of birth.</errorMessage>
-</ValidationRule>

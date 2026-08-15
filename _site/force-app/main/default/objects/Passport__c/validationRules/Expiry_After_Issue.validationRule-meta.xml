@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Expiry_After_Issue</fullName>
-    <active>true</active>
-    <description>Days_To_Expiry__c, Is_Expired__c and Is_Expiring_Soon__c are all derived from these dates; an inverted range makes every renewal report wrong.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Date_of_Issue__c)), NOT(ISBLANK(Date_of_Expiry__c)), Date_of_Expiry__c &lt;= Date_of_Issue__c )</errorConditionFormula>
-    <errorDisplayField>Date_of_Expiry__c</errorDisplayField>
-    <errorMessage>Date of Expiry must be after Date of Issue.</errorMessage>
-</ValidationRule>

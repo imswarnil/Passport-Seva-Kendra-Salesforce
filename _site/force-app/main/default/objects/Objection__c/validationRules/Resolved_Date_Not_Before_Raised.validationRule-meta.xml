@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Resolved_Date_Not_Before_Raised</fullName>
-    <active>true</active>
-    <description>An objection cannot be resolved before it was raised. Same-day resolution is allowed.</description>
-    <errorConditionFormula>AND( NOT(ISBLANK(Raised_Date__c)), NOT(ISBLANK(Resolved_Date__c)), Resolved_Date__c &lt; Raised_Date__c )</errorConditionFormula>
-    <errorDisplayField>Resolved_Date__c</errorDisplayField>
-    <errorMessage>Resolved Date cannot be earlier than the Raised Date.</errorMessage>
-</ValidationRule>

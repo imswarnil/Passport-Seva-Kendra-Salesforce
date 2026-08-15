@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Diplomatic_Official_Requires_Approval</fullName>
-    <active>true</active>
-    <errorConditionFormula>AND( RecordType.DeveloperName = &quot;Diplomatic_Official&quot;, ISPICKVAL(Status__c,&quot;Printing&quot;), NOT(ISPICKVAL(Approval_Status__c,&quot;Approved&quot;)) )</errorConditionFormula>
-    <errorMessage>A Diplomatic or Official passport cannot enter Printing until a Regional Passport Officer has approved the grant.</errorMessage>
-</ValidationRule>

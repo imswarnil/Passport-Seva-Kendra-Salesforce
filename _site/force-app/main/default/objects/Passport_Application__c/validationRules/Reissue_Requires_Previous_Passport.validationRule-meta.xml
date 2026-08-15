@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Reissue_Requires_Previous_Passport</fullName>
-    <active>true</active>
-    <description>Enforces the Re-Issue and Lost/Damaged record types at the API level. Record-type picklist subsetting is a UI-only constraint, so only a validation rule actually prevents an integration or Data Loader insert from skipping the previous passport number.</description>
-    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), OR( RecordType.DeveloperName = &quot;Re_Issue&quot;, RecordType.DeveloperName = &quot;Lost_Damaged&quot; ), ISBLANK(Previous_Passport_No__c) )</errorConditionFormula>
-    <errorDisplayField>Previous_Passport_No__c</errorDisplayField>
-    <errorMessage>Enter the Previous Passport Number before submitting a Re-Issue or Lost/Damaged application.</errorMessage>
-</ValidationRule>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Slot_Not_Overbooked</fullName>
-    <active>true</active>
-    <description>Defence in depth only - this is NOT race-safe on its own. Booked_Count__c is a roll-up evaluated per-transaction, so two concurrent inserts can both pass this rule. The authoritative guard is the SELECT ...</description>
-    <errorConditionFormula>AND( ISNEW(), NOT(ISBLANK(Slot__r.Capacity__c)), Slot__r.Booked_Count__c &gt;= Slot__r.Capacity__c )</errorConditionFormula>
-    <errorDisplayField>Slot__c</errorDisplayField>
-    <errorMessage>This slot is full. Choose a slot with remaining capacity.</errorMessage>
-</ValidationRule>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Lost_Damaged_Requires_Reason</fullName>
-    <active>true</active>
-    <description>A Lost/Damaged application follows a different document checklist and police-verification path depending on the reason, so the reason must be set on submit. Draft records remain freely saveable.</description>
-    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c, &quot;Draft&quot;)), RecordType.DeveloperName = &quot;Lost_Damaged&quot;, ISBLANK(TEXT(Reason_For_Reissue__c)) )</errorConditionFormula>
-    <errorDisplayField>Reason_For_Reissue__c</errorDisplayField>
-    <errorMessage>Select a Reason For Reissue (Lost or Damaged) before submitting a Lost/Damaged application.</errorMessage>
-</ValidationRule>
