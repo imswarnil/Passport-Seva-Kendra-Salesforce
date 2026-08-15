@@ -1,0 +1,112 @@
+<template>
+    <lightning-card title="My Work" icon-name="standard:task" class="psk-card">
+        <lightning-button-icon
+            slot="actions"
+            icon-name="utility:refresh"
+            variant="border-filled"
+            alternative-text="Refresh my work"
+            title="Refresh my work"
+            onclick={handleRefresh}
+        ></lightning-button-icon>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={isLoading}>
+                <div class="psk-state" role="status" aria-live="polite">
+                    <lightning-spinner alternative-text="Loading my work" size="small"></lightning-spinner>
+                    <p class="psk-state__text">Gathering what is assigned to you&hellip;</p>
+                </div>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="psk-state psk-state--error" role="alert">
+                    <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                    <p class="psk-state__text">{error}</p>
+                </div>
+            </template>
+
+            <template if:true={isEmpty}>
+                <div class="psk-state" role="status">
+                    <lightning-icon icon-name="utility:success" variant="success" size="small"></lightning-icon>
+                    <p class="psk-state__text">Nothing is waiting on you. Your queues are clear.</p>
+                </div>
+            </template>
+
+            <template if:true={totalCount}>
+                <div class="psk-work__head">
+                    <template if:true={hasBreaches}>
+                        <span class="psk-badge psk-badge--danger">{breachSummary}</span>
+                    </template>
+                    <template if:false={hasBreaches}>
+                        <span class="psk-badge psk-badge--success">All within SLA</span>
+                    </template>
+                    <lightning-input
+                        type="toggle"
+                        label={toggleLabel}
+                        checked={showBreachedOnly}
+                        message-toggle-active="Breaches"
+                        message-toggle-inactive="All"
+                        onchange={handleToggle}
+                        class="psk-work__toggle"
+                    ></lightning-input>
+                </div>
+
+                <template if:true={hasRows}>
+                    <ul class="psk-work">
+                        <template for:each={visibleRows} for:item="row">
+                            <li key={row.key} class={row.rowClass}>
+                                <lightning-icon
+                                    icon-name={row.icon}
+                                    size="small"
+                                    class="psk-work__icon"
+                                ></lightning-icon>
+                                <div class="psk-work__body">
+                                    <button
+                                        type="button"
+                                        class="psk-work__link"
+                                        data-id={row.id}
+                                        data-object={row.objectApiName}
+                                        onclick={handleOpen}
+                                    >
+                                        {row.title}
+                                    </button>
+                                    <template if:true={row.subtitle}>
+                                        <p class="psk-work__subtitle">{row.subtitle}</p>
+                                    </template>
+                                    <p class="psk-work__meta">
+                                        <template if:true={row.status}>
+                                            <span class="psk-work__status">{row.status}</span>
+                                        </template>
+                                        <template if:true={row.queue}>
+                                            <span>&middot; {row.queue}</span>
+                                        </template>
+                                        <template if:true={row.ageLabel}>
+                                            <span>&middot; {row.ageLabel}</span>
+                                        </template>
+                                        <template if:true={row.dueDate}>
+                                            <span>
+                                                &middot; due
+                                                <lightning-formatted-date-time
+                                                    value={row.dueDate}
+                                                    year="numeric"
+                                                    month="short"
+                                                    day="2-digit"
+                                                ></lightning-formatted-date-time>
+                                            </span>
+                                        </template>
+                                    </p>
+                                </div>
+                                <template if:true={row.breached}>
+                                    <span class={row.badgeClass}>SLA breach</span>
+                                </template>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+
+                <template if:true={isFilteredEmpty}>
+                    <p class="psk-state__text slds-p-top_small">No SLA breaches in your queues.</p>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

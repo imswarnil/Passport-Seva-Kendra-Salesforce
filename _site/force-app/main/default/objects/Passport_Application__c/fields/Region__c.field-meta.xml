@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Region__c</fullName>
+    <externalId>false</externalId>
+    <label>Region</label>
+    <length>20</length>
+    <description>Copy of PSK_Office__r.Region__c, populated by PassportApplicationTriggerHandler / PSK_ApplicationService.applyRegionFromOffice whenever the office is set. Not user-entered. Exists as a real field (not a formula) purely because criteria-based sharing rules cannot traverse a lookup relationship (PSK_Office__r.Region__c), so region-based sharing needs a value that lives directly on the record.</description>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,118 @@
+<template>
+    <div class="psk-board">
+        <header class="psk-board__banner">
+            <div>
+                <p class="psk-board__eyebrow">Passport Seva Kendra</p>
+                <h1 class="psk-board__title">Fulfilment Board</h1>
+                <p class="psk-board__subtitle">Print and dispatch pipelines, grouped by status</p>
+            </div>
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                variant="border-filled"
+                alternative-text="Refresh board"
+                title="Refresh board"
+                onclick={handleRefresh}
+            ></lightning-button-icon>
+        </header>
+
+        <div class="psk-board__inner">
+            <template if:true={isLoading}>
+                <div class="psk-state" role="status" aria-live="polite">
+                    <lightning-spinner alternative-text="Loading fulfilment board" size="small"></lightning-spinner>
+                    <p class="psk-state__text">Loading print and dispatch work&hellip;</p>
+                </div>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="psk-state psk-state--error" role="alert">
+                    <lightning-icon icon-name="utility:error" variant="error" size="small"></lightning-icon>
+                    <p class="psk-state__text">{error}</p>
+                </div>
+            </template>
+
+            <template if:true={isEmpty}>
+                <div class="psk-state" role="status">
+                    <lightning-icon icon-name="utility:print" size="small"></lightning-icon>
+                    <p class="psk-state__text">No print jobs or dispatches exist yet.</p>
+                </div>
+            </template>
+
+            <template if:true={showBoard}>
+                <div class="psk-lane-tabs" role="tablist" aria-label="Fulfilment pipeline">
+                    <button
+                        type="button"
+                        role="tab"
+                        class={printTabClass}
+                        data-lane="print"
+                        aria-selected={printTabSelected}
+                        onclick={handleSelectLane}
+                        onkeydown={handleLaneKeydown}
+                    >
+                        {printTabLabel}
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        class={dispatchTabClass}
+                        data-lane="dispatch"
+                        aria-selected={dispatchTabSelected}
+                        onclick={handleSelectLane}
+                        onkeydown={handleLaneKeydown}
+                    >
+                        {dispatchTabLabel}
+                    </button>
+                </div>
+
+                <div class="psk-cols">
+                    <template for:each={activeColumns} for:item="column">
+                        <section key={column.key} class="psk-col" aria-label={column.status}>
+                            <header class={column.headerClass}>
+                                <span class="psk-col__title">{column.status}</span>
+                                <span class="psk-col__count">{column.count}</span>
+                            </header>
+                            <div class="psk-col__body">
+                                <template if:true={column.hasCards}>
+                                    <template for:each={column.cards} for:item="card">
+                                        <article key={card.key} class="psk-tile">
+                                            <button
+                                                type="button"
+                                                class="psk-tile__link"
+                                                data-id={card.id}
+                                                data-object={card.objectApiName}
+                                                onclick={handleOpen}
+                                            >
+                                                {card.title}
+                                            </button>
+                                            <template if:true={card.arn}>
+                                                <p class="psk-tile__arn">{card.arn}</p>
+                                            </template>
+                                            <template if:true={card.line1}>
+                                                <p class="psk-tile__meta">{card.line1}</p>
+                                            </template>
+                                            <template if:true={card.line2}>
+                                                <p class="psk-tile__meta">{card.line2}</p>
+                                            </template>
+                                            <template if:true={card.timestamp}>
+                                                <p class="psk-tile__date">
+                                                    <lightning-formatted-date-time
+                                                        value={card.timestamp}
+                                                        year="numeric"
+                                                        month="short"
+                                                        day="2-digit"
+                                                    ></lightning-formatted-date-time>
+                                                </p>
+                                            </template>
+                                        </article>
+                                    </template>
+                                </template>
+                                <template if:false={column.hasCards}>
+                                    <p class="psk-col__empty">Nothing here</p>
+                                </template>
+                            </div>
+                        </section>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

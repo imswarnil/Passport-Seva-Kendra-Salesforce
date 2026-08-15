@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Core_Fields_On_Submit</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND( NOT(ISPICKVAL(Status__c,&quot;Draft&quot;)), OR( ISBLANK(First_Name__c), ISBLANK(Last_Name__c), ISBLANK(Date_of_Birth__c), ISBLANK(Mobile__c), ISBLANK(Address_Line1__c) ) )</errorConditionFormula>
+    <errorMessage>First Name, Last Name, Date of Birth, Mobile and Address Line 1 are required before submitting.</errorMessage>
+</ValidationRule>

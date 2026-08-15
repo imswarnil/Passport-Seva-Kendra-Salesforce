@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Printed_Requires_Date</fullName>
+    <active>true</active>
+    <description>Turnaround_Hours__c is measured from Queued Date to Printed Date, so Printed Date cannot be missing on a completed job.</description>
+    <errorConditionFormula>AND( ISPICKVAL(Status__c, &quot;Printed&quot;), ISBLANK(Printed_Date__c) )</errorConditionFormula>
+    <errorDisplayField>Printed_Date__c</errorDisplayField>
+    <errorMessage>Enter the Printed Date when marking the print job as Printed.</errorMessage>
+</ValidationRule>

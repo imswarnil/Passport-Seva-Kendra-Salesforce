@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Queued</fullName>
+        <default>true</default>
+        <label>Queued</label>
+    </customValue>
+    <customValue>
+        <fullName>Printing</fullName>
+        <default>false</default>
+        <label>Printing</label>
+    </customValue>
+    <customValue>
+        <fullName>Quality Check</fullName>
+        <default>false</default>
+        <label>Quality Check</label>
+    </customValue>
+    <customValue>
+        <fullName>Printed</fullName>
+        <default>false</default>
+        <label>Printed</label>
+    </customValue>
+    <customValue>
+        <fullName>Failed</fullName>
+        <default>false</default>
+        <label>Failed</label>
+    </customValue>
+    <customValue>
+        <fullName>Reprint Required</fullName>
+        <default>false</default>
+        <label>Reprint Required</label>
+    </customValue>
+    <description>Print job progress through the booklet production line.</description>
+    <masterLabel>PSK Fulfilment Status</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

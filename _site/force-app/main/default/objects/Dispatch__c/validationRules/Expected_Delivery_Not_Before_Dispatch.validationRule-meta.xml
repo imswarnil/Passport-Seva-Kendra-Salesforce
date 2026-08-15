@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Expected_Delivery_Not_Before_Dispatch</fullName>
+    <active>true</active>
+    <description>Dispatched_Date__c is a DateTime and Expected_Delivery_Date__c is a Date, so DATEVALUE() is used to compare them. A same-day expected delivery is allowed.</description>
+    <errorConditionFormula>AND( NOT(ISBLANK(Dispatched_Date__c)), NOT(ISBLANK(Expected_Delivery_Date__c)), Expected_Delivery_Date__c &lt; DATEVALUE(Dispatched_Date__c) )</errorConditionFormula>
+    <errorDisplayField>Expected_Delivery_Date__c</errorDisplayField>
+    <errorMessage>Expected Delivery Date cannot be earlier than the Dispatched Date.</errorMessage>
+</ValidationRule>

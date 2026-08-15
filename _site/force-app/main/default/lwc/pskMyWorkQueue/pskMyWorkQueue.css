@@ -1,0 +1,147 @@
+:host {
+    --psk-navy: #1a2a5e;
+    --psk-gold: #c9a227;
+    --psk-bg: #eef0f4;
+    --psk-red: #b23b3b;
+    display: block;
+}
+
+.psk-card {
+    --slds-c-card-color-border: var(--psk-gold);
+}
+
+.psk-state {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    color: #5a6488;
+    font-size: 0.82rem;
+    position: relative;
+    min-height: 2.5rem;
+}
+
+.psk-state--error {
+    color: var(--psk-red);
+}
+
+.psk-state__text {
+    margin: 0;
+    color: #5a6488;
+    font-size: 0.82rem;
+}
+
+.psk-work__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--psk-bg);
+}
+
+.psk-work__toggle {
+    --slds-c-checkbox-toggle-color-background-checked: var(--psk-navy);
+}
+
+.psk-work {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.psk-work__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--psk-bg);
+}
+
+.psk-work__item:last-child {
+    border-bottom: none;
+}
+
+.psk-work__item--breached {
+    border-left: 3px solid var(--psk-red);
+    padding-left: 0.5rem;
+    background: #fdf6f6;
+}
+
+.psk-work__icon {
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+}
+
+.psk-work__body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.psk-work__link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--psk-navy);
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: left;
+}
+
+.psk-work__link:focus-visible {
+    outline: 2px solid var(--psk-gold);
+    outline-offset: 2px;
+}
+
+.psk-work__subtitle {
+    margin: 0.15rem 0 0 0;
+    font-size: 0.76rem;
+    color: #5a6488;
+}
+
+.psk-work__meta {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.7rem;
+    color: #8892b0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.psk-work__status {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--psk-navy);
+}
+
+.psk-badge {
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.psk-badge--success {
+    background: #e3f3e6;
+    color: #2c7a3d;
+}
+
+.psk-badge--danger {
+    background: #fbe8e8;
+    color: var(--psk-red);
+}
+
+.psk-badge--neutral {
+    background: var(--psk-bg);
+    color: #5a6488;
+}
