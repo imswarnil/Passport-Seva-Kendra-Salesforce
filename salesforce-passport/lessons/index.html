@@ -1,0 +1,28 @@
+---
+layout: default
+title: Lessons
+permalink: /lessons/
+---
+
+<section>
+  <div class="wrap" style="padding-top:52px;">
+    <span class="section-kicker">Learn by reading the real thing</span>
+    <h2>Eight lessons, one real Salesforce build</h2>
+    <p class="intro">
+      Every lesson below is grounded in code and metadata that actually
+      deployed to a live org — file paths you can open in the repo, not
+      invented examples. Read them in order if you're new to Salesforce;
+      jump to whichever concept you need if you're not.
+    </p>
+
+    <ol class="lesson-list">
+      {% assign sorted = site.lessons | sort: 'number' %}
+      {% for lesson in sorted %}
+      <li>
+        <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
+        <div class="concepts">{{ lesson.concept }}</div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>

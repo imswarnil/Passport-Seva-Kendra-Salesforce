@@ -1,0 +1,137 @@
+---
+layout: default
+title: Design
+permalink: /design/
+---
+
+<section id="design">
+  <div class="wrap">
+    <span class="section-kicker">Reference</span>
+    <h1>Design language</h1>
+    <p class="intro">
+      This page documents the design system behind two things at once: the
+      Salesforce app itself (Lightning App Builder branding on
+      <code>Application_Management_Console</code>) and this Jekyll site. They
+      share one palette on purpose, not by coincidence.
+    </p>
+
+    <h2>Color</h2>
+    <p>
+      The Salesforce app's <code>app-meta.xml</code> sets its Lightning App
+      Builder header color directly:
+    </p>
+    <div class="code-caption">force-app/main/default/applications/Application_Management_Console.app-meta.xml</div>
+    <pre class="highlight"><code>&lt;brand&gt;
+    &lt;headerColor&gt;#1A2A5E&lt;/headerColor&gt;
+    &lt;logo&gt;app_application_mgmt&lt;/logo&gt;
+    &lt;shouldOverrideOrgTheme&gt;false&lt;/shouldOverrideOrgTheme&gt;
+&lt;/brand&gt;</code></pre>
+    <p>
+      This site's <code>_config.yml</code> declares the same navy and gold as
+      a <code>brand:</code> block, and <code>assets/css/style.css</code>
+      stamps them into CSS custom properties at the top of the stylesheet:
+    </p>
+    <div class="code-caption">salesforce-passport/assets/css/style.css</div>
+    <pre class="highlight"><code>:root {
+  --navy: #1A2A5E;
+  --navy-dark: #101B42;
+  --gold: #C9A227;
+  --paper: #F7F5F0;
+  --ink: #1c1f27;
+  --muted: #5b6178;
+  --border: #e6e2d8;
+}</code></pre>
+
+    <div class="swatches">
+      <div class="swatch"><div class="fill" style="background:#1A2A5E"></div><div class="label"><b>Navy</b><span>#1A2A5E</span></div></div>
+      <div class="swatch"><div class="fill" style="background:#101B42"></div><div class="label"><b>Navy Dark</b><span>#101B42</span></div></div>
+      <div class="swatch"><div class="fill" style="background:#C9A227"></div><div class="label"><b>Gold</b><span>#C9A227</span></div></div>
+      <div class="swatch"><div class="fill" style="background:#F7F5F0"></div><div class="label"><b>Paper</b><span>#F7F5F0</span></div></div>
+      <div class="swatch"><div class="fill" style="background:#1c1f27"></div><div class="label"><b>Ink</b><span>#1c1f27</span></div></div>
+      <div class="swatch"><div class="fill" style="background:#5b6178"></div><div class="label"><b>Muted</b><span>#5b6178</span></div></div>
+      <div class="swatch"><div class="fill" style="background:#e6e2d8"></div><div class="label"><b>Border</b><span>#e6e2d8</span></div></div>
+    </div>
+
+    <p>
+      Why the same seven colors in both places? Because if a site's whole
+      purpose is teaching a build, the teaching material should visibly
+      belong to the project it's teaching — not look like a generic blog
+      that happens to link to the app. Navy and gold read as "official
+      document" rather than "SaaS marketing site," which fits a passport
+      office better than the default Salesforce Lightning blue would have.
+      One note of honesty: the org's second app, <code>Passport_Validator</code>,
+      still carries an inherited <code>#005EA5</code> header from before this
+      palette was standardized — a small, tracked inconsistency rather than a
+      hidden one.
+    </p>
+
+    <h2>Typography &amp; voice</h2>
+    <p>
+      No webfont is loaded anywhere on this site. <code>body</code> uses the
+      system UI stack — <code>-apple-system, BlinkMacSystemFont, "Segoe UI",
+      Helvetica, Arial, sans-serif</code> — so every page renders in
+      whatever font the reader's own OS already uses, with zero network
+      requests spent on typography.
+    </p>
+    <p>
+      The writing follows the same restraint: short declarative sentences,
+      real file paths cited inline (<code>force-app/main/default/objects/…</code>,
+      never a made-up example), and a documentation tone rather than a
+      marketing one. No superlatives — nothing here is "revolutionary" or
+      "seamless." A claim like "region-based sharing is unimplemented" is
+      more useful, and more honest, than a claim that everything works
+      perfectly.
+    </p>
+
+    <h2>Component patterns</h2>
+    <p>
+      A small, reused set of patterns carries the whole site. Each one is
+      demonstrated live below, in the same markup used throughout.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>.card grid</h3>
+        <p>A <code>.grid</code> of <code>.card</code> elements for feature
+        or concept lists — used on the homepage for the six things this
+        build teaches, and here for this list itself.</p>
+      </div>
+      <div class="card">
+        <h3>.stat tiles</h3>
+        <p>Big-number build metrics — object counts, test counts — laid out
+        as flat tiles, no chart needed when the number does the talking.</p>
+      </div>
+      <div class="card">
+        <h3>.doc-list</h3>
+        <p>A definition-style list for linking out to the repo's own
+        markdown docs, each entry with a title and a one-line description.</p>
+      </div>
+    </div>
+
+    <h3>Stat tiles, live</h3>
+    <div class="stats">
+      <div class="stat"><span class="num">17</span><span class="label">custom objects</span></div>
+      <div class="stat"><span class="num">9</span><span class="label">persona permission sets</span></div>
+      <div class="stat"><span class="num">2</span><span class="label">Custom Metadata Types</span></div>
+    </div>
+
+    <h3>lesson-list</h3>
+    <p>
+      A numbered list style for the <a href="{{ '/lessons/' | relative_url }}">lessons index</a> —
+      each entry shows a number badge, a title, and the concept it teaches.
+    </p>
+
+    <h3>code-caption + highlight</h3>
+    <p>
+      Every real code excerpt on this site is preceded by a
+      <code>.code-caption</code> div naming the exact repo-relative file path,
+      immediately above a Rouge-highlighted fenced code block — exactly as
+      used throughout this page and every lesson.
+    </p>
+
+    <h3>pull-quote</h3>
+    <p>Every lesson ends with one — a single sentence, under 20 words, set off with a gold left border:</p>
+    <div class="pull-quote">Snapshot a declaration, derive a fact — the same rule that keeps a passport honest.</div>
+
+  </div>
+</section>

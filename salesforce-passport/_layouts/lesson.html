@@ -1,0 +1,42 @@
+---
+layout: default
+---
+<div class="prose lesson">
+  <span class="lesson-kicker">Lesson {{ page.number }} of {{ site.lessons.size }} · {{ page.concept }}</span>
+  <h1>{{ page.title }}</h1>
+
+  {% if page.you_will_learn %}
+  <div class="lesson-you-will-learn">
+    <p>You'll learn</p>
+    <ul>
+      {% for item in page.you_will_learn %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {{ content }}
+
+  {% assign sorted = site.lessons | sort: 'number' %}
+  {% assign idx = 0 %}
+  {% for l in sorted %}
+    {% if l.url == page.url %}{% assign idx = forloop.index0 %}{% endif %}
+  {% endfor %}
+  <div class="lesson-nav">
+    {% assign prev_idx = idx | minus: 1 %}
+    {% if idx > 0 %}
+      {% assign prev = sorted[prev_idx] %}
+      <a href="{{ prev.url | relative_url }}">&larr; {{ prev.title }}</a>
+    {% else %}
+      <a href="{{ '/lessons/' | relative_url }}">&larr; All lessons</a>
+    {% endif %}
+    {% assign next_idx = idx | plus: 1 %}
+    {% if next_idx < sorted.size %}
+      {% assign next = sorted[next_idx] %}
+      <a href="{{ next.url | relative_url }}">{{ next.title }} &rarr;</a>
+    {% else %}
+      <a href="{{ '/lessons/' | relative_url }}">All lessons &rarr;</a>
+    {% endif %}
+  </div>
+</div>

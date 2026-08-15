@@ -1,10 +1,11 @@
 title: Salesforce Passport
-tagline: Learn Salesforce by building one real system, start to finish
+tagline: The only passport you need to start your Salesforce journey
 description: >-
   Salesforce Passport teaches Salesforce the way you'll actually use it on
   the job — by building one real, connected system (a passport office) end
   to end, instead of a pile of disconnected tutorials. Data modelling,
-  security, automation, approvals, and UI, all in one place.
+  security, automation, approvals, and UI, all in one place, with the real
+  code and metadata that shipped it.
 url: ""
 baseurl: ""
 
@@ -21,7 +22,29 @@ brand:
   paper: "#F7F5F0"
 
 markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: "highlight"
+    span:
+      line_numbers: false
+    block:
+      line_numbers: false
+highlighter: rouge
 permalink: pretty
+
+collections:
+  lessons:
+    output: true
+    permalink: /lessons/:path/
+
+defaults:
+  - scope:
+      path: ""
+      type: "lessons"
+    values:
+      layout: "lesson"
 
 plugins:
   - jekyll-seo-tag
