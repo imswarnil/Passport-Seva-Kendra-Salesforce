@@ -64,6 +64,42 @@
     }
   }
 
+  /* ---- GitHub star count ----------------------------------------------- */
+  /* Filled in from the public API. The count element stays hidden unless the
+     request actually succeeds, so a rate-limited or offline visitor sees a
+     plain "Star on GitHub" button rather than an empty slot or a zero. */
+  (function () {
+    var holders = document.querySelectorAll('[data-gh-star]');
+    if (!holders.length || !window.fetch) return;
+    var repo = holders[0].getAttribute('data-repo');
+    if (!repo) return;
+
+    var cached = null;
+    try { cached = JSON.parse(sessionStorage.getItem('gh:' + repo) || 'null'); } catch (e) {}
+
+    function paint(n) {
+      /* Hide a zero rather than showing it — an empty-looking badge reads as
+         broken, and omitting a count is not a claim about the count. */
+      if (typeof n !== 'number' || n < 1) return;
+      var label = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
+      holders.forEach(function (h) {
+        var el = h.querySelector('[data-gh-count]');
+        if (el) { el.textContent = label; el.hidden = false; }
+      });
+    }
+
+    if (cached && typeof cached.n === 'number') { paint(cached.n); return; }
+
+    fetch('https://api.github.com/repos/' + repo, { headers: { Accept: 'application/vnd.github+json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || typeof d.stargazers_count !== 'number') return;
+        try { sessionStorage.setItem('gh:' + repo, JSON.stringify({ n: d.stargazers_count })); } catch (e) {}
+        paint(d.stargazers_count);
+      })
+      .catch(function () { /* offline or rate-limited — button still works */ });
+  })();
+
   /* ---- Scroll reveal --------------------------------------------------- */
   var reveals = document.querySelectorAll('[data-reveal]');
   if (reveals.length) {

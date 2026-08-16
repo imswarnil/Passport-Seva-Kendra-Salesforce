@@ -1,0 +1,25 @@
+{%- comment -%}
+  A callout. Four kinds, each with a job:
+    key   — the sentence to remember from this section
+    warn  — a trap that will bite you
+    tip   — a practical shortcut
+    rule  — a project convention that is non-negotiable
+
+    {% include viz/note.html kind="key" title="Snapshot a declaration, derive a fact"
+       body="Know which of the two a field is *before* you create it." %}
+{%- endcomment -%}
+{%- assign kind = include.kind | default: 'key' -%}
+<aside class="viz viz-note viz-note--{{ kind }}">
+  <span class="viz-note__icon">
+    {%- case kind -%}
+      {%- when 'warn' %}{% include icon.html name="warning" size="18" %}
+      {%- when 'tip' %}{% include icon.html name="sparkle" size="18" %}
+      {%- when 'rule' %}{% include icon.html name="shield-check" size="18" %}
+      {%- else %}{% include icon.html name="target" size="18" %}
+    {%- endcase -%}
+  </span>
+  <div class="viz-note__body">
+    {%- if include.title %}<p class="viz-note__title">{{ include.title }}</p>{% endif -%}
+    <p class="viz-note__text">{{ include.body | markdownify | remove: '<p>' | remove: '</p>' }}</p>
+  </div>
+</aside>

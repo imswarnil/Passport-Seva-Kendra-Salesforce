@@ -1,0 +1,21 @@
+{%- comment -%}
+  Side-by-side "don't / do". The single most useful teaching shape there is.
+
+    {% include viz/compare.html
+       bad_title="One object per stage"
+       bad="Copy every field between objects at each stage::Re-point every child record::Re-teach every report about a new table::Grant every permission set access again"
+       good_title="One object, a Status picklist"
+       good="Nothing is copied — the record just changes value::Children never move::One report source::One set of permissions" %}
+{%- endcomment -%}
+{%- assign bad = include.bad | split: "::" -%}
+{%- assign good = include.good | split: "::" -%}
+<figure class="viz viz-compare">
+  <div class="viz-compare__col viz-compare__col--bad">
+    <p class="viz-compare__head">{% include icon.html name="close" size="15" %} {{ include.bad_title | default: "Don't" }}</p>
+    <ul>{% for b in bad %}<li>{{ b | strip }}</li>{% endfor %}</ul>
+  </div>
+  <div class="viz-compare__col viz-compare__col--good">
+    <p class="viz-compare__head">{% include icon.html name="check-circle" size="15" %} {{ include.good_title | default: "Do" }}</p>
+    <ul>{% for g in good %}<li>{{ g | strip }}</li>{% endfor %}</ul>
+  </div>
+</figure>

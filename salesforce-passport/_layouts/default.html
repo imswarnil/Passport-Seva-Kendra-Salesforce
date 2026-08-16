@@ -31,9 +31,10 @@ layout: base
       <a href="{{ '/design/' | relative_url }}"{% if page.url contains '/design' %} aria-current="page"{% endif %}>
         {% include icon.html name="target" size="16" %} Design
       </a>
-      <a class="site-nav__cta" href="https://github.com/{{ site.repository }}">
-        Source {% include icon.html name="arrow-up-right" size="14" %}
+      <a href="{{ '/deploy/' | relative_url }}"{% if page.url contains '/deploy' %} aria-current="page"{% endif %}>
+        {% include icon.html name="rocket" size="16" %} Deploy it
       </a>
+      {% include github-star.html class="site-nav__cta" %}
       {% include theme-toggle.html %}
     </nav>
   </div>

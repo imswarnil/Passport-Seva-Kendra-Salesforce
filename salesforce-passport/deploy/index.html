@@ -1,0 +1,210 @@
+---
+layout: default
+title: Deploy it to your own org
+description: >-
+  Three ways to get the Passport Seva Kendra build into a Salesforce org of your
+  own — a one-click deploy, the Salesforce CLI, or a disposable scratch org — so
+  you can click through the thing the lessons describe.
+permalink: /deploy/
+---
+
+<section class="hero" style="padding-bottom: 20px;">
+  <div class="wrap">
+    <p class="eyebrow">{% include icon.html name="rocket" size="15" %} Learn by clicking, not just reading</p>
+    <h1 style="max-width: 20ch;">Deploy it to your own org</h1>
+    <p class="hero__lede" style="max-width: 68ch;">
+      Reading about a sharing rule is not the same as being locked out by one. Every
+      lesson here describes metadata that actually exists — so put it in an org you
+      control, log in as each persona, and try to do the things they are forbidden
+      to do. That is where it lands.
+    </p>
+    <div class="hero__actions">
+      {% include github-star.html class="btn btn--primary" %}
+      <a class="btn" href="https://github.com/{{ site.repository }}">
+        {% include icon.html name="git-branch" size="16" %} Browse the source
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 26px;">
+  <div class="wrap">
+    {% include viz/note.html kind="warn" title="Use a Developer Edition or a scratch org — never a production org"
+       body="This deploys custom objects, permission sets, sharing rules and Apex. It is a portfolio project, not a packaged app: nothing here has been hardened for a real business org, and some of it (org-wide defaults, role hierarchy) changes org-level settings. Sign up for a free Developer Edition and use that." %}
+  </div>
+</section>
+
+<section class="section" style="padding-top: 10px;">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2>Three ways in</h2>
+      <p>Pick by how much you want to learn from the deploy itself. The CLI route teaches the most.</p>
+    </div>
+
+    <div class="layers">
+
+      <section class="layer" data-reveal style="--layer-accent: #1A5E4A;">
+        <header class="layer__head">
+          <span class="layer__icon">{% include icon.html name="rocket" size="20" %}</span>
+          <div><h3>1 &middot; One-click deploy</h3><p>Fastest &middot; no tooling to install</p></div>
+        </header>
+        <div class="layer__body">
+          <p style="font-size:14.8px;color:var(--ink-soft);line-height:1.6;">
+            <b>githubsfdeploy</b> is a long-standing community tool that reads a public
+            GitHub repo and deploys its metadata straight into an org you authorise.
+            You log in with your own credentials on Salesforce's own login page.
+          </p>
+          <p style="margin:14px 0;">
+            <a class="btn btn--primary" rel="noopener"
+               href="https://githubsfdeploy.herokuapp.com/?owner={{ site.repository | split: '/' | first }}&amp;repo={{ site.repository | split: '/' | last }}&amp;ref=main">
+              {% include icon.html name="rocket" size="16" %} Deploy to Salesforce
+            </a>
+          </p>
+          <ul class="layer__list">
+            <li>{% include icon.html name="warning" size="16" %}<span><b>It is a third-party tool</b>, not run by me or by Salesforce. It asks for org access — read what you are authorising before you accept.</span></li>
+            <li>{% include icon.html name="warning" size="16" %}<span>It deploys the <b>whole tree</b>, which drags in inherited template metadata and takes several minutes.</span></li>
+            <li>{% include icon.html name="check-circle" size="16" %}<span>Best if you just want to click around the finished app.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="layer" data-reveal style="--layer-accent: #1F4E79;">
+        <header class="layer__head">
+          <span class="layer__icon">{% include icon.html name="code" size="20" %}</span>
+          <div><h3>2 &middot; Salesforce CLI</h3><p>Recommended &middot; teaches the most</p></div>
+        </header>
+        <div class="layer__body">
+          <p style="font-size:14.8px;color:var(--ink-soft);line-height:1.6;">
+            The way the org was actually built. You see every deploy error, which is
+            where a lot of the real learning is — see
+            <a href="{{ '/build-log/' | relative_url }}">the build log</a> for the ones that cost hours.
+          </p>
+<pre><code># 1 · Install the Salesforce CLI, then clone
+git clone https://github.com/{{ site.repository }}.git
+cd {{ site.repository | split: '/' | last }}
+
+# 2 · Authorise your Developer Edition org
+sf org login web --alias psk-dev --set-default
+
+# 3 · Validate BEFORE you write anything (always do this first)
+sf project deploy start --source-dir force-app --dry-run
+
+# 4 · Deploy in dependency order — value sets, then objects, then the rest
+sf project deploy start --metadata GlobalValueSet
+sf project deploy start --source-dir force-app/main/default/objects
+sf project deploy start --source-dir force-app
+
+# 5 · Give yourself access, then look at it
+sf org assign permset --name PSK_App_Access
+sf org open</code></pre>
+          <ul class="layer__list">
+            <li>{% include icon.html name="check-circle" size="16" %}<span><b>Deploy order matters.</b> Value sets before the fields that reference them, objects before layouts, security before code.</span></li>
+            <li>{% include icon.html name="warning" size="16" %}<span>New fields are <b>invisible until a permission set grants them</b> — step 5 is not optional.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="layer" data-reveal style="--layer-accent: #7A5C1E;">
+        <header class="layer__head">
+          <span class="layer__icon">{% include icon.html name="flask" size="20" %}</span>
+          <div><h3>3 &middot; Scratch org</h3><p>Disposable &middot; break it freely</p></div>
+        </header>
+        <div class="layer__body">
+          <p style="font-size:14.8px;color:var(--ink-soft);line-height:1.6;">
+            A scratch org is a temporary org built from a config file and thrown away.
+            The right choice for experimenting, because deleting it costs nothing.
+            Needs a Dev Hub — any Developer Edition can be enabled as one.
+          </p>
+<pre><code>sf org login web --alias devhub --set-default-dev-hub
+sf org create scratch --definition-file config/project-scratch-def.json \
+                      --alias psk-scratch --set-default --duration-days 7
+sf project deploy start --source-dir force-app
+sf org assign permset --name PSK_App_Access
+sf org open
+
+# when you are done
+sf org delete scratch --target-org psk-scratch</code></pre>
+          <ul class="layer__list">
+            <li>{% include icon.html name="check-circle" size="16" %}<span>Break anything. Delete it. Make another.</span></li>
+            <li>{% include icon.html name="warning" size="16" %}<span>Scratch orgs expire — 7 days here, 30 maximum.</span></li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2>Once it's deployed, do this</h2>
+      <p>A deploy that you only look at teaches very little. These five take about half an hour and are where the concepts land.</p>
+    </div>
+
+    {% include viz/flow.html direction="vertical" title="Half an hour that is worth more than re-reading the lessons"
+       steps="Seed the demo data, so every stage has records in it|auto;Drive one application Draft → Delivered and watch what appears without you|user;Log in as the Front Office persona and try to open a Diplomatic application|gate;Try to grant a passport whose fee is unpaid — the validation rule should stop you|stop;Break something on purpose, then use the deploy error to work out why|user" %}
+
+    <div class="split" style="margin-top: 30px;">
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="database" size="20" %} Seed the demo data</h3>
+<pre style="font-size:12.5px;"><code>sf apex run --file scripts/apex/seed-demo-data.apex</code></pre>
+        <p style="margin:12px 0 0;">
+          Idempotent — safe to run twice. It creates 24 named scenarios including the
+          failures: an adverse police report, a rejected diplomatic grant, a QC
+          reprint, an abandoned draft. Those are the interesting records.
+        </p>
+      </div>
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="lock" size="20" %} Try what each persona <em>cannot</em> do</h3>
+        <p style="margin:0 0 12px;">
+          Assign yourself one persona permission set at a time and attempt the refusals
+          in the <a href="{{ '/personas/' | relative_url }}">persona list</a>. A security
+          model is only proven by what it stops.
+        </p>
+<pre style="font-size:12.5px;"><code>sf org assign permset --name PSK_Front_Office</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section__head" data-reveal>
+      <h2>Two things metadata cannot do for you</h2>
+      <p>Every Salesforce org has a few settings that no deploy can express. Knowing which is part of the DevOps lesson.</p>
+    </div>
+    <div class="split">
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="squares" size="20" %} Record page activation</h3>
+        <p style="margin:0;">
+          Org-default and app-default page assignments deploy fine. <b>Per-record-type
+          activation does not.</b> After deploying, open Lightning App Builder →
+          Activation and assign the application record page to each record type by hand.
+        </p>
+      </div>
+      <div class="panel" data-reveal>
+        <h3>{% include icon.html name="warning" size="20" %} One-way Setup toggles</h3>
+        <p style="margin:0;">
+          Enterprise Territory Management and Digital Experiences are irreversible
+          Setup switches. This build deliberately avoids both — if a lesson mentions
+          them, it is describing a design decision, not asking you to flip anything.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="panel" data-reveal style="text-align:center;">
+      <h3 style="justify-content:center;">{% include icon.html name="sparkle" size="20" %} Found this useful?</h3>
+      <p style="max-width:56ch;margin:0 auto 18px;">
+        Starring the repo is the only signal I get that any of this was worth writing up.
+        It also makes it easier for other people to find.
+      </p>
+      {% include github-star.html class="btn btn--primary" %}
+    </div>
+    {% include ad.html type="footer" %}
+  </div>
+</section>

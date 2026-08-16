@@ -1,0 +1,52 @@
+{%- comment -%}
+  A Salesforce object rendered as a diagram rather than a code block.
+
+    {% include viz/object.html id="passport_application" %}
+    {% include viz/object.html id="passport" group="Consequences of the application — derived" %}
+
+  `id`    — a key in _data/objects.yml
+  `group` — optional; render only one field group instead of all of them
+{%- endcomment -%}
+{%- assign o = site.data.objects[include.id] -%}
+{%- if o -%}
+<figure class="viz viz-object" style="--viz-accent: {{ o.accent | default: '#1A2A5E' }};">
+  <header class="viz-object__head">
+    <span class="viz-object__icon">{% include icon.html name=o.icon size="20" %}</span>
+    <div class="viz-object__id">
+      <p class="viz-object__label">{{ o.label }}</p>
+      <code class="viz-object__api">{{ o.api }}</code>
+    </div>
+    <dl class="viz-object__meta">
+      <div><dt>OWD</dt><dd>{{ o.owd }}</dd></div>
+      {%- if o.name_field %}<div><dt>Name</dt><dd>{{ o.name_field }}</dd></div>{% endif -%}
+      {%- if o.record_types %}<div><dt>Record types</dt><dd>{{ o.record_types }}</dd></div>{% endif -%}
+    </dl>
+  </header>
+
+  {%- if o.note %}<p class="viz-object__note">{{ o.note }}</p>{% endif -%}
+
+  <div class="viz-object__groups">
+    {%- for g in o.groups -%}
+      {%- if include.group == nil or include.group == g.name -%}
+      <section class="viz-group">
+        <h4 class="viz-group__name">{{ g.name }}</h4>
+        <ul class="viz-fields">
+          {%- for f in g.fields -%}
+          <li class="viz-field">
+            <div class="viz-field__row">
+              <code class="viz-field__name">{{ f.name }}</code>
+              <span class="viz-field__type">{{ f.type }}</span>
+              {%- if f.badge %}<span class="badge badge--{{ f.badge }}">{% case f.badge %}{% when 'req' %}required{% when 'pii' %}PII{% when 'formula' %}formula{% when 'rollup' %}roll-up{% when 'lookup' %}lookup{% when 'md' %}master-detail{% when 'ext' %}external ID{% when 'picklist' %}picklist{% when 'auto' %}auto number{% else %}{{ f.badge }}{% endcase %}</span>{% endif -%}
+            </div>
+            {%- if f.note %}<p class="viz-field__note">{{ f.note }}</p>{% endif -%}
+          </li>
+          {%- endfor -%}
+        </ul>
+      </section>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</figure>
+{%- else -%}
+<p class="viz-error">Unknown object id <code>{{ include.id }}</code> — check <code>_data/objects.yml</code>.</p>
+{%- endif -%}

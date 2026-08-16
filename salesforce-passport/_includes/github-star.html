@@ -1,0 +1,11 @@
+{%- comment -%}
+  Star button. The count is filled in client-side from the public GitHub API
+  and the element stays hidden until it resolves — so a rate-limited or offline
+  visitor sees a normal "Star" button rather than an empty box or a zero.
+{%- endcomment -%}
+<a class="ghstar {{ include.class }}" href="https://github.com/{{ site.repository }}"
+   data-gh-star data-repo="{{ site.repository }}" rel="noopener">
+  <span class="ghstar__icon">{% include icon.html name="sparkle" size="15" %}</span>
+  <span class="ghstar__label">Star on GitHub</span>
+  <span class="ghstar__count" data-gh-count hidden></span>
+</a>

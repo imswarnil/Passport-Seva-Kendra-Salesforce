@@ -1,0 +1,29 @@
+{%- comment -%}
+  A lifecycle bar — the Path, drawn.
+
+    {% include viz/stages.html
+       title="Passport_Application__c.Status__c"
+       stages="Draft::Submitted::Document Verification::Police Verification::Granting::Printing::Dispatch::Delivered"
+       terminal="Rejected::Cancelled"
+       current="Police Verification" %}
+{%- endcomment -%}
+{%- assign stages = include.stages | split: "::" -%}
+{%- assign terminal = include.terminal | split: "::" -%}
+<figure class="viz viz-stages">
+  {%- if include.title %}<figcaption class="viz__title">{% include icon.html name="flow" size="16" %} <code>{{ include.title }}</code></figcaption>{% endif -%}
+  <ol class="viz-stages__bar">
+    {%- for s in stages -%}
+      {%- assign name = s | strip -%}
+      <li class="viz-stage{% if name == include.current %} is-current{% endif %}">
+        <span class="viz-stage__n">{{ forloop.index }}</span>
+        <span class="viz-stage__name">{{ name }}</span>
+      </li>
+    {%- endfor -%}
+  </ol>
+  {%- if terminal.size > 0 -%}
+  <p class="viz-stages__terminal">
+    <span>Terminal, reachable from anywhere:</span>
+    {%- for t in terminal %}<em>{{ t | strip }}</em>{% endfor -%}
+  </p>
+  {%- endif -%}
+</figure>

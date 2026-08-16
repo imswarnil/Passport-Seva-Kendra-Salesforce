@@ -1,0 +1,37 @@
+{%- comment -%}
+  A relationship map. Each row is one relationship, drawn with the line style
+  that matches its type — because the whole point is that master-detail and
+  lookup are different, and a plain table hides that.
+
+    {% include viz/erd.html
+       title="How the eight objects connect"
+       rels="Document_Checklist_Item__c|md|Passport_Application__c|cascade delete, inherited sharing, roll-ups::Police_Verification__c|lookup|Passport_Application__c|survives the application, own sharing" %}
+
+  Entries are separated by "::". Each is "Child|type|Parent|why", type: md | lookup | self
+{%- endcomment -%}
+{%- assign rels = include.rels | split: "::" -%}
+<figure class="viz viz-erd">
+  {%- if include.title %}<figcaption class="viz__title">{% include icon.html name="stack" size="16" %} {{ include.title }}</figcaption>{% endif -%}
+  <ul class="viz-erd__list">
+    {%- for r in rels -%}
+      {%- assign p = r | split: "|" -%}
+      {%- assign type = p[1] | strip -%}
+      <li class="viz-rel viz-rel--{{ type }}">
+        <code class="viz-rel__node">{{ p[0] | strip }}</code>
+        <span class="viz-rel__link">
+          <span class="viz-rel__line"></span>
+          <span class="viz-rel__type">
+            {%- case type -%}
+              {%- when 'md' %}master-detail
+              {%- when 'self' %}self-lookup
+              {%- else %}lookup
+            {%- endcase -%}
+          </span>
+          <span class="viz-rel__arrow">{% include icon.html name="arrow-right" size="14" %}</span>
+        </span>
+        <code class="viz-rel__node">{{ p[2] | strip }}</code>
+        {%- if p[3] %}<span class="viz-rel__why">{{ p[3] | strip }}</span>{% endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</figure>
