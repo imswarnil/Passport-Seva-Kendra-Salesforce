@@ -1,0 +1,152 @@
+# Schema, as data. Rendered by _includes/viz/object.html and viz/erd.html so a
+# lesson can show a real object diagram with {% include viz/object.html id="..." %}
+# instead of pasting a code block. Source of truth is DATA_MODEL.md.
+#
+# badge values: req | pii | formula | rollup | lookup | md | ext | picklist | auto
+
+passport_application:
+  label: Passport Application
+  api: Passport_Application__c
+  icon: database
+  accent: "#1F4E79"
+  owd: Private
+  name_field: Auto Number ARN-{000000}
+  record_types: Fresh · Re-Issue · Tatkal · Minor · Diplomatic/Official
+  note: The spine. One object carries the whole lifecycle, Draft to Delivered.
+  groups:
+    - name: Lifecycle
+      fields:
+        - { name: "Status__c", type: "Picklist", badge: "req", note: "10 values. Drives the Path, every rule, ownership routing and sharing." }
+        - { name: "Payment_Status__c", type: "Picklist", note: "Global value set. A property of the application, not a stage of it." }
+        - { name: "Stage_Entered_Date__c", type: "Date/Time", note: "Re-stamped on every status change. Feeds Days_In_Stage__c." }
+        - { name: "Citizen__c", type: "Lookup → Citizen__c", badge: "lookup", note: "The golden identity record." }
+        - { name: "PSK_Office__c", type: "Lookup → PSK__c", badge: "lookup" }
+        - { name: "Region__c", type: "Text(40)", note: "Stored, not a formula — criteria-based sharing can read neither a formula nor a lookup." }
+        - { name: "External_Id__c", type: "Text(40)", badge: "ext", note: "Unique. Makes integration upserts idempotent." }
+    - name: The as-submitted declaration
+      fields:
+        - { name: "First_Name__c", type: "Text", badge: "req" }
+        - { name: "Last_Name__c", type: "Text", badge: "req" }
+        - { name: "Date_of_Birth__c", type: "Date", badge: "pii" }
+        - { name: "Mobile__c", type: "Phone", badge: "pii" }
+        - { name: "Place_of_Birth__c", type: "Text" }
+        - { name: "Father_Name__c", type: "Text" }
+    - name: Application details
+      fields:
+        - { name: "Passport_Category__c", type: "Picklist", badge: "picklist", note: "Controlling field for Clearance Level." }
+        - { name: "Clearance_Level__c", type: "Dependent picklist", note: "Filtered by Passport Category." }
+        - { name: "Booklet_Pages__c", type: "Picklist", note: "36 / 60 — feeds the fee lookup." }
+        - { name: "Tatkal__c", type: "Checkbox", note: "Selects the Tatkal SLA row and shares the file to managers." }
+        - { name: "Guardian__c", type: "Lookup → Citizen__c", badge: "lookup", note: "A second lookup to the same object. Replaces the whole Family Member object." }
+    - name: Verification & risk
+      fields:
+        - { name: "Aadhaar_Verified__c", type: "Checkbox" }
+        - { name: "Aadhaar_Token__c", type: "Text", badge: "pii", note: "An opaque token. The Aadhaar NUMBER is never stored anywhere." }
+        - { name: "Risk_Score__c", type: "Number(3,0)", note: "Above 70 shares the file to the verification team." }
+        - { name: "Approval_Status__c", type: "Picklist", note: "Blocks Printing until a diplomatic grant is Approved." }
+    - name: Derived — never typed
+      fields:
+        - { name: "Applicant_Age__c", type: "Formula (Number)", badge: "formula", note: "FLOOR((TODAY() - Date_of_Birth__c) / 365.25)" }
+        - { name: "Is_Minor__c", type: "Formula (Checkbox)", badge: "formula", note: "Applicant_Age__c < 18" }
+        - { name: "Checklist_Items_Total__c", type: "Roll-Up Summary", badge: "rollup", note: "COUNT of checklist items." }
+        - { name: "Checklist_Items_Verified__c", type: "Roll-Up Summary", badge: "rollup", note: "COUNT where Status = Verified. A roll-up cannot be wrong; a checkbox can." }
+        - { name: "Open_Objections__c", type: "Roll-Up Summary", badge: "rollup", note: "Above zero blocks the application from advancing." }
+
+citizen:
+  label: Citizen
+  api: Citizen__c
+  icon: users
+  accent: "#4A3B6B"
+  owd: Private
+  name_field: Text (Citizen Name)
+  note: Who a person is NOW — as opposed to what they declared then.
+  groups:
+    - name: Identity
+      fields:
+        - { name: "Citizen_Name__c", type: "Text", badge: "req" }
+        - { name: "Date_of_Birth__c", type: "Date", badge: "pii" }
+        - { name: "Mobile__c", type: "Phone", badge: "pii", note: "Part of the duplicate matching rule." }
+        - { name: "Age__c", type: "Formula (Number)", badge: "formula" }
+        - { name: "KYC_Status__c", type: "Picklist" }
+        - { name: "Is_Blacklisted__c", type: "Checkbox", note: "True shares the record to managers by sharing rule." }
+        - { name: "Aadhaar_Token__c", type: "Text", badge: "pii" }
+        - { name: "External_Id__c", type: "Text(40)", badge: "ext" }
+
+checklist_item:
+  label: Document Checklist Item
+  api: Document_Checklist_Item__c
+  icon: check-circle
+  accent: "#1A5E4A"
+  owd: Controlled by Parent
+  name_field: Auto Number DOC-{0000000}
+  note: Master-detail to the application — which is what buys the roll-up summaries.
+  groups:
+    - name: Fields
+      fields:
+        - { name: "Passport_Application__c", type: "Master-Detail", badge: "md", note: "Cascade delete, inherited sharing, and roll-ups on the parent." }
+        - { name: "Document_Type__c", type: "Picklist", badge: "picklist" }
+        - { name: "Status__c", type: "Picklist", note: "Required → Received → Verified, or Objection Raised." }
+        - { name: "Objection_Reason__c", type: "Text(255)", note: "Absorbs the old Objection object. An objection is always ABOUT a document." }
+        - { name: "Verified_Date__c", type: "Date/Time" }
+        - { name: "External_Id__c", type: "Text(40)", badge: "ext" }
+
+police_verification:
+  label: Police Verification
+  api: Police_Verification__c
+  icon: shield-check
+  accent: "#5B2333"
+  owd: Private
+  name_field: Auto Number PV-{00000}
+  note: Deliberately a LOOKUP, not a master-detail — a police finding must outlive the application and can never be cascade-deleted.
+  groups:
+    - name: Fields
+      fields:
+        - { name: "Passport_Application__c", type: "Lookup", badge: "lookup", note: "Not master-detail. That is the whole design decision." }
+        - { name: "PV_Type__c", type: "Picklist", note: "Pre-PV / Post-PV, set from the record type." }
+        - { name: "Status__c", type: "Picklist", note: "Adverse halts the application and escalates to managers." }
+        - { name: "Verifying_Officer__c", type: "Lookup → User", badge: "lookup" }
+        - { name: "Adverse_Reason__c", type: "Text(255)" }
+        - { name: "Severity__c", type: "Picklist", badge: "picklist" }
+
+passport:
+  label: Passport
+  api: Passport__c
+  icon: passport
+  accent: "#7A5C1E"
+  owd: Private
+  name_field: Text (Passport Number)
+  record_types: Ordinary · Diplomatic · Official
+  note: The booklet. Almost every field is a formula, so identity data is never retyped onto a legal document.
+  groups:
+    - name: Its own facts — stored
+      fields:
+        - { name: "Passport_Number__c", type: "Text", badge: "req" }
+        - { name: "Date_of_Issue__c", type: "Date" }
+        - { name: "Date_of_Expiry__c", type: "Date", note: "Issue date + validity, computed on insert." }
+        - { name: "Previous_Passport__c", type: "Lookup → Passport__c", badge: "lookup", note: "A self-lookup, chaining each re-issue to the booklet it replaced." }
+    - name: Consequences of the application — derived
+      fields:
+        - { name: "Holder_Name__c", type: "Formula (Text)", badge: "formula", note: "Assembled from the application's name parts." }
+        - { name: "Booklet_Pages__c", type: "Formula (Text)", badge: "formula" }
+        - { name: "ECR_Status__c", type: "Formula (Text)", badge: "formula" }
+        - { name: "Place_of_Issue__c", type: "Formula (Text)", badge: "formula", note: "PSK_Office__r.Name" }
+        - { name: "Days_To_Expiry__c", type: "Formula (Number)", badge: "formula" }
+
+dispatch:
+  label: Dispatch
+  api: Dispatch__c
+  icon: rocket
+  accent: "#7A3B1E"
+  owd: Controlled by Parent
+  name_field: Auto Number DSP-{00000}
+  note: One record carrying four milestones — print, QC, despatch, deliver. A reprint loops back onto the SAME record, so field history answers "why two attempts".
+  groups:
+    - name: Milestones
+      fields:
+        - { name: "Passport_Application__c", type: "Master-Detail", badge: "md" }
+        - { name: "Print_Batch__c", type: "Text" }
+        - { name: "QC_Passed__c", type: "Checkbox", note: "False sets the reprint reason and rolls status back to Printing." }
+        - { name: "Courier_Partner__c", type: "Picklist", badge: "picklist" }
+        - { name: "Tracking_Number__c", type: "Text" }
+        - { name: "Delivery_Address__c", type: "Formula (Text)", badge: "formula", note: "Over the application's address — so a courier label can never drift from the file." }
+        - { name: "Transit_Days__c", type: "Formula (Number)", badge: "formula" }

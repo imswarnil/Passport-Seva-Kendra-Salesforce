@@ -1,0 +1,39 @@
+{%- comment -%}
+  A process flow, drawn as connected steps instead of an ASCII diagram.
+
+    {% include viz/flow.html
+       title="What happens when an application is submitted"
+       steps="Officer presses Submit|user::Fee written from Fee_Matrix__mdt|auto::Checklist rows generated|auto::Owner moves to the queue|auto" %}
+
+  Items are separated by "::" (not ";", so an HTML entity like &quot; cannot
+  split one). Each step is "Label|kind", kinds: user (a person does it), auto (the system
+  does it), gate (something must be true), stop (a hard block).
+  `direction="vertical"` stacks them; the default flows left to right.
+{%- endcomment -%}
+{%- assign steps = include.steps | split: "::" -%}
+<figure class="viz viz-flow viz-flow--{{ include.direction | default: 'horizontal' }}">
+  {%- if include.title %}<figcaption class="viz__title">{% include icon.html name="flow" size="16" %} {{ include.title }}</figcaption>{% endif -%}
+  <ol class="viz-flow__track">
+    {%- for s in steps -%}
+      {%- assign parts = s | split: "|" -%}
+      {%- assign kind = parts[1] | default: 'user' | strip -%}
+      <li class="viz-step viz-step--{{ kind }}">
+        <span class="viz-step__mark">
+          {%- case kind -%}
+            {%- when 'auto' %}{% include icon.html name="lightning" size="14" %}
+            {%- when 'gate' %}{% include icon.html name="shield-check" size="14" %}
+            {%- when 'stop' %}{% include icon.html name="close" size="14" %}
+            {%- else %}{% include icon.html name="users" size="14" %}
+          {%- endcase -%}
+        </span>
+        <span class="viz-step__label">{{ parts[0] | strip }}</span>
+      </li>
+    {%- endfor -%}
+  </ol>
+  <p class="viz-flow__key">
+    <span><i class="key key--user"></i> a person does it</span>
+    <span><i class="key key--auto"></i> the system does it</span>
+    <span><i class="key key--gate"></i> a condition must hold</span>
+    <span><i class="key key--stop"></i> blocked</span>
+  </p>
+</figure>

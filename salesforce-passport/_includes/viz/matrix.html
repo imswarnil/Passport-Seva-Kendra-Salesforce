@@ -1,0 +1,51 @@
+{%- comment -%}
+  An access matrix drawn as a grid of chips rather than a wall of letters.
+
+    {% include viz/matrix.html
+       title="Who can do what to Passport_Application__c"
+       cols="Front Office::Doc Verif::Help Desk::Granting::Fulfilment::RPO::Audit"
+       rows="Create|y::n::n::n::n::y::n /// Read|y::y::y::y::y::y::y /// Edit|y::n::n::y::n::y::n /// Delete|n::n::n::n::n::n::n" %}
+
+  Rows are separated by " /// ", each row is "Label|v::v::v", values y | n | v (view all).
+{%- endcomment -%}
+{%- assign cols = include.cols | split: "::" -%}
+{%- assign rows = include.rows | split: "///" -%}
+<figure class="viz viz-matrix">
+  {%- if include.title %}<figcaption class="viz__title">{% include icon.html name="lock" size="16" %} {{ include.title }}</figcaption>{% endif -%}
+  <div class="viz-matrix__scroll">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          {%- for c in cols %}<th scope="col">{{ c | strip }}</th>{% endfor -%}
+        </tr>
+      </thead>
+      <tbody>
+        {%- for r in rows -%}
+          {%- assign parts = r | strip | split: "|" -%}
+          {%- assign vals = parts[1] | split: "::" -%}
+          <tr>
+            <th scope="row">{{ parts[0] | strip }}</th>
+            {%- for v in vals -%}
+              {%- assign val = v | strip -%}
+              <td>
+                <span class="chip chip--{{ val }}" title="{% case val %}{% when 'y' %}allowed{% when 'v' %}allowed, plus View All{% else %}not allowed{% endcase %}">
+                  {%- case val -%}
+                    {%- when 'y' %}{% include icon.html name="check-circle" size="15" %}
+                    {%- when 'v' %}{% include icon.html name="target" size="15" %}
+                    {%- else %}{% include icon.html name="close" size="13" %}
+                  {%- endcase -%}
+                </span>
+              </td>
+            {%- endfor -%}
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </div>
+  <p class="viz-matrix__key">
+    <span><span class="chip chip--y">{% include icon.html name="check-circle" size="13" %}</span> allowed</span>
+    <span><span class="chip chip--v">{% include icon.html name="target" size="13" %}</span> allowed + View All</span>
+    <span><span class="chip chip--n">{% include icon.html name="close" size="11" %}</span> deliberately refused</span>
+  </p>
+</figure>

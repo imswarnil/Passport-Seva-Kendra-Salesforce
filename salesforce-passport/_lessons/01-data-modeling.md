@@ -22,28 +22,30 @@ PSK.md states the guiding philosophy for this whole build plainly:
 
 That's the whole idea in one sentence. A `Passport_Application__c` record created today as a bare-bones Draft is the *exact same row* that will, weeks later, carry a granted date, a printed passport, and a dispatch tracking number. Nothing ever gets copied between objects, because there was only ever one object.
 
+Here is what the two approaches actually cost, side by side:
+
+{% include viz/compare.html
+   bad_title="One object per stage"
+   bad="Copy every field from one object to the next at each stage::Re-point every child record — documents, payments, verification::Re-teach every report and dashboard about another table::Grant every permission set access to yet another object::Answer “where is this file?” with a UNION across six tables"
+   good_title="One object, a Status picklist"
+   good="Nothing is copied — one field changes value::Children never move, because the parent never changes::One report source for the entire lifecycle::One set of permissions to maintain::Answer “where is this file?” with a single-object query" %}
+
 ## One object, a Status field, and a lifecycle
 
-Look at the object definition itself, `force-app/main/default/objects/Passport_Application__c/Passport_Application__c.object-meta.xml`:
+{% include viz/object.html id="passport_application" group="Lifecycle" %}
 
-<div class="code-caption">force-app/main/default/objects/Passport_Application__c/Passport_Application__c.object-meta.xml</div>
-```xml
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <compactLayoutAssignment>PSK_Compact</compactLayoutAssignment>
-    <deploymentStatus>Deployed</deploymentStatus>
-    <label>Passport Application</label>
-    <nameField>
-        <displayFormat>ARN-{000000}</displayFormat>
-        <label>ARN</label>
-        <type>AutoNumber</type>
-    </nameField>
-    <pluralLabel>Passport Applications</pluralLabel>
-    <sharingModel>Private</sharingModel>
-    <visibility>Public</visibility>
-</CustomObject>
-```
+One object, one auto-numbered `ARN` (Application Reference Number) that never changes for the life of the record. The lifecycle itself is carried by a single field, `Status__c`:
 
-One object, one auto-numbered `ARN` (Application Reference Number) that never changes for the life of the record. The lifecycle itself is carried by a single field, `Status__c`, a restricted picklist with twelve values in order: Draft, Submitted, Payment Pending, Paid, Document Verification, Police Verification, Granting, Printing, Dispatch, Delivered, Rejected, Cancelled. Moving an application forward is an `UPDATE` of one field on one row — not a `CREATE` on a different table plus a delete or archive of the old one. Reports, list views, sharing rules, and validation rules all key off that same field, so "show me every application currently at Police Verification" is a one-object query, not a UNION across six tables.
+{% include viz/stages.html
+   title="Passport_Application__c.Status__c"
+   stages="Draft::Submitted::Payment Pending::Paid::Document Verification::Police Verification::Granting::Printing::Dispatch::Delivered"
+   terminal="Rejected::Cancelled"
+   current="Police Verification" %}
+
+Moving an application forward is an `UPDATE` of one field on one row — not a `CREATE` on a different table plus a delete or archive of the old one. Reports, list views, sharing rules, and validation rules all key off that same field, so "show me every application currently at Police Verification" is a one-object query, not a UNION across six tables.
+
+{% include viz/note.html kind="key" title="The lifecycle is a value, not a location"
+   body="A half-finished application is the same object in `Draft` status — not a different object. Once you believe that, most of the rest of this build follows from it." %}
 
 ## What a Record Type actually does
 
@@ -99,24 +101,21 @@ Most of `Passport_Application__c`'s children — `Appointment__c`, `Document_Che
 
 > | Police Verification | `Police_Verification__c` | **Lookup** → `Passport_Application__c` | Private | Auto Number `PV-{00000}` | — | The PV process. Deliberately a lookup, not master-detail: a PV report survives its application and has its own OWD |
 
-And the field metadata backs this up:
+Drawn out, the difference between the two kinds of child is the whole lesson:
 
-<div class="code-caption">force-app/main/default/objects/Police_Verification__c/fields/Passport_Application__c.field-meta.xml</div>
-```xml
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Passport_Application__c</fullName>
-    <deleteConstraint>SetNull</deleteConstraint>
-    <label>Passport Application</label>
-    <referenceTo>Passport_Application__c</referenceTo>
-    <relationshipLabel>Police Verifications</relationshipLabel>
-    <relationshipName>Police_Verifications</relationshipName>
-    <required>false</required>
-    <type>Lookup</type>
-</CustomField>
-```
+{% include viz/erd.html
+   title="Why each relationship is the type it is"
+   rels="Document_Checklist_Item__c|md|Passport_Application__c|Cascade delete, sharing inherited from the parent, and roll-up summaries. A checklist row means nothing without its application.::Dispatch__c|md|Passport_Application__c|Same reasoning — a despatch has no independent existence.::Police_Verification__c|lookup|Passport_Application__c|Deliberately NOT master-detail. A police finding must survive the application and needs its own sharing model.::Passport__c|self|Passport__c|Previous_Passport__c chains each re-issue to the booklet it replaced, so you can walk a citizen's history." %}
 
-Notice `deleteConstraint>SetNull` — if the parent application were ever deleted, the PV record doesn't vanish with it, it just loses the link. That's not an accident of API defaults; it's the field literally encoding a business fact: a police verification report is evidence collected by the Police Verification Team, with its own record-level sharing (`Private` OWD, its own visibility rules for that specific team). It has value independent of whatever happens to the application afterward — an application can be cancelled, but the PV report an officer physically wrote up is still a real document someone may need to reference later. If PSK had modeled it as master-detail, deleting an application would silently destroy a police record that has nothing to do with the application's own lifecycle, and the PV record would have been forced to inherit the application's sharing instead of getting its own.
+The field metadata sets `deleteConstraint` to `SetNull` — if the parent application were ever deleted, the PV record doesn't vanish with it, it just loses the link. That's not an accident of API defaults; it's the field literally encoding a business fact: a police verification report is evidence collected by the Police Verification Team, with its own record-level sharing (`Private` OWD, its own visibility rules for that specific team). It has value independent of whatever happens to the application afterward — an application can be cancelled, but the PV report an officer physically wrote up is still a real document someone may need to reference later. If PSK had modeled it as master-detail, deleting an application would silently destroy a police record that has nothing to do with the application's own lifecycle, and the PV record would have been forced to inherit the application's sharing instead of getting its own.
 
-So the question to ask isn't "does this need rollups" — it's "does this child record's existence and ownership make sense *only* in the context of its parent, or does it have its own lifespan and its own audience?" Get that wrong, and you either lose data you needed to keep, or you leak access to data that should have had tighter sharing.
+{% include viz/note.html kind="rule" title="The question to ask before choosing a relationship type"
+   body="Not &quot;does this need roll-ups?&quot; but **&quot;does this child's existence and ownership make sense *only* in the context of its parent, or does it have its own lifespan and its own audience?&quot;** Get it wrong and you either lose data you needed to keep, or you leak access to data that should have had tighter sharing." %}
+
+Here is the same lifecycle again, this time showing which steps a person performs and which ones the platform does on its own once the relationships are wired correctly:
+
+{% include viz/flow.html
+   title="What one Submit press actually sets off"
+   steps="Officer presses Submit|user::Fee written from Fee_Matrix__mdt|auto::Checklist rows generated from the record-type template|auto::Roll-up counts appear on the parent|auto::Owner moves to the Document Verification queue|auto" %}
 
 <div class="pull-quote">A Record Type is a lens on one object, not a fork of it — the schema underneath never splits.</div>

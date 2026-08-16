@@ -66,6 +66,10 @@
     <a href="{{ '/personas/' | relative_url }}">{% include icon.html name="users" size="16" %} Personas</a>
     <a href="{{ '/build-log/' | relative_url }}">{% include icon.html name="git-branch" size="16" %} Build log</a>
     <a href="{{ '/design/' | relative_url }}">{% include icon.html name="target" size="16" %} Design</a>
-    <a href="https://github.com/{{ site.repository }}">{% include icon.html name="arrow-up-right" size="16" %} Source</a>
+    <a href="{{ '/deploy/' | relative_url }}">{% include icon.html name="rocket" size="16" %} Deploy it to your org</a>
+    <a href="https://github.com/{{ site.repository }}" data-gh-star data-repo="{{ site.repository }}">
+      {% include icon.html name="sparkle" size="16" %} Star on GitHub
+      <span class="ghstar__count" data-gh-count hidden></span>
+    </a>
   </div>
 </aside>
