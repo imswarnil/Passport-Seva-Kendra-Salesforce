@@ -1,0 +1,247 @@
+/* =============================================================================
+   Frame & Signal — colour tokens, copied from design.imswarnil.com's
+   src/1-foundation/01-color.css rather than depended on as a package, so this
+   site builds and deploys on its own (same call imswarnil.github.io makes).
+
+   Two tiers: components below in this repo may only read tier 2 (the named
+   --bg, --fg, --accent custom properties). Tier 1 (--ink, --signal, etc.)
+   is the palette; tier 2 is the argument. Keep this file in sync by hand if
+   design.imswarnil.com's tokens change — there is no build-time link.
+   ========================================================================== */
+
+@layer tokens {
+  :root {
+    --ink-0:    oklch(99.2% 0.002 275);
+    --ink-25:   oklch(98.2% 0.003 275);
+    --ink-50:   oklch(96.6% 0.004 275);
+    --ink-100:  oklch(94.0% 0.005 275);
+    --ink-200:  oklch(89.0% 0.007 275);
+    --ink-300:  oklch(82.0% 0.009 275);
+    --ink-400:  oklch(71.0% 0.013 275);
+    --ink-500:  oklch(58.0% 0.018 275);
+    --ink-600:  oklch(48.0% 0.020 275);
+    --ink-700:  oklch(39.0% 0.020 275);
+    --ink-800:  oklch(30.5% 0.018 275);
+    --ink-900:  oklch(23.0% 0.016 275);
+    --ink-950:  oklch(17.5% 0.014 275);
+    --ink-1000: oklch(12.5% 0.012 275);
+
+    --signal-50:  oklch(96.5% 0.020 34);
+    --signal-100: oklch(92.5% 0.042 34);
+    --signal-200: oklch(86.0% 0.078 34);
+    --signal-300: oklch(79.0% 0.118 34);
+    --signal-400: oklch(71.0% 0.158 34);
+    --signal-500: oklch(63.0% 0.190 34);
+    --signal-600: oklch(56.0% 0.180 34);
+    --signal-700: oklch(47.0% 0.155 34);
+    --signal-800: oklch(38.0% 0.125 34);
+    --signal-900: oklch(29.0% 0.095 34);
+    --signal-950: oklch(22.0% 0.070 34);
+
+    --craft-50:  oklch(97.0% 0.025 78);
+    --craft-100: oklch(94.0% 0.050 78);
+    --craft-200: oklch(89.0% 0.085 78);
+    --craft-300: oklch(82.0% 0.110 78);
+    --craft-400: oklch(74.0% 0.118 78);
+    --craft-500: oklch(66.0% 0.110 78);
+    --craft-600: oklch(58.0% 0.100 78);
+    --craft-700: oklch(48.0% 0.085 78);
+    --craft-800: oklch(38.0% 0.068 78);
+    --craft-900: oklch(29.0% 0.050 78);
+    --craft-950: oklch(22.0% 0.038 78);
+
+    --mint-50:  oklch(96.5% 0.022 155);
+    --mint-100: oklch(94.0% 0.045 155);
+    --mint-200: oklch(89.0% 0.075 155);
+    --mint-300: oklch(82.0% 0.105 155);
+    --mint-400: oklch(74.0% 0.125 155);
+    --mint-500: oklch(64.0% 0.130 155);
+    --mint-600: oklch(56.0% 0.118 155);
+    --mint-700: oklch(46.0% 0.100 155);
+    --mint-800: oklch(37.0% 0.080 155);
+    --mint-900: oklch(28.0% 0.062 155);
+    --mint-950: oklch(22.0% 0.046 155);
+
+    --azure-50:  oklch(96.5% 0.018 240);
+    --azure-100: oklch(94.0% 0.035 240);
+    --azure-200: oklch(89.0% 0.060 240);
+    --azure-300: oklch(82.0% 0.090 240);
+    --azure-400: oklch(73.0% 0.125 240);
+    --azure-500: oklch(62.0% 0.145 240);
+    --azure-600: oklch(54.0% 0.150 240);
+    --azure-700: oklch(46.0% 0.130 240);
+    --azure-800: oklch(37.0% 0.105 240);
+    --azure-900: oklch(28.0% 0.080 240);
+    --azure-950: oklch(22.0% 0.060 240);
+
+    --rose-50:  oklch(96.5% 0.018 15);
+    --rose-100: oklch(94.0% 0.035 15);
+    --rose-200: oklch(89.0% 0.062 15);
+    --rose-300: oklch(82.0% 0.090 15);
+    --rose-400: oklch(72.0% 0.140 15);
+    --rose-500: oklch(60.0% 0.185 15);
+    --rose-600: oklch(53.0% 0.180 15);
+    --rose-700: oklch(45.0% 0.160 15);
+    --rose-800: oklch(36.0% 0.130 15);
+    --rose-900: oklch(28.0% 0.100 15);
+    --rose-950: oklch(22.0% 0.075 15);
+
+    --iris-50:  oklch(96.5% 0.020 285);
+    --iris-100: oklch(94.0% 0.038 285);
+    --iris-200: oklch(89.0% 0.068 285);
+    --iris-300: oklch(82.0% 0.100 285);
+    --iris-400: oklch(73.0% 0.140 285);
+    --iris-500: oklch(62.0% 0.170 285);
+    --iris-600: oklch(54.0% 0.175 285);
+    --iris-700: oklch(46.0% 0.155 285);
+    --iris-800: oklch(37.0% 0.125 285);
+    --iris-900: oklch(28.0% 0.095 285);
+    --iris-950: oklch(22.0% 0.072 285);
+
+    --teal-50:  oklch(96.5% 0.020 195);
+    --teal-100: oklch(94.0% 0.038 195);
+    --teal-200: oklch(89.0% 0.062 195);
+    --teal-300: oklch(82.0% 0.085 195);
+    --teal-400: oklch(74.0% 0.100 195);
+    --teal-500: oklch(65.0% 0.105 195);
+    --teal-600: oklch(56.0% 0.100 195);
+    --teal-700: oklch(47.0% 0.085 195);
+    --teal-800: oklch(38.0% 0.070 195);
+    --teal-900: oklch(29.0% 0.052 195);
+    --teal-950: oklch(22.0% 0.040 195);
+
+    /* ── Navy & Gold — the actual Passport Seva Kendra org branding ──────
+       Not part of the generic Frame & Signal palette. Converted from the
+       org's own real values: brandingSets/LEXTHEMINGSalesforcePassport
+       (BRAND_COLOR/HEADER_BACKGROUND_COLOR #1A2A5E) and the --psk-navy /
+       --psk-navy-dark / --psk-gold custom properties shared by every
+       pskXxx LWC. navy-800 and navy-900 below are those two hexes,
+       converted to oklch exactly (not eyeballed); the rest of each ramp
+       is interpolated on the same lightness ladder as tier 1 above, so
+       these behave like any other ramp everywhere they're read. This
+       site's --accent (see tier 2) is rebased on gold, and the site
+       chrome (header/footer) uses navy directly — see the [data-accent
+       ='gold'] preset and .site-header/.site-footer in app/layouts. */
+    --navy-50:   oklch(97.0% 0.006 268);
+    --navy-100:  oklch(94.0% 0.012 268);
+    --navy-200:  oklch(89.0% 0.022 268);
+    --navy-300:  oklch(82.0% 0.038 268);
+    --navy-400:  oklch(71.0% 0.058 268);
+    --navy-500:  oklch(58.0% 0.078 268);
+    --navy-600:  oklch(48.0% 0.090 268);
+    --navy-700:  oklch(39.0% 0.098 268);
+    --navy-800:  oklch(30.4% 0.095 267.6); /* = #1A2A5E, the org's BRAND_COLOR */
+    --navy-900:  oklch(24.1% 0.074 267.4); /* = #101C42, the org's navy-dark */
+    --navy-950:  oklch(18.0% 0.055 267);
+
+    --gold-50:   oklch(97.0% 0.025 90);
+    --gold-100:  oklch(94.0% 0.050 90);
+    --gold-200:  oklch(89.0% 0.085 91);
+    --gold-300:  oklch(83.5% 0.121 93.0); /* = #E4C766, the org's gold-light */
+    --gold-400:  oklch(72.8% 0.138 89.7); /* = #C9A227, the org's brand gold */
+    --gold-500:  oklch(66.0% 0.145 88);
+    --gold-600:  oklch(58.0% 0.135 87);
+    --gold-700:  oklch(48.0% 0.115 86);
+    --gold-800:  oklch(38.0% 0.090 85);
+    --gold-900:  oklch(29.0% 0.068 84);
+    --gold-950:  oklch(22.0% 0.050 83);
+  }
+
+  :root {
+    color-scheme: light dark;
+
+    --bg-canvas:  light-dark(var(--ink-0),   var(--ink-1000));
+    --bg-surface: light-dark(var(--ink-0),   var(--ink-950));
+    --bg-raised:  light-dark(var(--ink-0),   var(--ink-900));
+    --bg-overlay: light-dark(var(--ink-0),   var(--ink-800));
+    --bg-sunken:  light-dark(var(--ink-50),  var(--ink-1000));
+    --bg-muted:   light-dark(var(--ink-100), var(--ink-900));
+    --bg-inverse: light-dark(var(--ink-950), var(--ink-50));
+    --bg-media:   light-dark(var(--ink-100), var(--ink-900));
+    --bg-scrim:   light-dark(oklch(12.5% 0.012 275 / 0.5), oklch(12.5% 0.012 275 / 0.7));
+
+    --fg-default:    light-dark(var(--ink-900), var(--ink-50));
+    --fg-muted:      light-dark(var(--ink-700), var(--ink-300));
+    --fg-subtle:     light-dark(var(--ink-600), var(--ink-400));
+    --fg-faint:      light-dark(var(--ink-500), var(--ink-500));
+    --fg-disabled:   light-dark(var(--ink-400), var(--ink-600));
+    --fg-on-inverse: light-dark(var(--ink-50),  var(--ink-900));
+    --fg-on-accent:  var(--ink-0);
+
+    /* This site's --accent is rebased on the org's own gold, not the
+       generic Frame & Signal vermilion (--signal-*) — same six-line shape
+       the design system's own [data-accent] presets use (see
+       01-color.css's ACCENT PRESETS block), just pointed at --gold-*
+       instead. --signal-* itself is untouched, so --chart-1 and anything
+       else that deliberately wants the generic system red still gets it. */
+    --fg-accent:     light-dark(var(--gold-700), var(--gold-400));
+    --fg-link:       light-dark(var(--gold-800), var(--gold-300));
+    --fg-link-hover: light-dark(var(--gold-900), var(--gold-200));
+
+    --line-subtle:  light-dark(var(--ink-100), oklch(100% 0 0 / 0.07));
+    --line-default: light-dark(var(--ink-200), oklch(100% 0 0 / 0.12));
+    --line-strong:  light-dark(var(--ink-300), oklch(100% 0 0 / 0.22));
+    --line-inverse: light-dark(oklch(100% 0 0 / 0.16), var(--ink-200));
+    --line-accent:  var(--accent);
+
+    --accent:         var(--gold-500);
+    --accent-hover:   light-dark(var(--gold-600), var(--gold-400));
+    --accent-press:   light-dark(var(--gold-700), var(--gold-300));
+    --accent-soft:    light-dark(var(--gold-50),  oklch(66% 0.145 88 / 0.16));
+    --accent-soft-fg: light-dark(var(--gold-800), var(--gold-200));
+    --accent-ring:    oklch(66% 0.145 88 / 0.45);
+
+    /* Site chrome (header/footer), distinct from --accent — the org's own
+       header uses navy solid, not gold, so brand surfaces read as
+       navy-with-gold-accent rather than all-gold. Not part of the generic
+       tier-2 contract; only app/layouts/default.vue reads these. */
+    --brand-navy:      var(--navy-800); /* = the org's real header color */
+    --brand-navy-deep: var(--navy-900);
+    --brand-on-navy:        light-dark(var(--ink-0), var(--ink-0));
+    --brand-on-navy-muted:  oklch(100% 0 0 / 0.65);
+    --brand-on-navy-line:   oklch(100% 0 0 / 0.14);
+
+    --craft:      light-dark(var(--craft-600), var(--craft-400));
+    --craft-soft: light-dark(var(--craft-50),  oklch(66% 0.11 78 / 0.16));
+    --craft-fg:   light-dark(var(--craft-800), var(--craft-200));
+
+    --success-bg:    light-dark(var(--mint-100),  oklch(64% 0.13 155 / 0.16));
+    --success-fg:    light-dark(var(--mint-700),  var(--mint-300));
+    --success-line:  light-dark(var(--mint-300),  oklch(64% 0.13 155 / 0.35));
+    --success-solid: light-dark(var(--mint-600),  var(--mint-500));
+
+    --info-bg:    light-dark(var(--azure-100), oklch(62% 0.145 240 / 0.16));
+    --info-fg:    light-dark(var(--azure-700), var(--azure-300));
+    --info-line:  light-dark(var(--azure-300), oklch(62% 0.145 240 / 0.35));
+    --info-solid: light-dark(var(--azure-600), var(--azure-500));
+
+    --warning-bg:    light-dark(var(--craft-100), oklch(66% 0.11 78 / 0.16));
+    --warning-fg:    light-dark(var(--craft-800), var(--craft-300));
+    --warning-line:  light-dark(var(--craft-300), oklch(66% 0.11 78 / 0.35));
+    --warning-solid: light-dark(var(--craft-600), var(--craft-500));
+
+    --danger-bg:    light-dark(var(--rose-100), oklch(60% 0.185 15 / 0.16));
+    --danger-fg:    light-dark(var(--rose-700), var(--rose-300));
+    --danger-line:  light-dark(var(--rose-300), oklch(60% 0.185 15 / 0.35));
+    --danger-solid: light-dark(var(--rose-600), var(--rose-500));
+
+    --hover-wash:   light-dark(oklch(12.5% 0.012 275 / 0.04), oklch(100% 0 0 / 0.06));
+    --press-wash:   light-dark(oklch(12.5% 0.012 275 / 0.08), oklch(100% 0 0 / 0.10));
+    --selection-bg: light-dark(var(--gold-100), oklch(66% 0.145 88 / 0.3));
+    --selection-fg: light-dark(var(--gold-900), var(--ink-0));
+
+    --pure-black: #000;
+    --pure-white: #fff;
+
+    --pattern-ink:   light-dark(oklch(12.5% 0.012 275 / 0.07), oklch(100% 0 0 / 0.07));
+    --pattern-ink-2: light-dark(oklch(12.5% 0.012 275 / 0.14), oklch(100% 0 0 / 0.14));
+  }
+
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='dark']  { color-scheme: dark; }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+}

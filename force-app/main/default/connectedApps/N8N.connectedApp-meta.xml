@@ -6,7 +6,16 @@
     <label>N8N</label>
     <oauthConfig>
         <callbackUrl>https://n8n.srv1116161.hstgr.cloud/rest/oauth2-credential/callback</callbackUrl>
-        <consumerKey>3MVG9WVXk15qiz1IJtr01SCgcs9LHYHO2wBb58pjc.abatFENyrdVgjD5T2ZCfnZUYfbVC21QsMNuzHzOd60S</consumerKey>
+        <!-- Real consumerKey redacted before this repo went public. This value was
+             already committed in git history (commits ce83198/de97d2e, pushed to
+             origin/main) before the redaction, so it must be treated as compromised:
+             rotate it in Setup > App Manager > N8N > Manage Consumer Details, not just
+             edited here. This file is excluded from manifest/package-psk-core.xml, so
+             the placeholder below does not affect the "deploy your own copy" flow —
+             it only matters if you retrieve/deploy this exact org's full metadata,
+             in which case a real retrieve will overwrite this placeholder with
+             whatever the (rotated) live value is. -->
+        <consumerKey>PLACEHOLDER_ROTATE_IN_SALESFORCE_SETUP</consumerKey>
         <isAdminApproved>false</isAdminApproved>
         <isClientCredentialEnabled>false</isClientCredentialEnabled>
         <isCodeCredentialEnabled>false</isCodeCredentialEnabled>

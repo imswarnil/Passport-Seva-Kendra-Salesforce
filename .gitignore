@@ -14,14 +14,14 @@ manifest/.*.json
 .vscode/
 *.swp
 
-# Jekyll (wherever it's built from -- salesforce-passport/ or repo root by mistake)
-_site/
-salesforce-passport/_site/
-.jekyll-cache/
-salesforce-passport/.jekyll-cache/
-.jekyll-metadata
-salesforce-passport/.jekyll-metadata
-.bundle/
-salesforce-passport/.bundle/
-vendor/
-salesforce-passport/vendor/
+# Nuxt / Node
+node_modules/
+.nuxt/
+.output/
+.data/
+.env
+.env.*
+!.env.example
+
+# Cloudflare
+.wrangler/

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>swarnilsinghaicse@gmail.com</contactEmail>
+    <description>Server-to-server JWT Bearer app used by salesforce.imswarnil.com's read-only public demo Worker. No human ever authorizes through this app's callback — it exists only so the Worker can mint an access token for the dedicated "PSK Demo Read Only" integration user. See docs/SETUP_ORG.md before enabling.</description>
+    <label>PSK Demo Proxy (read-only, JWT)</label>
+    <oauthConfig>
+        <!--
+          No consumerKey here on purpose: Salesforce assigns one when this
+          metadata is first deployed as a NEW connected app. After deploying,
+          go to Setup > App Manager > "PSK Demo Proxy" > View > Manage
+          Consumer Details to read it, then set it as NUXT_SF_CLIENT_ID.
+
+          No <certificate> here either: upload the JWT cert (server.crt from
+          the openssl command in docs/SETUP_ORG.md) through that same "View"
+          screen's Edit Policies page after the first deploy. Baking a
+          generated cert into version control would work too, but doing the
+          upload by hand keeps the private key from ever touching this repo
+          even transiently on whichever machine generates it.
+        -->
+        <callbackUrl>https://salesforce.imswarnil.com/auth/callback</callbackUrl>
+        <isAdminApproved>true</isAdminApproved>
+        <isConsumerSecretOptional>true</isConsumerSecretOptional>
+        <scopes>Api</scopes>
+        <scopes>RefreshToken</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>RELAX</ipRelaxation>
+        <!-- AdminApproved, not AllUsers: nobody gets in via this app except
+             whoever an admin explicitly assigns it to in Setup > Manage
+             Connected Apps, which docs/SETUP_ORG.md has you do for ONLY the
+             read-only integration user. This is the actual authorization
+             boundary for JWT Bearer, more than the permission set is. -->
+        <permittedUsers>AdminApproved</permittedUsers>
+        <refreshTokenPolicy>infinite</refreshTokenPolicy>
+    </oauthPolicy>
+</ConnectedApp>

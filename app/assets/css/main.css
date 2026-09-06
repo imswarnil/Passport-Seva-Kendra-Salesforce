@@ -1,0 +1,83 @@
+@import './tokens.css';
+
+@layer reset, base, layout;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; }
+  img, picture, svg { display: block; max-width: 100%; }
+}
+
+@layer base {
+  body {
+    background: var(--bg-canvas);
+    color: var(--fg-default);
+    font: 400 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 { line-height: 1.2; margin: 0 0 0.5em; color: var(--fg-default); }
+  p { margin: 0 0 1em; color: var(--fg-muted); }
+
+  a {
+    color: var(--fg-link);
+    text-decoration-color: var(--line-default);
+  }
+  a:hover { color: var(--fg-link-hover); }
+
+  code, pre {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  code:not(pre code) {
+    background: var(--bg-muted);
+    border: 1px solid var(--line-subtle);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+    font-size: 0.9em;
+  }
+}
+
+@layer layout {
+  .container {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  /* A wider, fluid shell for pages that want to use more of the viewport —
+     the homepage's data-model/persona/journey grids, not prose (those stay
+     on .container's 72rem, which is what keeps a paragraph readable). */
+  .container-wide {
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.6em 1.2em;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--fg-on-accent);
+  }
+  .btn-primary:hover { background: var(--accent-hover); color: var(--fg-on-accent); }
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--line-default);
+    color: var(--fg-default);
+  }
+  .btn-ghost:hover { background: var(--hover-wash); color: var(--fg-default); }
+}

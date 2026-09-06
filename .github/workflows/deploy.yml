@@ -1,0 +1,49 @@
+name: Deploy to Cloudflare Workers
+
+# Builds the Nuxt app and deploys it with Wrangler on every push to main that
+# touches the app. Needs two repo secrets: CLOUDFLARE_API_TOKEN (a token
+# scoped to Workers Scripts:Edit + Workers R2 Storage:Edit for this account)
+# and CLOUDFLARE_ACCOUNT_ID. Worker secrets (DATABASE_URL, SESSION_SECRET,
+# SF_*) are set once via `wrangler secret put`, not through this workflow —
+# see docs/SETUP_WEB.md.
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "app/**"
+      - "content/**"
+      - "server/**"
+      - "content.config.ts"
+      - "nuxt.config.ts"
+      - "wrangler.jsonc"
+      - "package.json"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: "cloudflare-deploy"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

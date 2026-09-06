@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "salesforce-passport",
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2025-09-06",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".output/public",
+    "binding": "ASSETS"
+  },
+  // Buckets, kept separate per kind of upload rather than one shared bucket —
+  // makes lifecycle rules (e.g. auto-expire unmoderated submissions) and
+  // access scoping independent per folder-of-concern. Create with:
+  //   wrangler r2 bucket create psk-resources
+  //   wrangler r2 bucket create psk-guestbook-attachments
+  //   wrangler r2 bucket create psk-avatars
+  "r2_buckets": [
+    { "binding": "RESOURCES", "bucket_name": "psk-resources" },
+    { "binding": "GUESTBOOK_ATTACHMENTS", "bucket_name": "psk-guestbook-attachments" },
+    { "binding": "AVATARS", "bucket_name": "psk-avatars" }
+  ],
+  // Secrets are NOT listed here — set them with `wrangler secret put <NAME>`:
+  // DATABASE_URL, SESSION_SECRET, SF_CLIENT_ID, SF_USERNAME, SF_PRIVATE_KEY.
+  // See SETUP.md.
+  "observability": { "enabled": true }
+}
