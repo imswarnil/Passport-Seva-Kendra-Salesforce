@@ -40,8 +40,21 @@ because the repo had no Cloudflare credentials, and nobody moved the DNS.
   - `/` → 200, `/lessons` → 200
   - `/api/demo-org/objects` → 404 `"Demo org is not enabled."` (correct — see
     step 6)
-- **R2 buckets** — `psk-resources`, `psk-guestbook-attachments`, `psk-avatars`
-  already existed and are bound.
+- **R2 consolidated into one bucket** (2026-09-14) — was three root-level
+  buckets (`psk-resources`, `psk-guestbook-attachments`, `psk-avatars`, all
+  created 2026-09-06). Now a single **`salesforce-passport`** bucket bound as
+  **`STORAGE`**, with a key prefix per kind of upload:
+
+  | Prefix | Written by | Read by |
+  | --- | --- | --- |
+  | `resources/<userId>/<uuid>-<filename>` | `POST /api/resources` | `GET /api/resources/:id` |
+  | `guestbook/<userId>/<uuid>.png` | `POST /api/guestbook/drawing` | `GET /api/guestbook/image/:key` |
+  | `avatars/<userId>/...` | reserved, unwritten | — |
+
+  The code already wrote those prefixes, so no key changed. All three old
+  buckets were empty (0 objects, 0 B — checked twice, immediately before
+  deletion) and have been deleted. `psk-avatars` was bound but referenced by no
+  code at all. Four handlers now read `env.STORAGE`; deployed and verified.
 - **`wrangler.jsonc`** — three edits:
   - added the `salesforce.imswarnil.com` custom-domain route
   - added `"workers_dev": true` (without it, every deploy silently disables the
@@ -348,6 +361,7 @@ The Worker itself is independent of all of this and stays reachable at
 | Repo | `imswarnil/Passport-Seva-Kendra-Salesforce` |
 | Worker secrets needed | `NUXT_DATABASE_URL`, `NUXT_SESSION_SECRET` |
 | Repo secrets needed | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` |
+| R2 bucket | `salesforce-passport`, bound as `STORAGE` |
 | Build | `pnpm run build` (`nuxt build --preset cloudflare_module`) |
 | Deploy | `npx wrangler deploy` |
 | Docs | `docs/SETUP_WEB.md`, `docs/SETUP_ORG.md` |

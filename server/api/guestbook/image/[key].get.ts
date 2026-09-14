@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   `
   if (!row?.imageKey) throw createError({ statusCode: 404, statusMessage: 'Not found.' })
 
-  const bucket = event.context.cloudflare?.env?.GUESTBOOK_ATTACHMENTS
+  const bucket = event.context.cloudflare?.env?.STORAGE
   if (!bucket) throw createError({ statusCode: 500, statusMessage: 'Drawing storage is not configured.' })
 
   const object = await bucket.get(row.imageKey)

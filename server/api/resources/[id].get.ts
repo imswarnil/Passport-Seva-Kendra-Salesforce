@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   `
   if (!row?.r2Key) throw createError({ statusCode: 404, statusMessage: 'Not found.' })
 
-  const bucket = event.context.cloudflare?.env?.RESOURCES
+  const bucket = event.context.cloudflare?.env?.STORAGE
   if (!bucket) throw createError({ statusCode: 500, statusMessage: 'Resource storage is not configured.' })
 
   const object = await bucket.get(row.r2Key)

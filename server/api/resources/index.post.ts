@@ -8,7 +8,8 @@ const fieldsSchema = z.object({
 
 // Accepts EITHER JSON `{title, description, url}` OR multipart form data
 // with the same fields plus an optional `file` part — the file goes to the
-// RESOURCES R2 bucket, not both an attachment and a url are required.
+// `resources/` prefix of the STORAGE R2 bucket; not both an attachment and
+// a url are required.
 // Status starts 'pending': nothing here appears on the public list
 // (GET /api/resources only returns status='approved') until moderated by
 // hand via a direct Neon query — there's no admin UI for this yet.
@@ -40,7 +41,7 @@ export default defineEventHandler(async (event) => {
       // event.context.cloudflare.env. Confirm this once `wrangler dev` runs —
       // it's the standard shape for the cloudflare_module preset, but worth
       // a sanity check against whatever Nitro version ends up installed.
-      const bucket = event.context.cloudflare?.env?.RESOURCES
+      const bucket = event.context.cloudflare?.env?.STORAGE
       if (!bucket) throw createError({ statusCode: 500, statusMessage: 'Resource storage is not configured.' })
       r2Key = `resources/${user.id}/${crypto.randomUUID()}-${filePart.filename}`
       await bucket.put(r2Key, filePart.data, {

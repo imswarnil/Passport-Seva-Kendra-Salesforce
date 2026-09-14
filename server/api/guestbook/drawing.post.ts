@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 413, statusMessage: 'Drawing is too large (max 500KB).' })
   }
 
-  const bucket = event.context.cloudflare?.env?.GUESTBOOK_ATTACHMENTS
+  const bucket = event.context.cloudflare?.env?.STORAGE
   if (!bucket) throw createError({ statusCode: 500, statusMessage: 'Drawing storage is not configured.' })
 
   const key = `guestbook/${user.id}/${crypto.randomUUID()}.png`

@@ -8,16 +8,21 @@
     "directory": ".output/public",
     "binding": "ASSETS"
   },
-  // Buckets, kept separate per kind of upload rather than one shared bucket —
-  // makes lifecycle rules (e.g. auto-expire unmoderated submissions) and
-  // access scoping independent per folder-of-concern. Create with:
-  //   wrangler r2 bucket create psk-resources
-  //   wrangler r2 bucket create psk-guestbook-attachments
-  //   wrangler r2 bucket create psk-avatars
+  // ONE bucket named for the Worker, with a key prefix per kind of upload:
+  //   resources/<userId>/<uuid>-<filename>
+  //   guestbook/<userId>/<uuid>.png
+  //   avatars/<userId>/...            (reserved; nothing writes this yet)
+  // This replaced three buckets — psk-resources, psk-guestbook-attachments and
+  // psk-avatars — on 2026-09-14. They were separate so that lifecycle rules and
+  // access scoping could differ per kind, but R2 lifecycle rules take a prefix
+  // condition, so a prefix buys the same thing without three root-level buckets
+  // to keep in step. Nothing is served from a public bucket URL either: every
+  // read goes through a Worker route that checks the DB first, so the per-bucket
+  // settings (CORS, public access, custom domain) were never load-bearing here.
+  // Create with:
+  //   wrangler r2 bucket create salesforce-passport --location eeur
   "r2_buckets": [
-    { "binding": "RESOURCES", "bucket_name": "psk-resources" },
-    { "binding": "GUESTBOOK_ATTACHMENTS", "bucket_name": "psk-guestbook-attachments" },
-    { "binding": "AVATARS", "bucket_name": "psk-avatars" }
+    { "binding": "STORAGE", "bucket_name": "salesforce-passport" }
   ],
   // Secrets are NOT listed here — set them with `wrangler secret put <NAME>`.
   // The names carry Nuxt's `NUXT_` prefix because that is how runtimeConfig

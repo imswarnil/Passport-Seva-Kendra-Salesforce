@@ -42,13 +42,26 @@ pnpm run dev
 npx wrangler login
 ```
 
-Create the three R2 buckets `wrangler.jsonc` already declares bindings for:
+Create the R2 bucket `wrangler.jsonc` declares a binding for:
 
 ```bash
-npx wrangler r2 bucket create psk-resources
-npx wrangler r2 bucket create psk-guestbook-attachments
-npx wrangler r2 bucket create psk-avatars
+npx wrangler r2 bucket create salesforce-passport --location eeur
 ```
+
+One bucket, named for the Worker, bound as `STORAGE`. Uploads are separated by
+key prefix rather than by bucket:
+
+| Prefix | Written by | Read by |
+| --- | --- | --- |
+| `resources/<userId>/<uuid>-<filename>` | `POST /api/resources` | `GET /api/resources/:id` (approved rows only) |
+| `guestbook/<userId>/<uuid>.png` | `POST /api/guestbook/drawing` | `GET /api/guestbook/image/:key` (non-hidden rows only) |
+| `avatars/<userId>/...` | reserved — nothing writes this yet | — |
+
+R2 has no real directories; a prefix *is* the folder. Lifecycle rules accept a
+prefix condition, so per-kind expiry (e.g. auto-expiring unmoderated
+submissions) still works without separate buckets. Nothing is served from a
+public bucket URL — every read goes through a Worker route that checks the
+database first.
 
 Set the Worker secrets (production values — separate from your local `.env`):
 
