@@ -1,7 +1,10 @@
 # to-do — finish moving salesforce.imswarnil.com onto Cloudflare Workers
 
-**Status: half done.** The Worker is built, deployed and serving correctly. The
-public domain has not moved to it yet.
+**Status: the domain is live on Cloudflare Workers.** As of 2026-09-14,
+<https://salesforce.imswarnil.com> is served by the `salesforce-passport`
+Worker, not GitHub Pages. Steps 1 and 2 are done. Three smaller things remain:
+**step 3** (Worker secrets — the database is not connected yet), **step 4**
+(switch GitHub Pages off) and **step 5** (CI credentials).
 
 > ⚠️ This repo is public. Nothing in this file is a secret — no tokens, no
 > account IDs, no connection strings. Keep it that way. Where a value is
@@ -11,8 +14,8 @@ public domain has not moved to it yet.
 
 ## Why this move exists at all
 
-`salesforce.imswarnil.com` is still being served by **GitHub Pages**, from a
-Jekyll build dated **2026-08-16**. That build is stale and cannot be refreshed,
+`salesforce.imswarnil.com` was served by **GitHub Pages** until 2026-09-14,
+from a Jekyll build dated **2026-08-16** — stale, and impossible to refresh,
 because the repo no longer contains a Jekyll site.
 
 GitHub Pages serves static files only. The current app cannot run there — it
@@ -71,26 +74,46 @@ because the repo had no Cloudflare credentials, and nobody moved the DNS.
 
 ## What is left
 
-Five steps below. **Step 1 is the only real blocker** — everything else is
-quick once it's done.
+Steps 1 and 2 are **done**; they are kept below with their outcome recorded,
+because the rollback notes depend on knowing what was changed. Steps 3–5 are
+what is left.
 
-Verified state at the time of writing:
+Verified state, 2026-09-14 20:00 UTC:
 
 | Check | Result |
 | --- | --- |
-| `https://salesforce-passport.imswarnil.workers.dev/` | `200` — working |
-| `https://salesforce.imswarnil.com/` | still GitHub Pages (`x-github-request-id` present) |
-| `npx wrangler secret list` | `[]` — step 3 not done |
-| `gh secret list` | empty — step 5 not done |
+| `https://salesforce.imswarnil.com/` | `200`, `x-powered-by: Nuxt` — the Worker ✅ |
+| `/lessons`, `/demo-org` | `200` ✅ |
+| `/api/demo-org/objects` | `404 "Demo org is not enabled."` — correct ✅ |
+| `x-github-request-id` header | gone — off GitHub Pages ✅ |
+| TLS certificate | valid, `notAfter=Nov 28 2026` ✅ |
+| `npx wrangler secret list` | `[]` — **step 3 not done** ⬅ |
+| GitHub Pages config | still present on the repo — **step 4 not done** ⬅ |
+| `gh secret list` | empty — **step 5 not done** ⬅ |
 
-Nothing here causes an outage. Until step 1, the domain keeps serving the old
-Jekyll build.
+The site is up and serving. Nothing below is urgent — but until step 3, every
+database-backed feature (accounts, progress, comments, guestbook, resource
+submissions) is dead, while the lessons render fine because they are files.
 
 ---
 
-## Step 1 — delete the GitHub Pages DNS records  ⬅ blocker, you must do this
+## Step 1 — delete the GitHub Pages DNS record  ✅ DONE 2026-09-14
 
-Every deploy currently ends with:
+**Outcome:** the zone held exactly **one** matching record — not the four A
+records this file originally guessed at:
+
+| Name | Type | Content | Proxy | TTL |
+| --- | --- | --- | --- | --- |
+| `salesforce.imswarnil.com` | CNAME | `imswarnil.github.io` | Proxied | Auto |
+
+It was deleted in the dashboard; the zone went from 33 to 32 records and no
+other name was touched. Write those values down — they are what you would
+re-create to roll back.
+
+<details>
+<summary>What the problem was</summary>
+
+Every deploy used to end with:
 
 ```
 Custom domains:
@@ -113,28 +136,32 @@ hand-managed DNS record. The record pointing at GitHub Pages has to go first.
    `crmanalytics`, `jobseekers`, `trailblazer`, `dev`, `icons`, `theme` and any
    mail records must stay untouched.
 
-You do not need to create a replacement record. Step 2 creates it for you.
+You do not need to create a replacement record — step 2 creates it for you.
 
-> Why you and not me: wrangler's OAuth token on this machine has `zone (read)`
-> but no DNS write scope, so it can delete nothing. We tried granting a
-> narrower token via the Cloudflare MCP OAuth flow and it bounced through a
-> GitHub SSO login and back to a dashboard sign-in page — not worth another lap
-> for what is a 30-second dashboard action.
+Wrangler's own token could not do this: it carries `zone (read)` and no DNS
+write scope. It was done by driving the dashboard directly, once a browser
+session existed there.
 
-**Verify:**
-
-```bash
-dig +short salesforce.imswarnil.com
-```
-
-Expect: nothing, or NXDOMAIN. (It may take a minute; Cloudflare's own proxy IPs
-`104.21.x` / `172.67.x` disappearing is the signal.)
+</details>
 
 ---
 
-## Step 2 — attach the custom domain
+## Step 2 — attach the custom domain  ✅ DONE 2026-09-14
 
-Once step 1 is done:
+**Outcome:** `npx wrangler deploy` reported both targets and no error block:
+
+```
+  https://salesforce-passport.imswarnil.workers.dev
+  salesforce.imswarnil.com (custom domain)
+```
+
+Cloudflare created the proxied record and issued the certificate itself. The
+DNS answer is unchanged to the eye (`104.21.x` / `172.67.x` — Cloudflare's own
+proxy IPs either way); what changed is the origin behind them, which the
+`x-powered-by: Nuxt` header confirms.
+
+<details>
+<summary>The command, for reference</summary>
 
 ```bash
 cd ~/Swarnil/salesforce.imswarnil.com
@@ -158,11 +185,16 @@ curl -sI https://salesforce.imswarnil.com/ | grep -i x-github-request-id
 The first should return `HTTP/2 200`. The second should return **nothing** — an
 `x-github-request-id` header means you are still hitting GitHub Pages.
 
+</details>
+
 ---
 
-## Step 3 — set the two Worker secrets
+## Step 3 — set the two Worker secrets  ⬅ DO THIS FIRST
 
-`npx wrangler secret list` currently returns `[]`. Without these the site still
+This is now the most valuable thing left: the site is public but its database
+is not connected.
+
+`npx wrangler secret list` still returns `[]`. Without these the site still
 renders (lessons are file-based content), but every database-backed feature —
 accounts, progress, comments, guestbook, resource submissions — fails.
 
@@ -224,9 +256,16 @@ left armed.
 gh api -X DELETE repos/imswarnil/Passport-Seva-Kendra-Salesforce/pages
 ```
 
-**Do this only after step 2 verifies green.** It is the one step that is
-awkward to undo quickly — re-enabling Pages means re-issuing the TLS
+Step 2 has verified green, so this is safe to run now. It is the one step that
+is awkward to undo quickly — re-enabling Pages means re-issuing the TLS
 certificate, which is not instant.
+
+It is also **not urgent**: DNS now points at the Worker, so Pages receives no
+traffic whatever its config says. This is tidying, not a fix.
+
+> I could not run this for you — the `gh api -X DELETE` call was refused by
+> this session's permission classifier as a destructive API call, and working
+> around that is not something to do on your behalf.
 
 **Verify:**
 
@@ -337,9 +376,16 @@ git push
 
 ## If it goes wrong — rollback
 
-Before step 4, rollback is trivial: re-create the `salesforce` DNS records
-pointing at GitHub Pages (CNAME → `imswarnil.github.io`, proxied) and the old
-Jekyll build serves again.
+Until step 4 is run, rollback is still trivial: delete the custom domain from
+the Worker (Workers & Pages → `salesforce-passport` → Settings → Domains &
+Routes), then re-create the record exactly as it was —
+
+| Name | Type | Content | Proxy | TTL |
+| --- | --- | --- | --- | --- |
+| `salesforce` | CNAME | `imswarnil.github.io` | Proxied | Auto |
+
+— and the old Jekyll build serves again, because the Pages config is still
+present on the repo.
 
 After step 4, you would also need to re-enable Pages on the repo and wait for a
 new TLS certificate.
