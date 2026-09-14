@@ -53,13 +53,19 @@ npx wrangler r2 bucket create psk-avatars
 Set the Worker secrets (production values — separate from your local `.env`):
 
 ```bash
-npx wrangler secret put DATABASE_URL
-npx wrangler secret put SESSION_SECRET
-# The three SF_* secrets are only needed once SETUP_ORG.md's demo-org flow is ready:
-npx wrangler secret put SF_CLIENT_ID
-npx wrangler secret put SF_USERNAME
-npx wrangler secret put SF_PRIVATE_KEY
+npx wrangler secret put NUXT_DATABASE_URL
+npx wrangler secret put NUXT_SESSION_SECRET
+# The three SF secrets are only needed once SETUP_ORG.md's demo-org flow is ready:
+npx wrangler secret put NUXT_SF_CLIENT_ID
+npx wrangler secret put NUXT_SF_USERNAME
+npx wrangler secret put NUXT_SF_PRIVATE_KEY
 ```
+
+The `NUXT_` prefix is not decoration — it is how Nuxt overrides the
+`runtimeConfig` block in `nuxt.config.ts` at runtime, and it is why
+`.env.example` prefixes every name. A secret set as `DATABASE_URL` is read by
+nothing, and the failure is silent: the site still renders, but every
+database-backed feature fails.
 
 ## 5. Deploy
 

@@ -19,8 +19,26 @@
     { "binding": "GUESTBOOK_ATTACHMENTS", "bucket_name": "psk-guestbook-attachments" },
     { "binding": "AVATARS", "bucket_name": "psk-avatars" }
   ],
-  // Secrets are NOT listed here — set them with `wrangler secret put <NAME>`:
-  // DATABASE_URL, SESSION_SECRET, SF_CLIENT_ID, SF_USERNAME, SF_PRIVATE_KEY.
-  // See SETUP.md.
+  // Secrets are NOT listed here — set them with `wrangler secret put <NAME>`.
+  // The names carry Nuxt's `NUXT_` prefix because that is how runtimeConfig
+  // in nuxt.config.ts is overridden at runtime; an unprefixed DATABASE_URL is
+  // read by nothing. Required: NUXT_DATABASE_URL, NUXT_SESSION_SECRET.
+  // Only for /demo-org: NUXT_SF_CLIENT_ID, NUXT_SF_USERNAME,
+  // NUXT_SF_PRIVATE_KEY (plus NUXT_PUBLIC_DEMO_ORG_ENABLED=true).
+  // See docs/SETUP_WEB.md and docs/SETUP_ORG.md.
+  // The public hostname. A Custom Domain (not a plain route) so Cloudflare
+  // manages the DNS record and the TLS cert for it. This replaced the
+  // GitHub Pages record that used to serve this host — Pages could never
+  // host this app, which needs Nitro's server routes, Neon and R2.
+  // Keep the workers.dev URL alive alongside the custom domain. Without this
+  // key wrangler DISABLES workers.dev on every deploy ("Because 'workers_dev'
+  // is not in your Wrangler file, it will be disabled by default") — which
+  // silently took the preview URL down to a Cloudflare placeholder page.
+  "workers_dev": true,
+
+  "routes": [
+    { "pattern": "salesforce.imswarnil.com", "custom_domain": true }
+  ],
+
   "observability": { "enabled": true }
 }
